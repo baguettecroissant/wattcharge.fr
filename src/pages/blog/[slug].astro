@@ -1,0 +1,441 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return [
+    {
+      params: { slug: 'optimiser-charge-domicile' },
+      props: {
+        title: 'Comment optimiser la charge de sa voiture électrique à domicile ?',
+        subtitle: 'Guide complet pour économiser de l\'énergie et préserver votre batterie.',
+        date: '29 Juin 2026',
+        author: 'Thomas R., Expert Mobilité',
+        image: '/images/blog_charge_domicile.png',
+        productLink: 'wattcharge-home-7',
+        productName: 'Borne WattCharge Home 7.4 kW',
+        content: `
+          <h3>Introduction</h3>
+          <p>Recharger sa voiture électrique à la maison est l'un des plus grands avantages de la transition électrique. Plus besoin de chercher une station publique ou d'attendre sur une aire d'autoroute. Pourtant, recharger son véhicule ne se limite pas à brancher un câble. Pour économiser sur votre facture d'électricité et préserver l'intégrité de votre batterie sur le long terme, quelques bonnes pratiques simples s'imposent.</p>
+          
+          <h3>1. Tirez parti des heures creuses</h3>
+          <p>Le moyen le plus simple de réduire le coût de vos recharges est de planifier la charge pendant les heures creuses de votre fournisseur d'énergie (généralement entre 22h et 6h du matin). Avec un prix du kWh réduit de près de 30% à 40%, l'économie sur une année se chiffre en centaines d'euros.</p>
+          <p>Grâce aux bornes intelligentes connectées en WiFi de WattCharge, vous n'avez pas besoin de descendre au garage à minuit. Depuis l'application mobile <strong>Tuya Smart Life</strong>, vous définissez une règle de planification en trois clics. La borne s'activera et s'arrêtera d'elle-même aux horaires définis.</p>
+
+          <blockquote class="quote-block">
+            "Planifier ses recharges en heures creuses permet d'amortir le coût d'achat d'une borne intelligente en moins de 12 mois."
+          </blockquote>
+
+          <h3>2. Ne chargez pas systématiquement à 100%</h3>
+          <p>Pour l'usage quotidien, il est fortement recommandé de limiter la charge de votre batterie à <strong>80%</strong>. Les cellules lithium-ion subissent une contrainte chimique accrue lorsqu'elles sont maintenues à une tension maximale (100%) ou très basse (<10%). Réserver la charge complète aux longs trajets de vacances prolongera considérablement la durée de vie de votre pack batterie.</p>
+
+          <h3>3. Ajustez l'ampérage selon vos besoins</h3>
+          <p>Si vous disposez d'un abonnement électrique de 9 kVA et que d'autres appareils énergivores fonctionnent simultanément (pompe à chaleur, four, lave-linge), charger à la puissance maximale de 7.4 kW (32A) risque de faire disjoncter votre installation. Sur l'application mobile de la borne, vous pouvez abaisser le courant à 16A ou 10A d'un simple geste pour équilibrer la consommation du foyer en toute sécurité.</p>
+        `
+      }
+    },
+    {
+      params: { slug: 'norme-nf-c-15-100-rcd-dc-6ma' },
+      props: {
+        title: 'Norme NF C 15-100 & Protection DC 6mA : Ce qu\'il faut absolument savoir',
+        subtitle: 'Pourquoi la conformité électrique n\'est pas négociable pour votre assurance.',
+        date: '25 Juin 2026',
+        author: 'Sarah L., Ingénieur Électrique',
+        image: '/images/blog_electrical_panel.png',
+        productLink: 'wattcharge-pro-22',
+        productName: 'Borne WattCharge Pro 22 kW',
+        content: `
+          <h3>Le cadre légal en France</h3>
+          <p>En France, l'installation d'une borne de recharge pour véhicule électrique est strictement encadrée par la norme <strong>NF C 15-100</strong>. Cette réglementation vise à prévenir les risques d'incendie et d'électrisation liés aux courants de forte intensité qui transitent pendant plusieurs heures dans votre tableau électrique.</p>
+
+          <h3>La fuite de courant continu : Le danger invisible</h3>
+          <p>Pendant la recharge, le chargeur embarqué de votre voiture convertit le courant alternatif (AC) du réseau en courant continu (DC) pour la batterie. En cas de défaut d'isolation dans le véhicule, un faible courant continu peut fuir vers la borne et le réseau domestique.</p>
+          <p>Un interrupteur différentiel classique (Type AC ou Type A) est incapable de détecter cette fuite en courant continu et peut se retrouver "aveuglé", perdant ainsi sa capacité à vous protéger en cas d'électrocution.</p>
+
+          <blockquote class="quote-block">
+            "Un différentiel de type A classique ne protège pas contre les fuites DC. C'est pourquoi la détection DC 6mA est devenue obligatoire."
+          </blockquote>
+
+          <h3>Comment économiser 300 € sur votre installation ?</h3>
+          <p>Pour être en conformité, vous devez soit installer un interrupteur différentiel de <strong>Type B</strong> (extrêmement coûteux, entre 300 € et 500 € l'unité), soit utiliser une borne qui intègre nativement un dispositif de détection des courants de fuite continus de 6mA (RCD DC 6mA).</p>
+          <p>Les bornes WattCharge intègrent cette protection <strong>directement sur leur carte électronique</strong>. Cela signifie que votre électricien peut installer un simple disjoncteur et un différentiel de Type A classique, réduisant ainsi le coût du matériel de plus de la moitié.</p>
+        `
+      }
+    },
+    {
+      params: { slug: 'wifi-vs-bluetooth-borne-connectee' },
+      props: {
+        title: 'WiFi vs Bluetooth : Pourquoi connecter votre borne de recharge en WiFi ?',
+        subtitle: 'Domotique, suivi à distance et flexibilité : le comparatif détaillé.',
+        date: '20 Juin 2026',
+        author: 'Marc D., Spécialiste Domotique',
+        image: '/images/blog_wifi_bluetooth.png',
+        productLink: 'wattcharge-home-11',
+        productName: 'Borne WattCharge Home 11 kW',
+        content: `
+          <h3>Introduction</h3>
+          <p>Au moment de choisir votre borne de recharge, vous constaterez que la plupart des fabricants proposent une connectivité sans fil. Mais une borne connectée uniquement en Bluetooth n'offre pas du tout les mêmes avantages qu'une borne connectée en WiFi à votre box internet. Voyons pourquoi le choix du WiFi est indispensable pour piloter intelligemment votre recharge.</p>
+
+          <h3>1. Le contrôle à distance sans limite de portée</h3>
+          <p>La connectivité Bluetooth nécessite d'être physiquement proche de la borne (généralement moins de 10 mètres). Si vous êtes dans votre salon, au bureau ou en voyage, impossible de vérifier si la recharge s'est bien déroulée.</p>
+          <p>Avec le WiFi, votre borne WattCharge reste reliée à internet en permanence. Où que vous soyez dans le monde, vous pouvez vérifier le statut, démarrer ou suspendre la charge d'un simple glissement sur l'écran de votre smartphone.</p>
+
+          <h3>2. Statistiques de consommation et suivi budgétaire</h3>
+          <p>Une borne WiFi envoie en temps réel vos données de charge sur le cloud. L'application compile automatiquement l'historique de vos recharges. Vous savez exactement combien de kWh ont été consommés chaque jour, chaque semaine ou chaque mois, vous permettant de suivre précisément le budget énergétique alloué à votre mobilité.</p>
+
+          <blockquote class="quote-block">
+            "Le WiFi transforme votre borne de recharge en un appareil domotique intelligent, capable d'échanger des données en temps réel avec le reste de votre maison connectée."
+          </blockquote>
+
+          <h3>3. Mises à jour logicielles de la borne</h3>
+          <p>Comme pour un smartphone ou une voiture Tesla, l'électronique de votre borne peut évoluer. Une connexion WiFi permet de recevoir automatiquement les mises à jour logicielles à distance (OTA) pour optimiser les performances de charge ou ajouter de nouvelles fonctionnalités de sécurité, sans aucune intervention de votre part.</p>
+        `
+      }
+    }
+  ];
+}
+
+const { title, subtitle, date, author, image, productLink, productName, content } = Astro.props;
+---
+
+<Layout 
+  title={`${title} | Blog WattCharge`}
+  description={subtitle}
+>
+  <div class="cyber-grid-bg"></div>
+
+  <!-- En-tête de l'article -->
+  <header class="article-hero-header">
+    <div class="article-hero-overlay"></div>
+    <div class="container article-hero-container">
+      <a href="/blog" class="back-blog-link"><i class="fa-solid fa-arrow-left"></i> Retour au blog</a>
+      <span class="article-date-badge"><i class="fa-solid fa-calendar-days"></i> {date}</span>
+      <h1 class="article-main-title text-glow-teal">{title}</h1>
+      <p class="article-subtitle-text">{subtitle}</p>
+      <div class="article-author-info">
+        <i class="fa-solid fa-user-pen text-gradient-electric"></i>
+        <span>Par <strong>{author}</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenu Principal -->
+  <section class="article-body-section">
+    <div class="container article-grid">
+      
+      <!-- Colonne Contenu -->
+      <article class="article-main-content glass-panel scroll-reveal">
+        <div class="article-banner-img-wrapper">
+          <img src={image} alt={title} class="article-banner-img" />
+        </div>
+        
+        <div class="article-typography-body" set:html={content}></div>
+      </article>
+
+      <!-- Colonne Sidebar Recommandation Produit -->
+      <aside class="article-sidebar scroll-reveal">
+        <div class="sidebar-product-card glass-panel glow-panel-teal text-center">
+          <div class="hud-scanner-overlay"></div>
+          <span class="recommend-badge"><i class="fa-solid fa-thumbs-up"></i> Recommandé</span>
+          <img src="/images/charger.png" alt={productName} class="sidebar-prod-img" />
+          <h3>{productName}</h3>
+          <p>Profitez de la puissance intelligente connectée directement chez vous, conforme NF C 15-100.</p>
+          <a href={`/produits/${productLink}`} class="btn-primary cyber-btn">
+            Voir le produit <i class="fa-solid fa-chevron-right"></i>
+          </a>
+        </div>
+      </aside>
+
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Scroll Reveal triggers
+  const revealElements = document.querySelectorAll('.scroll-reveal');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  revealElements.forEach(el => observer.observe(el));
+</script>
+
+<style>
+  /* Cyber Grid Background style */
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Article Hero Header */
+  .article-hero-header {
+    position: relative;
+    padding-top: 220px;
+    padding-bottom: 80px;
+    background: var(--gradient-dark);
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+  }
+
+  .article-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 80% 20%, rgba(83, 183, 168, 0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .article-hero-container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .back-blog-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: var(--transition-fast);
+  }
+
+  .back-blog-link:hover {
+    color: var(--accent-teal);
+    transform: translateX(-3px);
+  }
+
+  .article-date-badge {
+    display: inline-block;
+    background: rgba(83, 183, 168, 0.06);
+    border: 1px solid rgba(83, 183, 168, 0.2);
+    color: var(--accent-teal);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .article-main-title {
+    font-size: 2.8rem;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .article-main-title {
+      font-size: 2.1rem;
+    }
+  }
+
+  .article-subtitle-text {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 800px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+
+  .article-author-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  /* Content Grid */
+  .article-body-section {
+    padding: 60px 0 100px 0;
+    background: #ffffff;
+    position: relative;
+    z-index: 2;
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    gap: 50px;
+    align-items: start;
+  }
+
+  @media (max-width: 992px) {
+    .article-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  .article-main-content {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: var(--shadow-card);
+  }
+
+  @media (max-width: 576px) {
+    .article-main-content {
+      padding: 20px;
+    }
+  }
+
+  .article-banner-img-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 35px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .article-banner-img {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Typography styles inside the article */
+  .article-typography-body :global(h3) {
+    font-size: 1.5rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-top: 35px;
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+
+  .article-typography-body :global(p) {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .article-typography-body :global(strong) {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .article-typography-body :global(.quote-block) {
+    border-left: 4px solid var(--accent-teal);
+    padding: 16px 24px;
+    background: var(--bg-secondary);
+    border-radius: 0 16px 16px 0;
+    font-style: italic;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 30px 0;
+  }
+
+  /* Sidebar styling */
+  .article-sidebar {
+    position: sticky;
+    top: 100px;
+  }
+
+  .sidebar-product-card {
+    background: var(--bg-secondary);
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* HUD scanner line */
+  .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.08) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 5s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes scanHUD {
+    0% { background-position: 0 -300px; }
+    100% { background-position: 0 900px; }
+  }
+
+  .recommend-badge {
+    background: var(--gradient-electric);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .sidebar-prod-img {
+    height: 160px;
+    object-fit: contain;
+  }
+
+  .sidebar-product-card h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .sidebar-product-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .sidebar-product-card .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 14px;
+    font-size: 0.95rem;
+  }
+
+  /* Scroll Reveal elements with 3D translation */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px) rotateX(5deg) scale(0.98);
+    transform-origin: top center;
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg) scale(1);
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+</style>

@@ -1,0 +1,422 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = false;
+
+const BLOG_ARTICLES = [
+  {
+    slug: 'optimiser-charge-domicile',
+    title: 'Comment optimiser la charge de sa voiture électrique à domicile ?',
+    excerpt: 'Découvrez nos astuces indispensables pour programmer votre borne intelligente en heures creuses, configurer l\'ampérage idéal et maximiser la durée de vie de votre batterie.',
+    date: '29 Juin 2026',
+    image: '/images/blog_charge_domicile.png',
+    author: 'Thomas R., Expert Mobilité'
+  },
+  {
+    slug: 'norme-nf-c-15-100-rcd-dc-6ma',
+    title: 'Norme NF C 15-100 & Protection DC 6mA : Ce qu\'il faut absolument savoir',
+    excerpt: 'La protection contre les fuites de courant continu est obligatoire en France pour la recharge de véhicules électriques. Pourquoi le RCD DC 6mA intégré vous fait économiser 300 €.',
+    date: '25 Juin 2026',
+    image: '/images/blog_electrical_panel.png',
+    author: 'Sarah L., Ingénieur Électrique'
+  },
+  {
+    slug: 'wifi-vs-bluetooth-borne-connectee',
+    title: 'WiFi vs Bluetooth : Pourquoi connecter votre borne de recharge en WiFi ?',
+    excerpt: 'Domotique Tuya, statistiques de consommation, programmation horaire avancée et mises à jour logicielles : pourquoi le WiFi surpasse le Bluetooth pour votre borne.',
+    date: '20 Juin 2026',
+    image: '/images/blog_wifi_bluetooth.png',
+    author: 'Marc D., Spécialiste Domotique'
+  }
+];
+---
+
+<Layout 
+  title="Blog Mobilité Électrique | Actualités & Guides WattCharge"
+  description="Lisez nos guides d'experts sur l'optimisation de la charge de véhicules électriques à domicile, la sécurité NF C 15-100 et la domotique intelligente."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <!-- Hero du Blog -->
+  <section class="blog-hero-section">
+    <div class="blog-glow"></div>
+    <div class="container text-center">
+      <span class="badge-certified"><i class="fa-solid fa-graduation-cap"></i> Espace Guides & Tech</span>
+      <h1 class="blog-main-title text-glow-teal">Le Blog de la Mobilité Électrique</h1>
+      <p class="blog-subtitle">
+        Décryptages techniques, guides d'achat et astuces pratiques rédigés par nos experts pour tirer le meilleur parti de votre recharge électrique.
+      </p>
+    </div>
+  </section>
+
+  <!-- Liste des Articles -->
+  <section class="blog-list-section">
+    <div class="container">
+      
+      <div class="blog-articles-grid">
+        {BLOG_ARTICLES.map(art => (
+          <article class="blog-card glass-panel hover-scale scroll-reveal">
+            <div class="blog-card-image">
+              <img src={art.image} alt={art.title} />
+              <div class="blog-card-date">{art.date}</div>
+            </div>
+            
+            <div class="blog-card-content">
+              <div class="blog-card-meta">
+                <span><i class="fa-solid fa-user-pen"></i> Par {art.author}</span>
+              </div>
+              <h3 class="blog-card-title">{art.title}</h3>
+              <p class="blog-card-excerpt">{art.excerpt}</p>
+              
+              <div class="blog-card-footer">
+                <a href={`/blog/${art.slug}`} class="btn-read-more">
+                  Lire l'article <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Newsletter Signup glassmorphic box -->
+  <section class="blog-newsletter-section">
+    <div class="container">
+      <div class="newsletter-box glass-panel glow-panel-teal text-center scroll-reveal">
+        <div class="hud-scanner-overlay"></div>
+        <i class="fa-solid fa-paper-plane newsletter-icon text-gradient-electric"></i>
+        <h2>Restez branché sur l'innovation</h2>
+        <p>Inscrivez-vous à notre newsletter mensuelle pour recevoir en exclusivité nos prochains dossiers techniques, guides de montage et offres privilèges.</p>
+        
+        <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Inscription enregistrée ! Merci pour votre confiance.'); this.reset();">
+          <input type="email" placeholder="Votre adresse e-mail" required class="newsletter-input" />
+          <button type="submit" class="btn-primary cyber-btn">S'abonner <i class="fa-solid fa-check"></i></button>
+        </form>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Scroll Reveal triggers
+  const revealElements = document.querySelectorAll('.scroll-reveal');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  revealElements.forEach(el => observer.observe(el));
+</script>
+
+<style>
+  /* Cyber Grid Background style */
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .blog-hero-section {
+    padding-top: 170px;
+    padding-bottom: 50px;
+    position: relative;
+    background: var(--gradient-dark);
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .blog-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.06) 0%, rgba(111, 148, 166, 0.02) 50%, transparent 100%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .blog-main-title {
+    font-size: 2.8rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+  }
+
+  .blog-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Articles Grid */
+  .blog-list-section {
+    padding: 60px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .blog-articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+
+  @media (max-width: 992px) {
+    .blog-articles-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .blog-articles-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Blog Card design */
+  .blog-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s ease;
+  }
+
+  .blog-card-image {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: var(--bg-secondary);
+  }
+
+  .blog-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .blog-card:hover .blog-card-image img {
+    transform: scale(1.04);
+  }
+
+  .blog-card-date {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .blog-card-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .blog-card-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .blog-card-meta i {
+    color: var(--accent-teal);
+    margin-right: 4px;
+  }
+
+  .blog-card-title {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    line-height: 1.35;
+    font-weight: 700;
+  }
+
+  .blog-card-excerpt {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .blog-card-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+    margin-top: 5px;
+  }
+
+  .btn-read-more {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: var(--transition-fast);
+  }
+
+  .btn-read-more:hover {
+    color: var(--text-primary);
+    transform: translateX(3px);
+  }
+
+  /* Newsletter Box */
+  .blog-newsletter-section {
+    padding-bottom: 100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .newsletter-box {
+    padding: 60px 40px;
+    background: var(--bg-secondary);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* HUD scanner line */
+  .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.08) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 5s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes scanHUD {
+    0% { background-position: 0 -300px; }
+    100% { background-position: 0 900px; }
+  }
+
+  .newsletter-icon {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .newsletter-box h2 {
+    font-size: 2.2rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    position: relative;
+    z-index: 2;
+  }
+
+  .newsletter-box p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 640px;
+    line-height: 1.5;
+    margin: 0 0 10px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .newsletter-form {
+    display: flex;
+    gap: 12px;
+    max-width: 500px;
+    width: 100%;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (max-width: 480px) {
+    .newsletter-form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .newsletter-input {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition-fast);
+  }
+
+  .newsletter-input:focus {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 10px rgba(83, 183, 168, 0.1);
+  }
+
+  .newsletter-form .btn-primary {
+    padding: 14px 28px;
+    font-size: 0.95rem;
+  }
+
+  /* Scroll Reveal elements with 3D translation */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(35px) rotateX(8deg) scale(0.97);
+    transform-origin: top center;
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg) scale(1);
+  }
+
+  .hover-scale {
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .blog-card.hover-scale:hover {
+    transform: translateY(-5px);
+    border-color: rgba(83, 183, 168, 0.3);
+    box-shadow: 0 5px 25px rgba(83, 183, 168, 0.08);
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+</style>
