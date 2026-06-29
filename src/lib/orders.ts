@@ -1,4 +1,3 @@
-import { supabaseAdmin } from './supabase';
 import { resend } from './resend';
 
 interface OrderParams {
@@ -6,67 +5,20 @@ interface OrderParams {
   name: string;
   shippingAddress: any;
   productId: string;
-  installAddon: boolean;
   totalAmount: number;
   paymentId: string;
   gateway: 'stripe' | 'paypal';
 }
 
 /**
- * Enregistre une commande payée en base de données et envoie les e-mails transactionnels (Client + Fournisseur).
+ * Traite une commande payée : génère un ID, envoie les e-mails transactionnels (Client + Fournisseur dropshipping).
  */
 export async function processSuccessfulOrder(params: OrderParams) {
-  const { email, name, shippingAddress, productId, installAddon, totalAmount, paymentId, gateway } = params;
+  const { email, name, shippingAddress, productId, totalAmount, paymentId, gateway } = params;
 
-  // 1. Vérifier si la commande a déjà été traitée (sécurité contre les rafraîchissements de page)
-  const queryField = gateway === 'stripe' ? 'stripe_session_id' : 'paypal_order_id';
-  
-  try {
-    const { data: existingOrder } = await supabaseAdmin
-      .from('orders')
-      .select('id, status')
-      .eq(queryField, paymentId)
-      .maybeSingle();
-
-    if (existingOrder) {
-      console.log(`[Order Processing] Commande déjà enregistrée (ID: ${existingOrder.id}), statut: ${existingOrder.status}`);
-      return { success: true, orderId: existingOrder.id, alreadyProcessed: true };
-    }
-  } catch (err) {
-    console.warn("[Order Processing] Impossible de vérifier l'existence de la commande, tentative d'insertion directe:", err);
-  }
-
-  // 2. Insérer la commande dans la table `orders`
-  const orderPayload: any = {
-    customer_email: email,
-    customer_name: name,
-    shipping_address: shippingAddress,
-    product_id: productId,
-    total_amount: totalAmount,
-    install_addon: installAddon,
-    install_amount: installAddon ? 450.00 : 0.00,
-    status: 'paid',
-  };
-
-  if (gateway === 'stripe') {
-    orderPayload.stripe_session_id = paymentId;
-  } else {
-    orderPayload.paypal_order_id = paymentId;
-  }
-
-  const { data: insertedOrder, error: insertError } = await supabaseAdmin
-    .from('orders')
-    .insert([orderPayload])
-    .select('id')
-    .single();
-
-  if (insertError) {
-    console.error("[Order Processing] Erreur lors de l'enregistrement de la commande Supabase:", insertError);
-    throw new Error(`DB Save Failed: ${insertError.message}`);
-  }
-
-  const orderId = insertedOrder.id;
-  console.log(`[Order Processing] Commande insérée avec succès. ID: ${orderId}`);
+  // Génération d'un identifiant de commande unique pour le suivi
+  const orderId = `wc_${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
+  console.log(`[Order Processing] Traitement de la commande ${orderId} initiée par ${gateway}`);
 
   // Déterminer le libellé du produit
   let productName = 'Borne de recharge WattCharge';
@@ -74,76 +26,54 @@ export async function processSuccessfulOrder(params: OrderParams) {
   else if (productId === 'wattcharge-home-11') productName = 'Borne WattCharge Home 11 kW';
   else if (productId === 'wattcharge-pro-22') productName = 'Borne WattCharge Pro 22 kW';
 
-  // 3. Envoyer l'e-mail de confirmation au client
+  // 1. Envoyer l'e-mail de confirmation au client
   try {
     const emailFrom = import.meta.env.EMAIL_FROM || 'WattCharge <noreply@wattcharge.fr>';
-    
-    let installationInstructions = '';
-    if (installAddon) {
-      installationInstructions = `
-        <div style="background-color: #1e1b4b; border: 1px solid #4f46e5; border-radius: 8px; padding: 20px; margin-top: 20px;">
-          <h3 style="color: #a855f7; margin-top: 0;">🛠️ Étape obligatoire : Qualification de votre installation</h3>
-          <p style="color: #d1d5db; font-size: 0.95rem; margin-bottom: 12px;">
-            Vous avez choisi l'option d'installation agréée IRVE. Pour préparer l'intervention de notre électricien partenaire sous 10 jours, merci de remplir votre dossier technique :
-          </p>
-          <a href="${import.meta.env.SITE || 'http://localhost:4321'}/checkout/success?order_id=${orderId}&formula_id=${productId}" 
-             style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: #030712; font-weight: bold; text-decoration: none; padding: 12px 24px; border-radius: 6px; display: inline-block;">
-            Compléter mon dossier technique
-          </a>
-        </div>
-      `;
-    }
 
     const clientEmailHtml = `
-      <div style="background-color: #0a0e17; color: #f3f4f6; font-family: sans-serif; padding: 40px; border-radius: 12px;">
+      <div style="background-color: #f8fafc; color: #0f172a; font-family: sans-serif; padding: 40px; border-radius: 12px; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 2rem;">⚡ <span style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">WattCharge</span></h1>
-          <p style="color: #9ca3af;">Confirmation de paiement sécurisé</p>
+          <h1 style="color: #0f172a; margin: 0; font-size: 2rem;">⚡ <span style="color: #53B7A8;">WattCharge</span></h1>
+          <p style="color: #64748b; font-size: 0.9rem;">Confirmation de paiement sécurisé</p>
         </div>
         
-        <h2 style="color: #ffffff;">Merci pour votre achat !</h2>
+        <h2 style="color: #0f172a; margin-bottom: 16px;">Merci pour votre achat !</h2>
         <p>Bonjour ${name},</p>
-        <p>Votre commande a été validée avec succès. Nous préparons l'expédition de votre borne de recharge.</p>
+        <p>Votre commande a été validée avec succès. Nous préparons actuellement l'expédition de votre borne de recharge.</p>
         
-        <table style="width: 100%; border-collapse: collapse; margin: 20px 0; background-color: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.08);">
-            <th style="text-align: left; padding: 12px; color: #9ca3af;">Numéro de commande</th>
-            <td style="padding: 12px; text-align: right;"><strong>${orderId}</strong></td>
+        <table style="width: 100%; border-collapse: collapse; margin: 24px 0; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <th style="text-align: left; padding: 12px; color: #64748b; font-weight: 600;">Numéro de commande</th>
+            <td style="padding: 12px; text-align: right; font-weight: bold; color: #0f172a;">${orderId}</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.08);">
-            <th style="text-align: left; padding: 12px; color: #9ca3af;">Produit</th>
-            <td style="padding: 12px; text-align: right;">${productName}</td>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <th style="text-align: left; padding: 12px; color: #64748b; font-weight: 600;">Produit</th>
+            <td style="padding: 12px; text-align: right; color: #0f172a;">${productName}</td>
           </tr>
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.08);">
-            <th style="text-align: left; padding: 12px; color: #9ca3af;">Option d'installation</th>
-            <td style="padding: 12px; text-align: right;">${installAddon ? 'Oui (Électricien IRVE qualifié)' : 'Non (Borne seule)'}</td>
-          </tr>
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.08);">
-            <th style="text-align: left; padding: 12px; color: #9ca3af;">Moyen de paiement</th>
-            <td style="padding: 12px; text-align: right; text-transform: uppercase;">${gateway}</td>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <th style="text-align: left; padding: 12px; color: #64748b; font-weight: 600;">Moyen de paiement</th>
+            <td style="padding: 12px; text-align: right; text-transform: uppercase; color: #0f172a;">${gateway}</td>
           </tr>
           <tr>
-            <th style="text-align: left; padding: 12px; color: #9ca3af;">Montant total réglé</th>
-            <td style="padding: 12px; text-align: right; color: #00f2fe; font-size: 1.2rem;"><strong>${totalAmount.toFixed(2)} €</strong></td>
+            <th style="text-align: left; padding: 12px; color: #64748b; font-weight: 600;">Montant total réglé</th>
+            <td style="padding: 12px; text-align: right; color: #53B7A8; font-size: 1.2rem;"><strong>${totalAmount.toFixed(2).replace('.', ',')} €</strong></td>
           </tr>
         </table>
         
-        <div style="margin: 20px 0;">
-          <h3 style="color: #ffffff;">Adresse de livraison :</h3>
-          <p style="color: #d1d5db; line-height: 1.5; margin: 0;">
-            ${name}<br />
+        <div style="margin: 20px 0; background-color: #ffffff; border: 1px solid #e2e8f0; padding: 16px; border-radius: 8px;">
+          <h3 style="color: #0f172a; margin-top: 0; font-size: 1rem;">Adresse de livraison :</h3>
+          <p style="color: #334155; line-height: 1.5; margin: 0; font-size: 0.95rem;">
+            <strong>${name}</strong><br />
             ${shippingAddress.line1 || shippingAddress.street || ''}<br />
             ${shippingAddress.postal_code || shippingAddress.postalCode || ''} ${shippingAddress.city || ''}<br />
             ${shippingAddress.country || ''}
           </p>
         </div>
 
-        ${installationInstructions}
-
-        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.08); margin: 30px 0;" />
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
         
-        <p style="font-size: 0.9rem; color: #6b7280; text-align: center;">
-          Besoin d'assistance ? Répondez à ce mail ou écrivez-nous sur <a href="mailto:support@wattcharge.fr" style="color: #00f2fe; text-decoration: none;">support@wattcharge.fr</a>
+        <p style="font-size: 0.85rem; color: #64748b; text-align: center;">
+          Besoin d'assistance ? Répondez à ce mail ou écrivez-nous sur <a href="mailto:support@wattcharge.fr" style="color: #53B7A8; text-decoration: none;">support@wattcharge.fr</a>
         </p>
       </div>
     `;
@@ -159,7 +89,7 @@ export async function processSuccessfulOrder(params: OrderParams) {
     console.error("[Order Processing] Erreur d'envoi du mail client:", emailErr);
   }
 
-  // 4. Envoyer l'ordre de préparation dropshipping au fournisseur (AliExpress / Sourcing)
+  // 2. Envoyer l'ordre de préparation dropshipping au fournisseur (AliExpress / Sourcing)
   try {
     const supplierEmail = import.meta.env.SUPPLIER_EMAIL || 'orders@aliexpress-supplier-placeholder.com';
     const emailFrom = import.meta.env.EMAIL_FROM || 'WattCharge <noreply@wattcharge.fr>';

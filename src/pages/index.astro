@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { supabase } from '../lib/supabase';
 
 export const prerender = false;
 
@@ -40,16 +39,7 @@ const DEFAULT_PRODUCTS = [
   }
 ];
 
-let products = DEFAULT_PRODUCTS;
-
-try {
-  const { data } = await supabase.from('products').select('*');
-  if (data && data.length > 0) {
-    products = data.sort((a, b) => Number(a.price) - Number(b.price));
-  }
-} catch (e) {
-  console.warn("Impossible de charger les produits de Supabase, utilisation du catalogue par défaut.");
-}
+const products = DEFAULT_PRODUCTS;
 ---
 
 <Layout 
@@ -76,9 +66,6 @@ try {
         <div class="hero-cta-group">
           <a href="#catalog" class="btn-primary">
             Voir le Catalogue <i class="fa-solid fa-cart-shopping"></i>
-          </a>
-          <a href="#installation" class="btn-secondary">
-            Service d'Installation IRVE
           </a>
         </div>
 
@@ -151,71 +138,7 @@ try {
     </div>
   </section>
 
-  <!-- Service d'Installation IRVE -->
-  <section class="installation-section" id="installation">
-    <div class="container installation-grid">
-      <div class="installation-text-content">
-        <span class="badge-electrician">Service clé en main</span>
-        <h2>Installation Agréée IRVE à Domicile</h2>
-        <p class="lead-text">
-          WattCharge vous met en relation avec un électricien qualifié IRVE agréé de votre région pour poser votre borne en toute conformité.
-        </p>
-        <p>
-          L'installation d'une borne de recharge de plus de 3.7 kW doit obligatoirement être réalisée par un électricien certifié IRVE pour bénéficier des assurances, de la garantie constructeur et des aides financières de l'État.
-        </p>
-        
-        <div class="installation-benefits">
-          <div class="benefit-item">
-            <i class="fa-solid fa-percent text-gradient-electric"></i>
-            <div>
-              <h4>Crédit d'Impôt de 300 €</h4>
-              <p>Bénéficiez d'une réduction directe d'impôt sur le montant de la pose.</p>
-            </div>
-          </div>
-          <div class="benefit-item">
-            <i class="fa-solid fa-shield-check text-gradient-electric"></i>
-            <div>
-              <h4>Garantie Décennale incluse</h4>
-              <p>L'ensemble des travaux de câblage et de raccordement est couvert pendant 10 ans.</p>
-            </div>
-          </div>
-        </div>
 
-        <a href="#catalog" class="btn-primary">
-          Choisir ma borne & ajouter la pose <i class="fa-solid fa-arrow-right"></i>
-        </a>
-      </div>
-
-      <div class="installation-visual">
-        <div class="visual-card glass-panel">
-          <h3>Comment ça marche ?</h3>
-          <div class="step-list">
-            <div class="step-list-item">
-              <div class="step-icon">1</div>
-              <div>
-                <h4>Sélectionnez votre borne</h4>
-                <p>Cochez l'option d'installation sur la fiche produit de votre choix.</p>
-              </div>
-            </div>
-            <div class="step-list-item">
-              <div class="step-icon">2</div>
-              <div>
-                <h4>Remplissez le dossier technique</h4>
-                <p>Après l'achat, spécifiez votre type d'habitation et déposez une photo de votre tableau électrique.</p>
-              </div>
-            </div>
-            <div class="step-list-item">
-              <div class="step-icon">3</div>
-              <div>
-                <h4>Pose de la borne sous 10 jours</h4>
-                <p>Notre électricien partenaire intervient à domicile pour raccorder et tester votre borne.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Reassurance Grid -->
   <section class="reassurance-bar">

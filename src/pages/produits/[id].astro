@@ -1,6 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { supabase } from '../../lib/supabase';
 
 export const prerender = false;
 
@@ -88,34 +87,7 @@ const DEFAULT_PRODUCTS = [
   }
 ];
 
-// Récupération de la borne correspondante
-let product = DEFAULT_PRODUCTS.find(p => p.id === id);
-
-if (id) {
-  try {
-    const { data } = await supabase.from('products').select('*').eq('id', id).single();
-    if (data) {
-      product = {
-        id: data.id,
-        name: data.name,
-        description: data.description || '',
-        price: Number(data.price),
-        compare_at_price: data.compare_at_price ? Number(data.compare_at_price) : null,
-        power_output: data.power_output || '',
-        phase: data.phase || '',
-        current_rating: data.current_rating || '',
-        features: data.features || [],
-        technical_specs: product?.technical_specs || {
-          'Connecteur': 'Type 2',
-          'Protection différentielle': 'Intégrée DC 6mA + AC 30mA',
-          'Certifications': 'CE, RoHS'
-        }
-      };
-    }
-  } catch (e) {
-    console.warn("Échec récupération produit Supabase, utilisation du fallback local.");
-  }
-}
+const product = DEFAULT_PRODUCTS.find(p => p.id === id);
 
 if (!product) {
   return Astro.redirect('/');
@@ -180,46 +152,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
           <p class="detail-desc">{product.description}</p>
 
-          <!-- Option IRVE (Upsell) -->
-          <div class="addon-selection-card glass-panel" id="addon-card">
-            <label class="addon-label">
-              <input type="checkbox" id="install-checkbox" />
-              <div class="addon-checkbox-custom"></div>
-              <div class="addon-content">
-                <div class="addon-header-title">
-                  <strong>Ajouter l'installation agréée IRVE</strong>
-                  <span class="addon-price-tag">+450,00 €</span>
-                </div>
-                <p class="addon-desc">
-                  Pose à domicile réalisée sous 10 jours par un électricien qualifié IRVE agréé de votre région. Câblage et disjoncteurs inclus.
-                </p>
-                <div class="tax-credit-notice">
-                  <i class="fa-solid fa-piggy-bank"></i>
-                  <span>Éligible au <strong>crédit d'impôt de 300 €</strong> (coût net après aides : 150 €)</span>
-                </div>
-              </div>
-            </label>
-          </div>
 
-          <!-- Total Estimé -->
-          <div class="pricing-summary-card glass-panel">
-            <div class="summary-row">
-              <span>Borne seule :</span>
-              <span>{Number(product.price).toFixed(2).replace('.', ',')} €</span>
-            </div>
-            <div class="summary-row hidden" id="summary-install-row">
-              <span>Installation IRVE :</span>
-              <span>+450,00 €</span>
-            </div>
-            <div class="summary-divider"></div>
-            <div class="summary-row total-row">
-              <span>Total :</span>
-              <strong id="summary-total">{Number(product.price).toFixed(2).replace('.', ',')} €</strong>
-            </div>
-            <div class="summary-net-notice hidden" id="summary-net-notice">
-              <span>*Coût réel après crédit d'impôt de 300 € : <strong><span id="summary-net-total">{(product.price + 150).toFixed(2).replace('.', ',')}</span> €</strong></span>
-            </div>
-          </div>
 
           <!-- Module d'Achat direct -->
           <div class="checkout-actions-block">
@@ -307,40 +240,10 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
 <!-- Scripts client pour l'interactivité, Stripe et PayPal -->
 <script define:vars={{ productId: product.id, basePrice: product.price, powerOutput: product.power_output, paypalClientId }}>
-  // Variables d'état client
-  let installAddon = false;
-  let totalPrice = basePrice;
-
   // DOM
-  const installCheckbox = document.getElementById('install-checkbox');
-  const summaryInstallRow = document.getElementById('summary-install-row');
-  const summaryTotal = document.getElementById('summary-total');
-  const summaryNetNotice = document.getElementById('summary-net-notice');
-  const summaryNetTotal = document.getElementById('summary-net-total');
   const stripeBtn = document.getElementById('stripe-buy-btn');
 
-  // 1. Gestion de l'option d'installation
-  installCheckbox.addEventListener('change', () => {
-    installAddon = installCheckbox.checked;
-    
-    if (installAddon) {
-      totalPrice = basePrice + 450.00;
-      summaryInstallRow.classList.remove('hidden');
-      summaryNetNotice.classList.remove('hidden');
-    } else {
-      totalPrice = basePrice;
-      summaryInstallRow.classList.add('hidden');
-      summaryNetNotice.classList.add('hidden');
-    }
-
-    summaryTotal.textContent = `${totalPrice.toFixed(2).replace('.', ',')} €`;
-    summaryNetTotal.textContent = `${(totalPrice - 300.00).toFixed(2).replace('.', ',')}`;
-
-    // Réinitialiser les boutons PayPal si l'option change
-    initPayPalSDK();
-  });
-
-  // 2. Intégration Stripe Checkout
+  // 1. Intégration Stripe Checkout
   stripeBtn.addEventListener('click', async () => {
     stripeBtn.disabled = true;
     stripeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Redirection vers Stripe...';
@@ -350,8 +253,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          productId: productId,
-          installAddon: installAddon 
+          productId: productId
         })
       });
 
@@ -371,7 +273,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     }
   });
 
-  // 3. Intégration PayPal SDK
+  // 2. Intégration PayPal SDK
   function initPayPalSDK() {
     const container = document.getElementById('paypal-button-container');
     container.innerHTML = '';
@@ -393,8 +295,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            productId: productId,
-            installAddon: installAddon 
+            productId: productId
           })
         });
         const order = await response.json();
@@ -406,8 +307,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             orderID: data.orderID, 
-            formulaId: productId,
-            installAddon: installAddon
+            formulaId: productId
           })
         });
         const captureData = await response.json();

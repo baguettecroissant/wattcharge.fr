@@ -6,7 +6,7 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { orderID, formulaId, installAddon } = await request.json();
+    const { orderID, formulaId } = await request.json();
 
     if (!orderID || !formulaId) {
       return new Response(JSON.stringify({ error: 'orderID et formulaId sont requis.' }), {
@@ -55,7 +55,6 @@ export const POST: APIRoute = async ({ request }) => {
       name: customerName,
       shippingAddress: formattedAddress,
       productId: formulaId,
-      installAddon: installAddon === true,
       totalAmount: totalAmount,
       paymentId: orderID,
       gateway: 'paypal',

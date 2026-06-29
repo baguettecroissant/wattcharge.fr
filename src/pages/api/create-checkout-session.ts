@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro';
 import { stripe } from '../../lib/stripe';
-import { supabase } from '../../lib/supabase';
 
 export const prerender = false;
 
@@ -24,7 +23,7 @@ const PRODUCTS_MAP: Record<string, { name: string; price: number; description: s
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { productId, installAddon } = await request.json();
+    const { productId } = await request.json();
     
     if (!productId || !PRODUCTS_MAP[productId]) {
       return new Response(JSON.stringify({ error: 'Produit invalide ou manquant.' }), {
@@ -33,21 +32,7 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // Récupérer le produit depuis Supabase si possible
-    let productDetails = PRODUCTS_MAP[productId];
-    try {
-      const { data } = await supabase.from('products').select('*').eq('id', productId).single();
-      if (data) {
-        productDetails = {
-          name: data.name,
-          price: Number(data.price),
-          description: data.description || productDetails.description
-        };
-      }
-    } catch (e) {
-      console.warn("Échec récupération produit Supabase, utilisation du fallback statique.");
-    }
-
+    const productDetails = PRODUCTS_MAP[productId];
     const origin = new URL(request.url).origin;
 
     // Préparation des lignes d'articles pour Stripe Checkout
@@ -66,21 +51,6 @@ export const POST: APIRoute = async ({ request }) => {
       }
     ];
 
-    // Si le client prend l'upsell installation IRVE (+450 €)
-    if (installAddon === true) {
-      line_items.push({
-        price_data: {
-          currency: 'eur',
-          product_data: {
-            name: 'Installation Professionnelle Agréée IRVE',
-            description: 'Raccordement de la borne par un électricien certifié IRVE (Comprend disjoncteurs et jusqu\'à 10m de câblage)',
-          },
-          unit_amount: 45000, // 450.00 € en centimes
-        },
-        quantity: 1,
-      });
-    }
-
     // Création de la session Stripe Checkout
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -93,7 +63,7 @@ export const POST: APIRoute = async ({ request }) => {
       cancel_url: `${origin}/checkout/cancel`,
       metadata: {
         productId: productId,
-        installAddon: installAddon ? 'true' : 'false',
+        installAddon: 'false',
         formule: productId.includes('22') ? 'pro' : 'home'
       }
     });
