@@ -1,0 +1,633 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = false;
+
+const DEFAULT_PRODUCTS = [
+  {
+    id: 'wattcharge-home-7',
+    name: 'Borne WattCharge Home 7.4 kW',
+    subtitle: 'Recharge intelligente monophasée',
+    description: 'La solution connectée WiFi idéale pour charger rapidement et en toute sécurité votre véhicule à domicile.',
+    price: 389.00,
+    compare_at_price: 599.00,
+    power_output: '7.4 kW',
+    phase: 'Monophasé',
+    current_rating: '32A',
+    image: '/images/charger.png'
+  },
+  {
+    id: 'wattcharge-home-11',
+    name: 'Borne WattCharge Home 11 kW',
+    subtitle: 'Recharge accélérée triphasée',
+    description: 'Calibrée pour les installations électriques triphasées de 400V. Recharge équilibrée et stable.',
+    price: 449.00,
+    compare_at_price: 699.00,
+    power_output: '11 kW',
+    phase: 'Triphasé',
+    current_rating: '16A',
+    image: '/images/charger.png'
+  },
+  {
+    id: 'wattcharge-pro-22',
+    name: 'Borne WattCharge Pro 22 kW',
+    subtitle: 'Performance et charge ultra-rapide',
+    description: 'La puissance maximale triphasée de 32A pour diviser par 8 le temps de recharge de votre voiture.',
+    price: 489.00,
+    compare_at_price: 799.00,
+    power_output: '22 kW',
+    phase: 'Triphasé',
+    current_rating: '32A',
+    image: '/images/charger.png'
+  }
+];
+
+const products = DEFAULT_PRODUCTS;
+---
+
+<Layout 
+  title="Boutique | Bornes de Recharge Connectées"
+  description="Découvrez notre gamme de bornes de recharge intelligentes et connectées de 7.4 kW à 22 kW pour véhicules électriques."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <section class="boutique-hero">
+    <div class="boutique-glow"></div>
+    <div class="container text-center">
+      <span class="badge-certified"><i class="fa-solid fa-bolt-lightning"></i> Catalogue Officiel</span>
+      <h1 class="boutique-title text-glow-teal">Toutes Nos Bornes de Recharge</h1>
+      <p class="boutique-subtitle">
+        Des solutions intelligentes, connectées en WiFi, dotées de lecteurs RFID et conformes aux normes NF C 15-100.
+      </p>
+    </div>
+  </section>
+
+  <section class="boutique-catalog-section">
+    <div class="container">
+      
+      <!-- Top Filters / Sorting HUD -->
+      <div class="catalog-filters-bar glass-panel">
+        <div class="filter-group">
+          <label><i class="fa-solid fa-filter text-gradient-electric"></i> Filtrer par Puissance :</label>
+          <div class="filter-buttons">
+            <button class="filter-btn active" data-power="all">Toutes</button>
+            <button class="filter-btn" data-power="7.4 kW">7.4 kW</button>
+            <button class="filter-btn" data-power="11 kW">11 kW</button>
+            <button class="filter-btn" data-power="22 kW">22 kW</button>
+          </div>
+        </div>
+        
+        <div class="sort-group">
+          <label for="sort-select"><i class="fa-solid fa-arrow-down-wide-short text-gradient-electric"></i> Trier par :</label>
+          <div class="select-wrapper">
+            <select id="sort-select" class="sort-select-input">
+              <option value="default">Pertinence</option>
+              <option value="price-asc">Prix : croissant</option>
+              <option value="price-desc">Prix : décroissant</option>
+            </select>
+            <i class="fa-solid fa-chevron-down select-arrow"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-catalog-grid" id="products-grid">
+        {products.map(p => (
+          <div class="catalog-product-card glass-panel hover-scale" data-power={p.power_output} data-price={p.price}>
+            <div class="card-image-wrapper">
+              <img src={p.image} alt={p.name} class="product-img" />
+              <div class="power-tag">{p.power_output}</div>
+              <span class="phase-badge">{p.phase}</span>
+            </div>
+            
+            <div class="card-body">
+              <h3 class="product-title-card">{p.name}</h3>
+              <p class="product-subtitle-card">{p.subtitle}</p>
+              <p class="product-desc-card">{p.description}</p>
+              
+              <div class="product-specs-list">
+                <span><i class="fa-solid fa-circle-nodes"></i> Ampérage : {p.current_rating}</span>
+                <span><i class="fa-solid fa-wifi"></i> WiFi & App mobile</span>
+                <span><i class="fa-solid fa-shield-halved"></i> Protection RCD 6mA</span>
+              </div>
+              
+              <div class="product-footer-card">
+                <div class="price-box">
+                  <span class="price-tag">{p.price.toFixed(2).replace('.', ',')} €</span>
+                  {p.compare_at_price && (
+                    <span class="compare-price-tag">{p.compare_at_price.toFixed(2).replace('.', ',')} €</span>
+                  )}
+                </div>
+                <a href={`/produits/${p.id}`} class="btn-primary-sm btn-primary catalog-btn">
+                  Découvrir <i class="fa-solid fa-chevron-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- No products found state -->
+      <div class="no-products-state hidden" id="no-products-msg">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <h3>Aucun produit ne correspond à ces critères.</h3>
+        <button class="btn-secondary" id="reset-filters-btn">Réinitialiser les filtres</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Reassurance Section -->
+  <section class="boutique-reassurance">
+    <div class="container reassurance-grid">
+      <div class="reassurance-item glass-panel">
+        <i class="fa-solid fa-truck-fast text-gradient-electric"></i>
+        <div>
+          <h4>Livraison Offerte</h4>
+          <p>Expédition sous 24/48h depuis l'Europe, livraison suivie DHL / GLS.</p>
+        </div>
+      </div>
+      <div class="reassurance-item glass-panel">
+        <i class="fa-solid fa-shield-halved text-gradient-electric"></i>
+        <div>
+          <h4>Garantie Constructeur</h4>
+          <p>Toutes nos bornes sont garanties 2 ans avec échange standard à neuf.</p>
+        </div>
+      </div>
+      <div class="reassurance-item glass-panel">
+        <i class="fa-solid fa-lock text-gradient-electric"></i>
+        <div>
+          <h4>Paiement Sécurisé</h4>
+          <p>Règlement crypté SSL 3D Secure via Stripe (Carte, Apple Pay) ou PayPal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Interactive Filters & Sorting logic
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
+  const productsGrid = document.getElementById('products-grid');
+  const noProductsMsg = document.getElementById('no-products-msg');
+  const resetBtn = document.getElementById('reset-filters-btn');
+
+  let activePowerFilter = 'all';
+
+  function applyFiltersAndSort() {
+    if (!productsGrid) return;
+    const cards = Array.from(productsGrid.querySelectorAll('.catalog-product-card')) as HTMLElement[];
+    let visibleCount = 0;
+
+    // 1. Filtering
+    cards.forEach(card => {
+      const power = card.getAttribute('data-power');
+      if (activePowerFilter === 'all' || power === activePowerFilter) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // Handle "no results" state
+    if (visibleCount === 0) {
+      noProductsMsg?.classList.remove('hidden');
+    } else {
+      noProductsMsg?.classList.add('hidden');
+    }
+
+    // 2. Sorting
+    const sortVal = sortSelect.value;
+    if (sortVal !== 'default') {
+      cards.sort((a, b) => {
+        const priceA = parseFloat(a.getAttribute('data-price') || '0');
+        const priceB = parseFloat(b.getAttribute('data-price') || '0');
+        return sortVal === 'price-asc' ? priceA - priceB : priceB - priceA;
+      });
+
+      // Re-append sorted cards in DOM
+      cards.forEach(card => productsGrid.appendChild(card));
+    }
+  }
+
+  // Bind filter button clicks
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activePowerFilter = btn.getAttribute('data-power') || 'all';
+      applyFiltersAndSort();
+    });
+  });
+
+  // Bind sorting select change
+  sortSelect?.addEventListener('change', applyFiltersAndSort);
+
+  // Bind reset button
+  resetBtn?.addEventListener('click', () => {
+    filterButtons.forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-power="all"]')?.classList.add('active');
+    activePowerFilter = 'all';
+    sortSelect.value = 'default';
+    applyFiltersAndSort();
+  });
+</script>
+
+<style>
+  /* Cyber Grid Background style */
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .boutique-hero {
+    padding-top: 170px;
+    padding-bottom: 50px;
+    position: relative;
+    background: var(--gradient-dark);
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .boutique-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.06) 0%, rgba(111, 148, 166, 0.02) 50%, transparent 100%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .boutique-title {
+    font-size: 2.8rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+  }
+
+  .boutique-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    max-width: 650px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Catalog section layout */
+  .boutique-catalog-section {
+    padding: 60px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Filter / Sort HUD panel */
+  .catalog-filters-bar {
+    padding: 24px 30px;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow-card);
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .catalog-filters-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .filter-group, .sort-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  @media (max-width: 576px) {
+    .filter-group, .sort-group {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  }
+
+  .filter-group label, .sort-group label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .filter-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    color: var(--text-secondary);
+  }
+
+  .filter-btn:hover {
+    color: var(--accent-teal);
+    border-color: rgba(83, 183, 168, 0.4);
+  }
+
+  .filter-btn.active {
+    background: var(--gradient-electric);
+    color: #ffffff;
+    border-color: var(--accent-teal);
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Custom sorting select */
+  .sort-select-input {
+    appearance: none;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 10px 36px 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    outline: none;
+    transition: var(--transition-fast);
+    width: 180px;
+  }
+
+  .sort-select-input:focus {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 10px rgba(83, 183, 168, 0.1);
+  }
+
+  /* Catalog Grid */
+  .products-catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+
+  @media (max-width: 992px) {
+    .products-catalog-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .products-catalog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Product Card style (Inspired by BornePlus) */
+  .catalog-product-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s ease;
+  }
+
+  .card-image-wrapper {
+    background: #ffffff;
+    padding: 30px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .product-img {
+    max-width: 100%;
+    height: 180px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .catalog-product-card:hover .product-img {
+    transform: scale(1.05);
+  }
+
+  .power-tag {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--gradient-electric);
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .phase-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(83, 183, 168, 0.05);
+    border: 1px solid rgba(83, 183, 168, 0.2);
+    color: var(--accent-teal);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .card-body {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 16px;
+  }
+
+  .product-title-card {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    line-height: 1.3;
+    font-weight: 700;
+  }
+
+  .product-subtitle-card {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: -10px;
+  }
+
+  .product-desc-card {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .product-specs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .product-specs-list span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+
+  .product-specs-list i {
+    color: var(--accent-teal);
+    font-size: 0.9rem;
+    width: 14px;
+  }
+
+  .product-footer-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+    margin-top: 10px;
+  }
+
+  .price-box {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .price-tag {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent-teal);
+  }
+
+  .compare-price-tag {
+    font-size: 0.9rem;
+    text-decoration: line-through;
+    color: var(--text-muted);
+    margin-top: -2px;
+  }
+
+  .catalog-btn {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+  }
+
+  /* Reassurance grid */
+  .boutique-reassurance {
+    background: var(--bg-secondary);
+    padding: 80px 0;
+    border-top: 1px solid var(--border-color);
+    position: relative;
+    z-index: 2;
+  }
+
+  .reassurance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+
+  @media (max-width: 992px) {
+    .reassurance-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  }
+
+  .reassurance-item {
+    background: #ffffff;
+    padding: 30px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .reassurance-item i {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .reassurance-item h4 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .reassurance-item p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  /* No products state */
+  .no-products-state {
+    text-align: center;
+    padding: 60px 40px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 500px;
+    margin: 40px auto;
+  }
+
+  .no-products-state i {
+    font-size: 3rem;
+    color: var(--text-muted);
+  }
+
+  .no-products-state h3 {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+</style>
