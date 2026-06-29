@@ -1,0 +1,270 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | WattCharge.fr</title>
+    <meta name="description" content={description} />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={`${title} | WattCharge.fr`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar-wrapper">
+      <div class="container navbar-container">
+        <a href="/" class="brand-logo">
+          <i class="fa-solid fa-bolt-lightning text-gradient-electric logo-icon"></i>
+          <span>Watt<span class="text-gradient-electric">Charge</span></span>
+        </a>
+        <nav class="nav-links">
+          <a href="/#catalog" class="nav-link">Nos Bornes</a>
+          <a href="/#installation" class="nav-link">Installation IRVE</a>
+        </nav>
+        <div class="nav-actions">
+          <a href="/#catalog" class="btn-primary-sm btn-primary">
+            Commander <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-wrapper">
+      <div class="container footer-content">
+        <div class="footer-brand-sec">
+          <a href="/" class="brand-logo footer-logo">
+            <i class="fa-solid fa-bolt-lightning text-gradient-electric logo-icon"></i>
+            <span>Watt<span class="text-gradient-electric">Charge</span></span>
+          </a>
+          <p class="footer-desc">
+            Solutions de recharges connectées intelligentes et sûres pour véhicules électriques, conformes aux normes et garanties.
+          </p>
+          <div class="certified-logos">
+            <span class="badge-certified"><i class="fa-solid fa-shield-halved"></i> Norme CE</span>
+            <span class="badge-electrician"><i class="fa-solid fa-user-check"></i> Agrément IRVE</span>
+          </div>
+        </div>
+        
+        <div class="footer-links-sec">
+          <h4 class="footer-title">Navigation</h4>
+          <a href="/#catalog">Nos Bornes</a>
+          <a href="/#installation">Service Pose</a>
+        </div>
+
+        <div class="footer-links-sec">
+          <h4 class="footer-title">Légal & Support</h4>
+          <a href="/mentions-legales">Mentions Légales</a>
+          <a href="/cgv">CGV</a>
+          <a href="mailto:support@wattcharge.fr"><i class="fa-solid fa-envelope"></i> support@wattcharge.fr</a>
+        </div>
+      </div>
+
+      <div class="glow-line"></div>
+
+      <div class="container footer-bottom">
+        <p class="copy-text">&copy; {new Date().getFullYear()} WattCharge.fr. Tous droits réservés.</p>
+        <div class="payment-badges">
+          <i class="fa-brands fa-cc-visa" title="Visa"></i>
+          <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+          <i class="fa-brands fa-cc-apple-pay" title="Apple Pay"></i>
+          <i class="fa-brands fa-cc-paypal" title="PayPal"></i>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  /* Header styling - Clean Light */
+  .navbar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .navbar-container {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: var(--text-primary);
+  }
+
+  .logo-icon {
+    font-size: 1.8rem;
+    filter: drop-shadow(0 2px 5px rgba(83, 183, 168, 0.3));
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-link {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: var(--transition-fast);
+  }
+
+  .nav-link:hover {
+    color: var(--accent-teal);
+  }
+
+  .btn-primary-sm {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+
+  /* Footer styling - Premium Slate */
+  .footer-wrapper {
+    background: #0f172a;
+    border-top: 1px solid var(--border-color);
+    padding-top: 60px;
+    padding-bottom: 30px;
+    margin-top: 100px;
+    color: #e2e8f0;
+  }
+
+  .footer-wrapper h4, .footer-wrapper span {
+    color: #ffffff !important;
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-actions {
+      display: none;
+    }
+    
+    .footer-content {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  .footer-desc {
+    color: #94a3b8;
+    margin-top: 16px;
+    margin-bottom: 24px;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  .certified-logos {
+    display: flex;
+    gap: 12px;
+  }
+
+  .footer-title {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    position: relative;
+    padding-bottom: 8px;
+  }
+
+  .footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: var(--gradient-electric);
+  }
+
+  .footer-links-sec {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links-sec a {
+    color: #94a3b8;
+    transition: var(--transition-fast);
+    font-size: 0.95rem;
+  }
+
+  .footer-links-sec a:hover {
+    color: var(--accent-teal);
+    padding-left: 4px;
+  }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 24px;
+  }
+
+  @media (max-width: 576px) {
+    .footer-bottom {
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+  }
+
+  .copy-text {
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+
+  .payment-badges {
+    display: flex;
+    gap: 18px;
+    font-size: 1.8rem;
+    color: #94a3b8;
+  }
+
+  .payment-badges i:hover {
+    color: #ffffff;
+  }
+</style>

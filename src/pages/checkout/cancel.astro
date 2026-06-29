@@ -1,0 +1,241 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = false;
+---
+
+<Layout 
+  title="Paiement Annulé" 
+  description="Votre paiement a été annulé. Besoin d'aide ou de conseils ? Notre équipe est à votre écoute."
+>
+  <section class="cancel-section">
+    <div class="cancel-glow"></div>
+    <div class="container cancel-container">
+      
+      <div class="cancel-card glass-panel">
+        <div class="cancel-icon">
+          <i class="fa-solid fa-circle-xmark"></i>
+        </div>
+        
+        <h1 class="cancel-title">Paiement Non Finalisé</h1>
+        
+        <p class="cancel-text">
+          Votre transaction a été annulée et aucun montant n'a été débité. Il se peut qu'un problème technique soit survenu ou que vous ayez souhaité modifier vos options.
+        </p>
+
+        <div class="glow-line"></div>
+
+        <!-- Section Aide / Contact -->
+        <div class="help-box">
+          <h3><i class="fa-solid fa-headset text-gradient-electric"></i> Besoin d'assistance ?</h3>
+          <p>
+            Vous hésitez sur le choix de la borne (monophasée vs triphasée) ou sur les modalités de l'installation IRVE ?
+          </p>
+          <div class="contact-methods">
+            <a href="mailto:support@wattcharge.fr" class="contact-item">
+              <i class="fa-solid fa-envelope"></i>
+              <span>support@wattcharge.fr</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Section Code Promo Relance -->
+        <div class="discount-box">
+          <span class="discount-badge">Offre Spéciale</span>
+          <h4>Bénéficiez de 5% de réduction immédiate</h4>
+          <p>Utilisez le code suivant lors de votre prochaine tentative pour finaliser votre achat :</p>
+          <div class="promo-code">
+            <strong>WATT5</strong>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a href="/#catalog" class="btn-primary">
+            Retenter ma Commande <i class="fa-solid fa-arrow-rotate-right"></i>
+          </a>
+          <a href="/" class="btn-secondary">
+            Retourner à l'Accueil
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .cancel-section {
+    padding-top: 160px;
+    padding-bottom: 100px;
+    position: relative;
+    background: var(--gradient-dark);
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+  }
+
+  .cancel-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .cancel-container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .cancel-card {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+    background: #ffffff;
+  }
+
+  @media (max-width: 576px) {
+    .cancel-card {
+      padding: 30px 20px;
+    }
+  }
+
+  .cancel-icon {
+    font-size: 4rem;
+    color: #ef4444;
+    filter: drop-shadow(0 2px 5px rgba(239, 68, 68, 0.2));
+  }
+
+  .cancel-title {
+    font-size: 2.2rem;
+    color: var(--text-primary);
+  }
+
+  .cancel-text {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 1.05rem;
+  }
+
+  .help-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .help-box h3 {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+  }
+
+  .help-box p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .contact-methods {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 8px;
+  }
+
+  .contact-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-teal);
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: var(--transition-fast);
+  }
+
+  .contact-item:hover {
+    color: var(--accent-blue);
+  }
+
+  /* Discount recovery card */
+  .discount-box {
+    background: rgba(83, 183, 168, 0.03);
+    border: 1px dashed rgba(83, 183, 168, 0.3);
+    border-radius: 12px;
+    padding: 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .discount-badge {
+    background: var(--gradient-electric);
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+
+  .discount-box h4 {
+    font-size: 1.1rem;
+    margin-top: 4px;
+    color: var(--text-primary);
+  }
+
+  .discount-box p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .promo-code {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    margin-top: 6px;
+    font-weight: 800;
+  }
+
+  .actions {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  @media (max-width: 576px) {
+    .actions {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .actions .btn-primary,
+    .actions .btn-secondary {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

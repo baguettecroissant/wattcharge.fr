@@ -1,0 +1,950 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+
+// Catalogue de secours local
+const DEFAULT_PRODUCTS = [
+  {
+    id: 'wattcharge-home-7',
+    name: 'WattCharge Home 7.4',
+    description: 'La borne de recharge connectée WattCharge Home 7.4kW est la solution idéale pour charger rapidement et sereinement votre voiture électrique à domicile. Compacte, moderne et étanche, elle s\'adapte à toutes les installations monophasées standard. Grâce à l\'application Tuya Smart Life intégrée, suivez votre consommation et planifiez votre charge pendant les heures creuses pour réaliser des économies maximales.',
+    price: 389.00,
+    compare_at_price: 599.00,
+    power_output: '7.4 kW',
+    phase: 'Monophasé',
+    current_rating: '32A',
+    features: [
+      'Puissance de charge réglable (jusqu\'à 7.4 kW)',
+      'Raccordement standard Monophasé 230V',
+      'Application WiFi / Bluetooth Tuya Smart Life',
+      'Protection RCD DC 6mA + AC 30mA intégrée (conforme NF C 15-100)',
+      'Câble de recharge Type 2 de 5 mètres inclus',
+      'Étanchéité IP66 pour installation extérieure'
+    ],
+    technical_specs: {
+      'Tension nominale': '230V AC ± 10%',
+      'Courant maximal': '32 A',
+      'Connecteur': 'Type 2 (standard européen)',
+      'Température de fonctionnement': '-30°C à +55°C',
+      'Protection différentielle': 'Intégrée DC 6mA + AC 30mA (Type B)',
+      'Certifications': 'CE, RoHS, WEEE'
+    }
+  },
+  {
+    id: 'wattcharge-home-11',
+    name: 'WattCharge Home 11',
+    description: 'La borne WattCharge Home 11kW offre une puissance de charge triphasée équilibrée pour les maisons dotées d\'un compteur triphasé. Elle permet de diviser par trois le temps de recharge de votre véhicule par rapport à une installation classique, tout en conservant une connectivité complète via WiFi. Sa conception sécurisée intègre toutes les protections différentielles exigées par les assurances.',
+    price: 449.00,
+    compare_at_price: 699.00,
+    power_output: '11 kW',
+    phase: 'Triphasé',
+    current_rating: '16A',
+    features: [
+      'Puissance de charge stable (jusqu\'à 11 kW)',
+      'Raccordement Triphasé 400V (équilibrage automatique)',
+      'Application WiFi / Bluetooth Tuya Smart Life',
+      'Protection RCD DC 6mA + AC 30mA intégrée (conforme NF C 15-100)',
+      'Câble de recharge Type 2 de 5 mètres inclus',
+      'Accès sécurisé par 3 badges RFID inclus'
+    ],
+    technical_specs: {
+      'Tension nominale': '400V AC ± 10%',
+      'Courant maximal': '16 A per phase',
+      'Connecteur': 'Type 2 (standard européen)',
+      'Température de fonctionnement': '-30°C à +55°C',
+      'Protection différentielle': 'Intégrée DC 6mA + AC 30mA (Type B)',
+      'Certifications': 'CE, RoHS, WEEE'
+    }
+  },
+  {
+    id: 'wattcharge-pro-22',
+    name: 'WattCharge Pro 22',
+    description: 'Notre borne la plus rapide et la plus robuste. Délivrant jusqu\'à 22kW de puissance de recharge sur réseau triphasé, la WattCharge Pro 22 est le choix sans compromis pour charger à vitesse maximale. Que ce soit pour votre domicile ou votre parking d\'entreprise, elle gère intelligemment la distribution d\'énergie, offre une interface connectée Tuya et dispose d\'une étanchéité IP66.',
+    price: 489.00,
+    compare_at_price: 799.00,
+    power_output: '22 kW',
+    phase: 'Triphasé',
+    current_rating: '32A',
+    features: [
+      'Puissance maximale de charge (jusqu\'à 22 kW)',
+      'Raccordement Triphasé 400V 32A',
+      'Application WiFi / Bluetooth Tuya Smart Life',
+      'Protection RCD DC 6mA + AC 30mA intégrée (conforme NF C 15-100)',
+      'Câble de recharge Type 2 de 5 mètres inclus',
+      'Idéal pour recharges quotidiennes express'
+    ],
+    technical_specs: {
+      'Tension nominale': '400V AC ± 10%',
+      'Courant maximal': '32 A per phase',
+      'Connecteur': 'Type 2 (standard européen)',
+      'Température de fonctionnement': '-30°C à +55°C',
+      'Protection différentielle': 'Intégrée DC 6mA + AC 30mA (Type B)',
+      'Certifications': 'CE, RoHS, WEEE'
+    }
+  }
+];
+
+// Récupération de la borne correspondante
+let product = DEFAULT_PRODUCTS.find(p => p.id === id);
+
+if (id) {
+  try {
+    const { data } = await supabase.from('products').select('*').eq('id', id).single();
+    if (data) {
+      product = {
+        id: data.id,
+        name: data.name,
+        description: data.description || '',
+        price: Number(data.price),
+        compare_at_price: data.compare_at_price ? Number(data.compare_at_price) : null,
+        power_output: data.power_output || '',
+        phase: data.phase || '',
+        current_rating: data.current_rating || '',
+        features: data.features || [],
+        technical_specs: product?.technical_specs || {
+          'Connecteur': 'Type 2',
+          'Protection différentielle': 'Intégrée DC 6mA + AC 30mA',
+          'Certifications': 'CE, RoHS'
+        }
+      };
+    }
+  } catch (e) {
+    console.warn("Échec récupération produit Supabase, utilisation du fallback local.");
+  }
+}
+
+if (!product) {
+  return Astro.redirect('/');
+}
+
+const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-id';
+---
+
+<Layout 
+  title={`${product.name} | Borne de Recharge Connectée`} 
+  description={product.description.substring(0, 160)}
+>
+  <section class="product-detail-section">
+    <div class="product-glow"></div>
+    <div class="container">
+      
+      <div class="product-detail-grid">
+        <!-- Colonne Gauche : Galerie Image -->
+        <div class="product-gallery-column">
+          <a href="/#catalog" class="back-link"><i class="fa-solid fa-arrow-left"></i> Retour au catalogue</a>
+          
+          <div class="main-image-card glass-panel">
+            <img src="/images/charger.png" alt={product.name} class="detail-product-img" />
+            <div class="power-overlay">{product.power_output}</div>
+          </div>
+          
+          <div class="warranty-badge-box glass-panel">
+            <div class="badge-item">
+              <i class="fa-solid fa-shield-check"></i>
+              <div>
+                <strong>Garantie 2 ans constructeur</strong>
+                <p>Échange à neuf en cas de défaut matériel.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne Droite : Configuration & Achat -->
+        <div class="product-info-column">
+          <div class="product-header">
+            <span class="badge-certified">{product.phase}</span>
+            <h1 class="product-title">{product.name}</h1>
+            
+            <div class="product-rating">
+              <div class="stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <span>(43 avis certifiés)</span>
+            </div>
+
+            <div class="price-header-block">
+              <span class="detail-price" id="display-price">{Number(product.price).toFixed(2).replace('.', ',')} €</span>
+              {product.compare_at_price && (
+                <span class="detail-compare-price">{Number(product.compare_at_price).toFixed(2).replace('.', ',')} €</span>
+              )}
+            </div>
+          </div>
+
+          <p class="detail-desc">{product.description}</p>
+
+          <!-- Option IRVE (Upsell) -->
+          <div class="addon-selection-card glass-panel" id="addon-card">
+            <label class="addon-label">
+              <input type="checkbox" id="install-checkbox" />
+              <div class="addon-checkbox-custom"></div>
+              <div class="addon-content">
+                <div class="addon-header-title">
+                  <strong>Ajouter l'installation agréée IRVE</strong>
+                  <span class="addon-price-tag">+450,00 €</span>
+                </div>
+                <p class="addon-desc">
+                  Pose à domicile réalisée sous 10 jours par un électricien qualifié IRVE agréé de votre région. Câblage et disjoncteurs inclus.
+                </p>
+                <div class="tax-credit-notice">
+                  <i class="fa-solid fa-piggy-bank"></i>
+                  <span>Éligible au <strong>crédit d'impôt de 300 €</strong> (coût net après aides : 150 €)</span>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Total Estimé -->
+          <div class="pricing-summary-card glass-panel">
+            <div class="summary-row">
+              <span>Borne seule :</span>
+              <span>{Number(product.price).toFixed(2).replace('.', ',')} €</span>
+            </div>
+            <div class="summary-row hidden" id="summary-install-row">
+              <span>Installation IRVE :</span>
+              <span>+450,00 €</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-row total-row">
+              <span>Total :</span>
+              <strong id="summary-total">{Number(product.price).toFixed(2).replace('.', ',')} €</strong>
+            </div>
+            <div class="summary-net-notice hidden" id="summary-net-notice">
+              <span>*Coût réel après crédit d'impôt de 300 € : <strong><span id="summary-net-total">{(product.price + 150).toFixed(2).replace('.', ',')}</span> €</strong></span>
+            </div>
+          </div>
+
+          <!-- Module d'Achat direct -->
+          <div class="checkout-actions-block">
+            <button id="stripe-buy-btn" class="btn-primary select-formula-btn">
+              Payer par Carte Bancaire / Apple Pay (Stripe) <i class="fa-solid fa-credit-card"></i>
+            </button>
+            <div class="checkout-divider">
+              <span>OU</span>
+            </div>
+            <!-- PayPal Button Container -->
+            <div id="paypal-button-container"></div>
+          </div>
+
+          <div class="secure-badge-row">
+            <span><i class="fa-solid fa-lock"></i> Paiement sécurisé SSL</span>
+            <span><i class="fa-solid fa-truck-fast"></i> Livraison gratuite</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Section Simulateur Spécifique -->
+      <div class="product-simulator-wrapper glass-panel">
+        <div class="simulator-header">
+          <h3>Simulateur de Charge pour la borne {product.name}</h3>
+          <p>Configurez le niveau de batterie souhaité pour mesurer la vitesse de charge par rapport à une prise classique.</p>
+        </div>
+        
+        <div class="simulator-inner-grid">
+          <div class="simulator-fields">
+            <div class="control-group">
+              <label for="slider-qualif">Niveau de charge ciblé</label>
+              <div class="slider-display">
+                <span id="slider-range-text">De 20% à 80%</span>
+                <strong id="slider-percentage-text">+60%</strong>
+              </div>
+              <input type="range" id="slider-qualif" min="10" max="100" value="60" class="range-slider" />
+            </div>
+            
+            <div class="simulator-vehicle-specs">
+              <span>Puissance délivrée par cette borne : <strong>{product.power_output}</strong></span>
+              <span>Réseau nécessaire : <strong>{product.phase} ({product.current_rating})</strong></span>
+            </div>
+          </div>
+
+          <div class="simulator-visual-results">
+            <div class="vis-result-item">
+              <span>Prise Domestique Standard (2.3 kW)</span>
+              <strong id="time-standard-val">--</strong>
+            </div>
+            <div class="vis-result-item highlight-item">
+              <span class="text-gradient-electric"><i class="fa-solid fa-bolt"></i> Borne {product.name} ({product.power_output})</span>
+              <strong id="time-borne-val" class="text-gradient-electric">--</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fiche Technique Spécifications -->
+      <div class="specs-table-wrapper glass-panel">
+        <h3>Spécifications Techniques</h3>
+        <table class="specs-table">
+          <tbody>
+            <tr>
+              <th>Puissance de charge maximale</th>
+              <td>{product.power_output}</td>
+            </tr>
+            <tr>
+              <th>Alimentation électrique</th>
+              <td>{product.phase} ({product.current_rating})</td>
+            </tr>
+            {Object.entries(product.technical_specs || {}).map(([key, val]) => (
+              <tr>
+                <th>{key}</th>
+                <td>{val}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+</Layout>
+
+<!-- Scripts client pour l'interactivité, Stripe et PayPal -->
+<script define:vars={{ productId: product.id, basePrice: product.price, powerOutput: product.power_output, paypalClientId }}>
+  // Variables d'état client
+  let installAddon = false;
+  let totalPrice = basePrice;
+
+  // DOM
+  const installCheckbox = document.getElementById('install-checkbox');
+  const summaryInstallRow = document.getElementById('summary-install-row');
+  const summaryTotal = document.getElementById('summary-total');
+  const summaryNetNotice = document.getElementById('summary-net-notice');
+  const summaryNetTotal = document.getElementById('summary-net-total');
+  const stripeBtn = document.getElementById('stripe-buy-btn');
+
+  // 1. Gestion de l'option d'installation
+  installCheckbox.addEventListener('change', () => {
+    installAddon = installCheckbox.checked;
+    
+    if (installAddon) {
+      totalPrice = basePrice + 450.00;
+      summaryInstallRow.classList.remove('hidden');
+      summaryNetNotice.classList.remove('hidden');
+    } else {
+      totalPrice = basePrice;
+      summaryInstallRow.classList.add('hidden');
+      summaryNetNotice.classList.add('hidden');
+    }
+
+    summaryTotal.textContent = `${totalPrice.toFixed(2).replace('.', ',')} €`;
+    summaryNetTotal.textContent = `${(totalPrice - 300.00).toFixed(2).replace('.', ',')}`;
+
+    // Réinitialiser les boutons PayPal si l'option change
+    initPayPalSDK();
+  });
+
+  // 2. Intégration Stripe Checkout
+  stripeBtn.addEventListener('click', async () => {
+    stripeBtn.disabled = true;
+    stripeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Redirection vers Stripe...';
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          productId: productId,
+          installAddon: installAddon 
+        })
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Erreur Stripe : ' + (data.error || 'Inconnue'));
+        stripeBtn.disabled = false;
+        stripeBtn.innerHTML = 'Payer par Carte Bancaire / Apple Pay (Stripe) <i class="fa-solid fa-credit-card"></i>';
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Erreur réseau. Impossible de contacter le serveur.');
+      stripeBtn.disabled = false;
+      stripeBtn.innerHTML = 'Payer par Carte Bancaire / Apple Pay (Stripe) <i class="fa-solid fa-credit-card"></i>';
+    }
+  });
+
+  // 3. Intégration PayPal SDK
+  function initPayPalSDK() {
+    const container = document.getElementById('paypal-button-container');
+    container.innerHTML = '';
+
+    if (window.paypal) {
+      renderPayPalButtons();
+    } else {
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=EUR&components=buttons`;
+      script.onload = renderPayPalButtons;
+      document.body.appendChild(script);
+    }
+  }
+
+  function renderPayPalButtons() {
+    window.paypal.Buttons({
+      createOrder: async function() {
+        const response = await fetch('/api/create-paypal-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            productId: productId,
+            installAddon: installAddon 
+          })
+        });
+        const order = await response.json();
+        return order.id;
+      },
+      onApprove: async function(data) {
+        const response = await fetch('/api/capture-paypal-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            orderID: data.orderID, 
+            formulaId: productId,
+            installAddon: installAddon
+          })
+        });
+        const captureData = await response.json();
+        if (captureData.status === 'COMPLETED') {
+          window.location.href = `/checkout/success?order_id=${captureData.orderId}&formula_id=${productId}`;
+        } else {
+          alert('Le paiement PayPal n\'a pas pu être capturé.');
+        }
+      },
+      onError: function(err) {
+        console.error('PayPal Error:', err);
+        alert('Erreur PayPal. Veuillez réessayer.');
+      }
+    }).render('#paypal-button-container');
+  }
+
+  initPayPalSDK();
+
+  // 4. Code du mini-simulateur de charge
+  const sliderQualif = document.getElementById('slider-qualif');
+  const sliderRangeText = document.getElementById('slider-range-text');
+  const sliderPercentageText = document.getElementById('slider-percentage-text');
+  const timeStandardVal = document.getElementById('time-standard-val');
+  const timeBorneVal = document.getElementById('time-borne-val');
+
+  const maxPower = parseFloat(powerOutput);
+
+  function updateSimulation() {
+    const value = parseInt(sliderQualif.value);
+    sliderRangeText.textContent = `De 20% à ${20 + value}%`;
+    sliderPercentageText.textContent = `+${value}%`;
+
+    const batteryCapacity = 52;
+    const energyNeeded = batteryCapacity * (value / 100);
+
+    const hoursStandard = energyNeeded / 2.3;
+    timeStandardVal.textContent = formatHours(hoursStandard);
+
+    const hoursBorne = energyNeeded / maxPower;
+    timeBorneVal.textContent = formatHours(hoursBorne);
+  }
+
+  function formatHours(decimalHours) {
+    const hours = Math.floor(decimalHours);
+    const minutes = Math.round((decimalHours - hours) * 60);
+    if (hours === 0) return `${minutes}m`;
+    return `${hours}h ${minutes.toString().padStart(2, '0')}m`;
+  }
+
+  sliderQualif.addEventListener('input', updateSimulation);
+  updateSimulation();
+</script>
+
+<style>
+  .product-detail-section {
+    padding-top: 150px;
+    padding-bottom: 90px;
+    position: relative;
+    background: var(--gradient-dark);
+  }
+
+  .product-glow {
+    position: absolute;
+    top: -200px;
+    right: 5%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.08) 0%, rgba(111, 148, 166, 0.02) 50%, transparent 100%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .product-detail-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 60px;
+    align-items: start;
+    margin-bottom: 60px;
+  }
+
+  @media (max-width: 992px) {
+    .product-detail-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  /* Back button */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+    font-weight: 600;
+    transition: var(--transition-fast);
+  }
+
+  .back-link:hover {
+    color: var(--accent-teal);
+    transform: translateX(-2px);
+  }
+
+  /* Main product image wrapper */
+  .main-image-card {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+    background: #ffffff;
+  }
+
+  .main-image-card::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.15) 0%, transparent 70%);
+    filter: blur(25px);
+    z-index: -1;
+  }
+
+  .detail-product-img {
+    max-width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+  }
+
+  .power-overlay {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--gradient-electric);
+    color: #ffffff;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .warranty-badge-box {
+    padding: 20px 24px;
+    background: #ffffff;
+  }
+
+  .badge-item {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .badge-item i {
+    font-size: 1.8rem;
+    color: var(--accent-teal);
+  }
+
+  .badge-item strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+
+  .badge-item p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-top: 2px;
+  }
+
+  /* Product details and header */
+  .product-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 24px;
+  }
+
+  .product-title {
+    font-size: 2.8rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  .product-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .price-header-block {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .detail-price {
+    font-size: 2.8rem;
+    font-weight: 800;
+    font-family: var(--font-heading);
+    color: var(--accent-teal);
+  }
+
+  .detail-compare-price {
+    font-size: 1.4rem;
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .detail-desc {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+  }
+
+  /* Custom checkbox card for upsell option */
+  .addon-selection-card {
+    padding: 0;
+    margin-bottom: 30px;
+    border-color: rgba(83, 183, 168, 0.2);
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .addon-label {
+    display: flex;
+    gap: 20px;
+    padding: 24px;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    align-items: flex-start;
+  }
+
+  .addon-label input[type="checkbox"] {
+    display: none;
+  }
+
+  .addon-checkbox-custom {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    position: relative;
+    flex-shrink: 0;
+    transition: var(--transition-fast);
+    background: var(--bg-secondary);
+    margin-top: 2px;
+  }
+
+  .addon-label input[type="checkbox"]:checked + .addon-checkbox-custom {
+    border-color: var(--accent-teal);
+    background: var(--accent-teal);
+    box-shadow: 0 0 10px rgba(83, 183, 168, 0.3);
+  }
+
+  .addon-label input[type="checkbox"]:checked + .addon-checkbox-custom::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 0.8rem;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .addon-content {
+    flex-grow: 1;
+  }
+
+  .addon-header-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .addon-header-title strong {
+    font-size: 1.05rem;
+    color: var(--text-primary);
+  }
+
+  .addon-price-tag {
+    background: rgba(83, 183, 168, 0.1);
+    color: var(--accent-teal);
+    border: 1px solid rgba(83, 183, 168, 0.2);
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .addon-desc {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .tax-credit-notice {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-teal);
+    font-size: 0.85rem;
+    background: rgba(83, 183, 168, 0.05);
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(83, 183, 168, 0.1);
+  }
+
+  /* Pricing Summary Card */
+  .pricing-summary-card {
+    padding: 24px;
+    background: var(--bg-secondary);
+    margin-bottom: 30px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .summary-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 16px 0;
+  }
+
+  .total-row {
+    margin-bottom: 0;
+    color: var(--text-primary);
+  }
+
+  .total-row strong {
+    font-size: 1.6rem;
+    font-family: var(--font-heading);
+    color: var(--accent-teal);
+  }
+
+  .summary-net-notice {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 12px;
+    text-align: right;
+  }
+
+  .summary-net-notice strong {
+    color: var(--accent-teal);
+  }
+
+  /* Direct Checkout Blocks */
+  .checkout-actions-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .checkout-actions-block .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 16px;
+    font-size: 1.05rem;
+  }
+
+  .checkout-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .checkout-divider::before,
+  .checkout-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+    margin: 0 15px;
+  }
+
+  .secure-badge-row {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  .secure-badge-row i {
+    color: var(--accent-teal);
+    margin-right: 4px;
+  }
+
+  /* Simulator block */
+  .product-simulator-wrapper {
+    padding: 40px;
+    margin-bottom: 60px;
+    background: #ffffff;
+  }
+
+  .simulator-header {
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+  }
+
+  .simulator-header h3 {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .simulator-header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .simulator-inner-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .simulator-inner-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
+  .slider-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+  }
+
+  .slider-display strong {
+    color: var(--accent-teal);
+  }
+
+  .simulator-vehicle-specs {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .simulator-visual-results {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .vis-result-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .vis-result-item strong {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+  }
+
+  .highlight-item {
+    border-color: var(--accent-teal);
+    background: rgba(83, 183, 168, 0.05);
+    box-shadow: 0 0 15px rgba(83, 183, 168, 0.05);
+  }
+
+  /* Technical Specs table */
+  .specs-table-wrapper {
+    padding: 40px;
+    background: #ffffff;
+  }
+
+  .specs-table-wrapper h3 {
+    font-size: 1.4rem;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+
+  .specs-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .specs-table th, .specs-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+  }
+
+  .specs-table th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    width: 40%;
+  }
+
+  .specs-table td {
+    color: var(--text-primary);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+</style>

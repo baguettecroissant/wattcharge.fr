@@ -1,0 +1,874 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { stripe } from '../../lib/stripe';
+import { processSuccessfulOrder } from '../../lib/orders';
+import { supabase } from '../../lib/supabase';
+
+export const prerender = false;
+
+let orderId = Astro.url.searchParams.get('order_id') || '';
+const sessionId = Astro.url.searchParams.get('session_id') || '';
+let formulaId = Astro.url.searchParams.get('formula_id') || '';
+
+let orderDetails: any = null;
+let errorMsg = '';
+
+// 1. Si on provient d'une redirection Stripe (sessionId présent)
+if (sessionId) {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (session.payment_status === 'paid') {
+      const email = session.customer_details?.email || '';
+      const name = session.customer_details?.name || 'Client Stripe';
+      const address = {
+        line1: session.shipping_details?.address?.line1 || '',
+        line2: session.shipping_details?.address?.line2 || '',
+        city: session.shipping_details?.address?.city || '',
+        postal_code: session.shipping_details?.address?.postal_code || '',
+        country: session.shipping_details?.address?.country || '',
+      };
+      
+      const prodId = session.metadata?.productId || formulaId || 'wattcharge-home-7';
+      const installAddon = session.metadata?.installAddon === 'true';
+      const totalAmount = (session.amount_total || 0) / 100;
+
+      // Traiter la commande (DB + Emails) via le service centralisé
+      const result = await processSuccessfulOrder({
+        email,
+        name,
+        shippingAddress: address,
+        productId: prodId,
+        installAddon,
+        totalAmount,
+        paymentId: sessionId,
+        gateway: 'stripe'
+      });
+      
+      orderId = result.orderId;
+    } else {
+      errorMsg = "Le paiement Stripe n'a pas été validé.";
+    }
+  } catch (e: any) {
+    console.error("Erreur traitement Stripe Success:", e);
+    errorMsg = `Erreur lors de la validation Stripe : ${e.message}`;
+  }
+}
+
+// 2. Charger les informations de la commande (Supabase avec fallback)
+if (orderId) {
+  try {
+    const { data } = await supabase.from('orders').select('*').eq('id', orderId).single();
+    if (data) {
+      orderDetails = data;
+    }
+  } catch (e) {
+    console.warn("Échec récupération commande Supabase, utilisation du fallback local.");
+  }
+  
+  // Fallback local pour démo si Supabase n'est pas connecté
+  if (!orderDetails) {
+    orderDetails = {
+      id: orderId,
+      customer_name: 'Client WattCharge',
+      customer_email: 'client@wattcharge.fr',
+      install_addon: formulaId.includes('pack') || Astro.url.searchParams.get('install') === 'true',
+      total_amount: formulaId.includes('22') ? 489.00 : 389.00,
+      status: 'paid',
+      shipping_address: {
+        line1: '123 Rue de la Recharge',
+        city: 'Paris',
+        postal_code: '75001',
+        country: 'FR'
+      }
+    };
+  }
+} else {
+  errorMsg = "Identifiant de commande manquant. Veuillez contacter le support.";
+}
+---
+
+<Layout 
+  title="Commande Confirmée" 
+  description="Merci pour votre achat sur WattCharge.fr. Retrouvez ici le statut de votre commande."
+>
+  <section class="success-section">
+    <div class="success-glow"></div>
+    <div class="container success-container">
+      
+      {errorMsg ? (
+        <div class="error-card glass-panel">
+          <div class="error-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <h2>Un problème est survenu</h2>
+          <p>{errorMsg}</p>
+          <a href="/" class="btn-primary">Retour à l'accueil</a>
+        </div>
+      ) : (
+        <div class="success-flow-grid">
+          
+          <!-- Carte récapitulative principale -->
+          <div class="main-success-card glass-panel">
+            <div class="success-header-badge">
+              <i class="fa-solid fa-circle-check text-gradient-electric"></i>
+              <span>Paiement Réussi</span>
+            </div>
+            
+            <h1 class="success-title">Merci pour Votre Commande !</h1>
+            <p class="success-intro">
+              Votre commande <strong>#{orderDetails.id.substring(0, 8)}</strong> a été validée. Un e-mail de confirmation contenant votre facture a été envoyé à <strong>{orderDetails.customer_email}</strong>.
+            </p>
+            
+            <!-- Stepper de livraison -->
+            <div class="stepper-container">
+              <h3 class="stepper-title">Suivi de votre commande</h3>
+              <div class="stepper">
+                <div class="step step-active">
+                  <div class="step-num"><i class="fa-solid fa-check"></i></div>
+                  <span>Payée</span>
+                </div>
+                <div class="step step-pending">
+                  <div class="step-num"><i class="fa-solid fa-box-open"></i></div>
+                  <span>Préparation</span>
+                </div>
+                <div class="step step-pending">
+                  <div class="step-num"><i class="fa-solid fa-truck"></i></div>
+                  <span>Expédiée</span>
+                </div>
+                <div class="step step-pending">
+                  <div class="step-num"><i class="fa-solid fa-house-chimney"></i></div>
+                  <span>Livrée</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Détails de livraison -->
+            <div class="delivery-details">
+              <h3><i class="fa-solid fa-truck-fast"></i> Informations de livraison</h3>
+              <p>
+                <strong>Destinataire :</strong> {orderDetails.customer_name}<br />
+                <strong>Adresse :</strong> {orderDetails.shipping_address?.line1 || orderDetails.shipping_address?.street || ''}, {orderDetails.shipping_address?.postal_code || orderDetails.shipping_address?.postalCode || ''} {orderDetails.shipping_address?.city || ''}, {orderDetails.shipping_address?.country || ''}
+              </p>
+              <div class="shipping-notice">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Expédié depuis notre entrepôt européen. Numéro de suivi communiqué sous 24h à 48h.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Spécifique Option Installation IRVE -->
+          {orderDetails.install_addon === true ? (
+            <div class="installation-form-card glass-panel" id="installation-card">
+              <div class="form-header">
+                <span class="badge-electrician"><i class="fa-solid fa-screwdriver-wrench"></i> Dossier Technique</span>
+                <h2>Qualifiez Votre Installation IRVE</h2>
+                <p>Complétez ces informations en 2 minutes pour accélérer la prise de contact de notre électricien partenaire.</p>
+              </div>
+
+              <form id="irve-questionnaire-form" class="irve-form">
+                <input type="hidden" name="orderId" value={orderDetails.id} />
+                
+                {/* Question 1 */}
+                <div class="form-group">
+                  <label class="form-label">Type de Logement</label>
+                  <div class="radio-group-cards">
+                    <label class="radio-card">
+                      <input type="radio" name="housingType" value="maison" checked />
+                      <div class="radio-card-content">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Maison Individuelle</span>
+                      </div>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="housingType" value="copropriete" />
+                      <div class="radio-card-content">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Copropriété (Immeuble)</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Question 2 */}
+                <div class="form-group">
+                  <label class="form-label">Emplacement Souhaité de la Borne</label>
+                  <div class="radio-group-cards">
+                    <label class="radio-card">
+                      <input type="radio" name="placement" value="garage" checked />
+                      <div class="radio-card-content">
+                        <i class="fa-solid fa-warehouse"></i>
+                        <span>Garage Intérieur</span>
+                      </div>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="placement" value="exterieur" />
+                      <div class="radio-card-content">
+                        <i class="fa-solid fa-car-tunnel"></i>
+                        <span>Parking Extérieur / Allée</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Question 3 */}
+                <div class="form-group">
+                  <label class="form-label" for="distance-select">Distance approximative borne-tableau</label>
+                  <div class="select-wrapper">
+                    <select name="distance" id="distance-select" class="form-select">
+                      <option value="moins-5m">Moins de 5 mètres</option>
+                      <option value="5-10m" selected>Entre 5 et 10 mètres (inclus dans le pack)</option>
+                      <option value="10-15m">Entre 10 et 15 mètres</option>
+                      <option value="plus-15m">Plus de 15 mètres</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down select-arrow"></i>
+                  </div>
+                </div>
+
+                {/* Question 4 */}
+                <div class="form-group">
+                  <label class="form-label">Type de Support</label>
+                  <div class="radio-group-cards">
+                    <label class="radio-card">
+                      <input type="radio" name="support" value="mur" checked />
+                      <div class="radio-card-content">
+                        <i class="fa-solid fa-border-all"></i>
+                        <span>Fixation Murale</span>
+                      </div>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="support" value="pied" />
+                      <div class="radio-card-content">
+                        <i class="fa-solid fa-grip-vertical"></i>
+                        <span>Support sur Pied (colonne)</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Upload Photo Tableau Électrique */}
+                <div class="form-group">
+                  <label class="form-label">Photo de votre Tableau Électrique (Recommandé)</label>
+                  <div class="file-dropzone" id="dropzone">
+                    <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                    <p class="dropzone-text">Glissez-déposez la photo de votre tableau électrique ouvert, ou cliquez pour parcourir.</p>
+                    <input type="file" id="file-input" accept="image/*" class="file-input-hidden" />
+                    <div id="file-preview" class="file-preview hidden">
+                      <i class="fa-solid fa-image"></i>
+                      <span id="preview-filename">tableau-electrique.jpg</span>
+                      <button type="button" id="remove-file-btn"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn-primary btn-submit-qualif" id="submit-form-btn">
+                  Valider mon Dossier Technique <i class="fa-solid fa-circle-check"></i>
+                </button>
+              </form>
+
+              {/* State Success Questionnaire */}
+              <div id="form-success-state" class="form-success-state hidden">
+                <i class="fa-solid fa-circle-check success-icon-glow"></i>
+                <h2>Dossier Validé avec Succès !</h2>
+                <p>Vos informations techniques ont été transmises à votre installateur partenaire. Il vous contactera sous 24h/48h ouvrées pour planifier la pose de votre borne.</p>
+                <a href="/" class="btn-secondary">Retour au site</a>
+              </div>
+            </div>
+          ) : (
+            <div class="installation-form-card glass-panel text-center">
+              <span class="badge-certified"><i class="fa-solid fa-truck-ramp-box"></i> Préparation en cours</span>
+              <h2 style="margin-top: 16px; margin-bottom: 12px; color: var(--text-primary);">Votre colis est en route</h2>
+              <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
+                Votre borne WattCharge a été commandée auprès du fournisseur. Vous recevrez un e-mail contenant le numéro de suivi de livraison dès qu'il sera disponible.
+              </p>
+              <a href="/" class="btn-secondary">Retourner à l'accueil</a>
+            </div>
+          )}
+
+        </div>
+      )}
+
+    </div>
+  </section>
+</Layout>
+
+<!-- Script interactif de qualification IRVE -->
+<script>
+  // Questionnaire submission
+  const form = document.getElementById('irve-questionnaire-form');
+  const submitBtn = document.getElementById('submit-form-btn');
+  const formSuccess = document.getElementById('form-success-state');
+  
+  // Dropzone file simulation
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const filePreview = document.getElementById('file-preview');
+  const filenameTxt = document.getElementById('preview-filename');
+  const removeBtn = document.getElementById('remove-file-btn');
+  const dropzoneIcon = document.querySelector('.dropzone-icon');
+  const dropzoneText = document.querySelector('.dropzone-text');
+
+  if (dropzone && fileInput) {
+    dropzone.addEventListener('click', (e) => {
+      if (e.target === removeBtn || (removeBtn && removeBtn.contains(e.target as Node))) return;
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files && fileInput.files.length > 0) {
+        showFilePreview(fileInput.files[0].name);
+      }
+    });
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('dragover');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        showFilePreview(e.dataTransfer.files[0].name);
+      }
+    });
+  }
+
+  if (removeBtn) {
+    removeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput.value = '';
+      if (filePreview && dropzoneIcon && dropzoneText) {
+        filePreview.classList.add('hidden');
+        dropzoneIcon.classList.remove('hidden');
+        dropzoneText.classList.remove('hidden');
+      }
+    });
+  }
+
+  function showFilePreview(name) {
+    if (filePreview && dropzoneIcon && dropzoneText && filenameTxt) {
+      filenameTxt.textContent = name;
+      filePreview.classList.remove('hidden');
+      dropzoneIcon.classList.add('hidden');
+      dropzoneText.classList.add('hidden');
+    }
+  }
+
+  if (form && submitBtn && formSuccess) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Transmission du dossier...';
+
+      const formData = new FormData(form as HTMLFormElement);
+      const data = {
+        orderId: formData.get('orderId'),
+        housingType: formData.get('housingType'),
+        placement: formData.get('placement'),
+        distance: formData.get('distance'),
+        support: formData.get('support'),
+        fileName: fileInput?.files?.[0]?.name || null
+      };
+
+      try {
+        const response = await fetch('/api/submit-installation-details', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          form.classList.add('hidden');
+          formSuccess.classList.remove('hidden');
+          const installCard = document.getElementById('installation-card');
+          if (installCard) installCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          alert('Erreur lors de la transmission du dossier. Veuillez réessayer.');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Valider mon Dossier Technique <i class="fa-solid fa-circle-check"></i>';
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erreur réseau. Veuillez réessayer.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Valider mon Dossier Technique <i class="fa-solid fa-circle-check"></i>';
+      }
+    });
+  }
+</script>
+
+<style>
+  .success-section {
+    padding-top: 140px;
+    padding-bottom: 80px;
+    position: relative;
+    background: var(--gradient-dark);
+    min-height: calc(100vh - 80px);
+  }
+
+  .success-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.1) 0%, rgba(111, 148, 166, 0.03) 50%, transparent 100%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .success-container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .success-flow-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (max-width: 992px) {
+    .success-flow-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  /* Main Success Card */
+  .main-success-card {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-shadow: var(--shadow-card);
+    background: #ffffff;
+  }
+
+  .success-header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(83, 183, 168, 0.05);
+    border: 1px solid rgba(83, 183, 168, 0.2);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    width: fit-content;
+  }
+
+  .success-header-badge i {
+    font-size: 1rem;
+    filter: drop-shadow(0 2px 4px rgba(83, 183, 168, 0.3));
+  }
+
+  .success-title {
+    font-size: 2.2rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  .success-intro {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 1.05rem;
+  }
+
+  .success-intro strong {
+    color: var(--text-primary);
+  }
+
+  /* Stepper */
+  .stepper-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    border-radius: 12px;
+  }
+
+  .stepper-title {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+  }
+
+  .stepper {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .stepper::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: var(--border-color);
+    z-index: 1;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+    width: 25%;
+  }
+
+  .step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    transition: var(--transition-smooth);
+    color: var(--text-muted);
+  }
+
+  .step span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .step-active .step-num {
+    background: var(--gradient-electric);
+    border-color: var(--accent-teal);
+    color: #ffffff;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .step-active span {
+    color: var(--accent-teal);
+    font-weight: 700;
+  }
+
+  /* Delivery Details */
+  .delivery-details {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .delivery-details h3 {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+  }
+
+  .delivery-details p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+  }
+
+  .shipping-notice {
+    display: flex;
+    gap: 10px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .shipping-notice i {
+    color: var(--accent-teal);
+    font-size: 1rem;
+    margin-top: 2px;
+  }
+
+  /* Error Card */
+  .error-card {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: var(--shadow-card);
+    background: #ffffff;
+  }
+
+  .error-icon {
+    font-size: 3rem;
+    color: #ef4444;
+  }
+
+  /* Installation Form Card */
+  .installation-form-card {
+    padding: 40px;
+    background: #ffffff;
+    box-shadow: var(--shadow-card);
+    border-color: rgba(111, 148, 166, 0.2);
+  }
+
+  .form-header {
+    margin-bottom: 30px;
+  }
+
+  .form-header h2 {
+    font-size: 1.8rem;
+    margin-top: 10px;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .form-header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .irve-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+
+  /* Radio Card selector */
+  .radio-group-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .radio-card {
+    cursor: pointer;
+  }
+
+  .radio-card input[type="radio"] {
+    display: none;
+  }
+
+  .radio-card-content {
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition-smooth);
+    text-align: center;
+  }
+
+  .radio-card-content i {
+    font-size: 1.6rem;
+    color: var(--text-muted);
+    transition: var(--transition-fast);
+  }
+
+  .radio-card-content span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .radio-card input[type="radio"]:checked + .radio-card-content {
+    border-color: var(--accent-blue);
+    background: rgba(111, 148, 166, 0.08);
+    box-shadow: 0 0 15px rgba(111, 148, 166, 0.1);
+  }
+
+  .radio-card input[type="radio"]:checked + .radio-card-content i {
+    color: var(--accent-blue);
+    transform: scale(1.1);
+  }
+
+  .radio-card input[type="radio"]:checked + .radio-card-content span {
+    color: var(--text-primary);
+  }
+
+  /* Select Field */
+  .select-wrapper {
+    position: relative;
+  }
+
+  .form-select {
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 14px 20px;
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: var(--transition-fast);
+  }
+
+  .form-select:focus {
+    border-color: var(--accent-blue);
+    outline: none;
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-muted);
+  }
+
+  /* Dropzone */
+  .file-dropzone {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    background: var(--bg-secondary);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .file-dropzone:hover, .file-dropzone.dragover {
+    border-color: var(--accent-blue);
+    background: rgba(111, 148, 166, 0.03);
+  }
+
+  .dropzone-icon {
+    font-size: 2.2rem;
+    color: var(--text-muted);
+  }
+
+  .dropzone-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    max-width: 320px;
+    line-height: 1.4;
+  }
+
+  .file-input-hidden {
+    display: none;
+  }
+
+  .file-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .file-preview i {
+    color: var(--accent-blue);
+  }
+
+  .file-preview span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  #remove-file-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    transition: var(--transition-fast);
+  }
+
+  #remove-file-btn:hover {
+    color: #ef4444;
+  }
+
+  .btn-submit-qualif {
+    background: var(--gradient-royal);
+    width: 100%;
+    justify-content: center;
+    padding: 16px;
+    box-shadow: 0 4px 15px rgba(111, 148, 166, 0.25);
+    color: #ffffff;
+  }
+
+  .btn-submit-qualif:hover {
+    box-shadow: var(--shadow-glow-purple);
+  }
+
+  .btn-submit-qualif:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  /* Form Success */
+  .form-success-state {
+    text-align: center;
+    padding: 30px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: slideIn 0.5s ease-out;
+  }
+
+  .success-icon-glow {
+    font-size: 4rem;
+    color: var(--accent-teal);
+    filter: drop-shadow(0 2px 5px rgba(83, 183, 168, 0.3));
+  }
+
+  .form-success-state h2 {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+  }
+
+  .form-success-state p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 420px;
+    margin-bottom: 12px;
+  }
+</style>
