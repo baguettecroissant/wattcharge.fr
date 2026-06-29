@@ -102,15 +102,13 @@ const { title, description } = Astro.props;
 <style>
   /* Header styling - Clean Light */
   .navbar-wrapper {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 100;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-color);
+    background: transparent;
+    border-bottom: none;
   }
 
   .navbar-container {
