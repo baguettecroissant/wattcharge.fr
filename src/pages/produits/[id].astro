@@ -5,6 +5,7 @@ export const prerender = false;
 
 const { id } = Astro.params;
 
+// Catalogue de produits physique ultra-détaillé
 const DEFAULT_PRODUCTS = [
   {
     id: 'wattcharge-home-7',
@@ -16,14 +17,6 @@ const DEFAULT_PRODUCTS = [
     power_output: '7.4 kW',
     phase: 'Monophasé',
     current_rating: '32A',
-    features: [
-      'Puissance de charge réglable en direct (8A/10A/13A/16A/32A)',
-      'WiFi & Bluetooth intégrés - Application Tuya Smart Life',
-      'Écran LCD couleur 2,8" avec indicateur d\'état LED',
-      'Lecteur de badge RFID (3 badges inclus) ou Plug & Charge',
-      'Étanchéité IP66 maximale pour installation extérieure',
-      'Protection différentielle intégrée RCD DC 6mA + AC 30mA (Évite un différentiel Type B onéreux)'
-    ],
     specs_grid: {
       power: '7.4 kW',
       current: '32A',
@@ -53,14 +46,6 @@ const DEFAULT_PRODUCTS = [
     power_output: '11 kW',
     phase: 'Triphasé',
     current_rating: '16A',
-    features: [
-      'Puissance de charge triphasée réglable (8A/10A/13A/16A)',
-      'WiFi & Bluetooth intégrés - Application Tuya Smart Life',
-      'Écran LCD couleur 2,8" avec statut dynamique de charge',
-      'Accès sécurisé par badges RFID (3 badges inclus) ou démarrage libre',
-      'Châssis étanche IP66 résistant aux projections d\'eau et poussières',
-      'Protection différentielle intégrée RCD DC 6mA + AC 30mA conforme aux normes'
-    ],
     specs_grid: {
       power: '11 kW',
       current: '16A (par phase)',
@@ -90,14 +75,6 @@ const DEFAULT_PRODUCTS = [
     power_output: '22 kW',
     phase: 'Triphasé',
     current_rating: '32A',
-    features: [
-      'Puissance maximale de 22 kW en triphasé 32A (ajustable en continu)',
-      'WiFi & Bluetooth intégrés - Application Tuya Smart Life',
-      'Écran LCD couleur 2,8" complet (indicateur de puissance, tension, ampérage)',
-      'Accès par badge RFID (3 inclus) pour éviter l\'utilisation non autorisée',
-      'Boîtier renforcé IK10 et étanchéité IP66 extérieure',
-      'Conforme NF C 15-100 avec détection intégrée DC 6mA'
-    ],
     specs_grid: {
       power: '22 kW',
       current: '32A (par phase)',
@@ -132,18 +109,52 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   title={`${product.name}`} 
   description={product.description.substring(0, 160)}
 >
+  <!-- Cyberpunk Background Grid Overlay -->
+  <div class="cyber-grid-bg"></div>
+
   <section class="product-detail-section">
     <div class="product-glow"></div>
     <div class="container">
       
       <div class="product-detail-grid">
-        <!-- Colonne Gauche : Galerie Image -->
+        
+        <!-- Colonne Gauche : Galerie Image + HUD Interactif 3D -->
         <div class="product-gallery-column">
           <a href="/#catalog" class="back-link"><i class="fa-solid fa-arrow-left"></i> Retour au catalogue</a>
           
-          <div class="main-image-card glass-panel">
-            <img src="/images/charger.png" alt={product.name} class="detail-product-img" />
-            <div class="power-overlay">{product.power_output}</div>
+          <!-- Conteneur 3D Interactif avec Hotspots (Scanner HUD) -->
+          <div class="hud-3d-wrapper" id="hud-3d-wrapper">
+            <div class="main-image-card 3d-card" id="main-image-card">
+              <img src="/images/charger.png" alt={product.name} class="detail-product-img" />
+              <div class="power-overlay">{product.power_output}</div>
+              
+              <!-- HUD Scanner Grid Overlay -->
+              <div class="hud-scanner-overlay"></div>
+
+              <!-- Hotspot 1 : Écran LCD -->
+              <div class="hud-hotspot" style="top: 25%; left: 50%;" data-tooltip="Écran couleur LCD 2.8 pouces indiquant en direct la puissance injectée (kW), la tension et l'ampérage.">
+                <span class="hotspot-ping"></span>
+                <span class="hotspot-dot"></span>
+              </div>
+
+              <!-- Hotspot 2 : RFID Reader -->
+              <div class="hud-hotspot" style="top: 48%; left: 50%;" data-tooltip="Lecteur de cartes RFID intégré. Permet un accès sécurisé par badge pour empêcher tout vol d'électricité.">
+                <span class="hotspot-ping"></span>
+                <span class="hotspot-dot"></span>
+              </div>
+
+              <!-- Hotspot 3 : LED Circle Status -->
+              <div class="hud-hotspot" style="top: 68%; left: 50%;" data-tooltip="Cercle lumineux dynamique à 3 états LED pour repérer le statut de charge en un coup d'œil.">
+                <span class="hotspot-ping"></span>
+                <span class="hotspot-dot"></span>
+              </div>
+
+              <!-- Floating Tooltip Card inside HUD -->
+              <div class="hud-tooltip-card glass-panel" id="hud-tooltip-card">
+                <h5 class="text-gradient-electric"><i class="fa-solid fa-microchip"></i> SPÉCIFICATION HUD</h5>
+                <p id="hud-tooltip-text">Survolez un capteur lumineux sur la borne pour inspecter ses fonctionnalités avancées.</p>
+              </div>
+            </div>
           </div>
           
           <div class="product-guarantees-grid">
@@ -151,13 +162,13 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
               <i class="fa-solid fa-shield-check text-gradient-electric"></i>
               <div>
                 <strong>Garantie 2 Ans</strong>
-                <p>Échange standard gratuit.</p>
+                <p>Échange standard rapide.</p>
               </div>
             </div>
             <div class="guarantee-badge-item glass-panel">
               <i class="fa-solid fa-truck-fast text-gradient-electric"></i>
               <div>
-                <strong>Livraison Offerte</strong>
+                <strong>Livraison Gratuite</strong>
                 <p>Expédition sous 24/48h.</p>
               </div>
             </div>
@@ -167,8 +178,8 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
         <!-- Colonne Droite : Configuration & Achat -->
         <div class="product-info-column">
           <div class="product-header">
-            <span class="badge-certified"><i class="fa-solid fa-circle-check"></i> Produit Certifié CE</span>
-            <h1 class="product-title">{product.name}</h1>
+            <span class="badge-certified"><i class="fa-solid fa-bolt-lightning text-gradient-electric"></i> Produit Certifié CE</span>
+            <h1 class="product-title text-glow-teal">{product.name}</h1>
             <p class="product-subtitle">{product.subtitle}</p>
             
             <div class="product-rating">
@@ -194,8 +205,8 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
           <p class="detail-desc">{product.description}</p>
 
           <!-- Avantages Clés -->
-          <div class="key-features-bullets">
-            <h4><i class="fa-solid fa-circle-info"></i> Points clés :</h4>
+          <div class="key-features-bullets glass-panel glow-panel">
+            <h4><i class="fa-solid fa-microchip text-gradient-electric"></i> Points clés :</h4>
             <ul>
               {product.features.map(f => (
                 <li><i class="fa-solid fa-check text-gradient-electric"></i> {f}</li>
@@ -205,7 +216,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
           <!-- Module d'Achat direct -->
           <div class="checkout-actions-block">
-            <button id="stripe-buy-btn" class="btn-primary select-formula-btn">
+            <button id="stripe-buy-btn" class="btn-primary select-formula-btn cyber-btn">
               Payer par Carte Bancaire / Apple Pay (Stripe) <i class="fa-solid fa-credit-card"></i>
             </button>
             <div class="checkout-divider">
@@ -216,8 +227,8 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
           </div>
 
           <div class="secure-badge-row">
-            <span><i class="fa-solid fa-lock"></i> Transaction Sécurisée SSL</span>
-            <span><i class="fa-solid fa-rotate-left"></i> Satisfait ou Remboursé 14j</span>
+            <span><i class="fa-solid fa-lock text-gradient-electric"></i> Transaction Sécurisée SSL</span>
+            <span><i class="fa-solid fa-rotate-left text-gradient-electric"></i> Satisfait ou Remboursé 14j</span>
           </div>
 
         </div>
@@ -225,100 +236,102 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     </div>
   </section>
 
-  <!-- SECTION 1 : CARACTÉRISTIQUES TECHNIQUES DE LA BORNE DE RECHARGE (Design BornePlus) -->
+  <!-- SECTION 1 : CARACTÉRISTIQUES TECHNIQUES DE LA BORNE DE RECHARGE (Design BornePlus + Neon Glowing Grid) -->
   <section class="section-tech-specs">
+    <div class="specs-neon-glow"></div>
     <div class="container">
-      <h2 class="section-title-specs">CARACTÉRISTIQUES TECHNIQUES DE LA BORNE DE RECHARGE</h2>
+      <h2 class="section-title-specs text-glow-teal">CARACTÉRISTIQUES TECHNIQUES DE LA BORNE</h2>
       
       <div class="specs-icons-grid">
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-bolt"></i>
-          <h4>Max puissance de charge : {product.specs_grid.power}</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-bolt"></i></div>
+          <h4>Max puissance de charge : <strong class="text-gradient-electric">{product.specs_grid.power}</strong></h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-tv"></i>
-          <h4>Écran LED Couleur</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-tv"></i></div>
+          <h4>Écran LED Couleur 2.8"</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-circle-nodes"></i>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-circle-nodes"></i></div>
           <h4>Courant de sortie : {product.specs_grid.current}</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-arrows-left-right"></i>
-          <h4>Longueur du câble de terre : {product.specs_grid.ground_cable}</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-arrows-left-right"></i></div>
+          <h4>Longueur de terre : {product.specs_grid.ground_cable}</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-plug"></i>
-          <h4>Prise : Type 2</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-plug"></i></div>
+          <h4>Prise : Type 2 Standard</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-circle-notch"></i>
-          <h4>Statut par grand cercle LED coloré</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-circle-notch"></i></div>
+          <h4>Grand cercle LED coloré statut</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-shield-halved"></i>
-          <h4>Antivol électronique du véhicule</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-lock"></i></div>
+          <h4>Antivol électronique véhicule</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-power-off"></i>
-          <h4>Bouton d'arrêt d'urgence latéral</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-power-off"></i></div>
+          <h4>Bouton d'arrêt d'urgence rouge</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-wifi"></i>
-          <h4>Possibilité de connexion WIFI : Oui</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-wifi"></i></div>
+          <h4>Connexion WIFI / Bluetooth</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-toolbox"></i>
-          <h4>Support mural métallique inclus</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-toolbox"></i></div>
+          <h4>Support mural acier inclus</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-box"></i>
-          <h4>Matériau du boîtier : Polycarbonate</h4>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-box"></i></div>
+          <h4>Matériau : Polycarbonate</h4>
         </div>
-        <div class="spec-icon-card">
-          <i class="fa-solid fa-shield-check"></i>
+        <div class="spec-icon-card glass-panel scroll-reveal">
+          <div class="spec-icon-circle"><i class="fa-solid fa-shield-halved"></i></div>
           <h4>{product.specs_grid.rcd}</h4>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 2 : FONCTIONNALITÉS (Design BornePlus) -->
+  <!-- SECTION 2 : FONCTIONNALITÉS (Design BornePlus + Left Side Glow Mockup) -->
   <section class="section-features">
     <div class="container features-flex">
-      <div class="features-visual">
-        <div class="visual-box-mockup">
+      <div class="features-visual scroll-reveal">
+        <div class="visual-box-mockup glass-panel glow-panel-teal tilt-image">
+          <div class="pulse-glow-circle"></div>
           <img src="/images/charger.png" alt="WattCharge Smart Wallbox" />
         </div>
       </div>
-      <div class="features-content">
-        <h2>FONCTIONNALITÉS</h2>
+      <div class="features-content scroll-reveal">
+        <h2>FONCTIONNALITÉS DE POINTE</h2>
         <ul class="features-checked-list">
-          <li><i class="fa-solid fa-check"></i> Démarrage de la recharge par carte de recharge IC</li>
-          <li><i class="fa-solid fa-check"></i> Démarrage à distance par application mobile</li>
-          <li><i class="fa-solid fa-check"></i> Contrôle de charge à distance</li>
-          <li><i class="fa-solid fa-check"></i> Arrêt de la recharge à distance ou par bouton</li>
-          <li><i class="fa-solid fa-check"></i> Vérification à distance de la charge de réserve</li>
-          <li><i class="fa-solid fa-check"></i> Notifications en temps réel</li>
-          <li><i class="fa-solid fa-check"></i> Contrôle intelligent de la température</li>
-          <li><i class="fa-solid fa-check"></i> Contrôle précis de la tension</li>
-          <li><i class="fa-solid fa-check"></i> Historique complet des recharges</li>
+          <li><i class="fa-solid fa-circle-check text-gradient-electric"></i> Démarrage de la recharge par carte de recharge IC</li>
+          <li><i class="fa-solid fa-circle-check text-gradient-electric"></i> Démarrage à distance par application mobile</li>
+          <li><i class="fa-solid fa-circle-check text-gradient-electric"></i> Contrôle de charge à distance</li>
+          <li><i class="fa-solid fa-circle-check text-gradient-electric"></i> Arrêt de la recharge à distance ou par bouton</li>
+          <li><i class="fa-solid fa-circle-check text-gradient-electric"></i> Vérification à distance de la charge de réserve</li>
+          <li><i class="fa-solid fa-circle-check text-gradient-electric"></i> Notifications push d'état de charge</li>
+          <li><i class="fa-solid fa-circle-check text-gradient-electric"></i> Contrôle de température intelligent</li>
+          <li><i class="fa-solid fa-circle-check text-gradient-electric"></i> Contrôle de tension de haute précision</li>
+          <li><i class="fa-solid fa-circle-check text-gradient-electric"></i> Historique complet des kilowattheures</li>
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 3 : SÉCURITÉ (Design BornePlus) -->
+  <!-- SECTION 3 : SÉCURITÉ (Design BornePlus + Electrician Asset) -->
   <section class="section-security">
     <div class="container security-grid">
-      <div class="security-left">
-        <h2>SÉCURITÉ</h2>
-        <p class="security-subtitle-text">Protection garantie contre les risques</p>
+      <div class="security-left scroll-reveal">
+        <h2>SÉCURITÉ MAXIMUM</h2>
+        <p class="security-subtitle-text text-gradient-electric">Protection garantie contre tous les risques électriques</p>
         
         <div class="security-cards-box">
           {product.protections.map(p => (
-            <div class="security-detail-card">
-              <i class="fa-solid fa-shield-halved"></i>
+            <div class="security-detail-card glass-panel hover-scale">
+              <i class="fa-solid fa-shield-halved text-gradient-electric"></i>
               <div>
                 <h4>{p.name}</h4>
                 <p>{p.desc}</p>
@@ -327,9 +340,10 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
           ))}
         </div>
       </div>
-      <div class="security-right">
-        <div class="security-visual-image-wrapper">
+      <div class="security-right scroll-reveal">
+        <div class="security-visual-image-wrapper glow-panel">
           <img src="/images/electrician_installation.png" alt="Professionnel de la sécurité électrique" />
+          <div class="image-hud-line"></div>
         </div>
       </div>
     </div>
@@ -339,19 +353,19 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   <section class="section-independence">
     <div class="container">
       <div class="independence-header">
-        <h2>VOTRE INDÉPENDANCE, À PORTÉE DE MAIN</h2>
-        <p>La solution qui vous rend autonome</p>
+        <h2 class="text-glow-teal">VOTRE INDÉPENDANCE, À PORTÉE DE MAIN</h2>
+        <p class="text-gradient-electric">La solution qui vous rend 100% autonome</p>
       </div>
       
       <div class="independence-cards">
-        <div class="independence-card">
-          <h3>Ne dépendez pas des bornes publiques</h3>
+        <div class="independence-card glass-panel hover-scale">
+          <h3>Ne dépendez plus des bornes publiques</h3>
           <p>
             Malgré le programme de déploiement de 100 000 bornes sur le territoire français, le droit à la prise est loin d'être effectif, sachant que les structures de recharge publiques sont rarement libres en journée. Les conducteurs et propriétaires de voiture électrique doivent faire la queue ou partir à la recherche d'une autre borne en poursuivant leur chargemap, ce qui est très coûteux en temps et en argent.
           </p>
           <a href="/#catalog" class="btn-learn-more"><i class="fa-solid fa-plus"></i> EN SAVOIR PLUS</a>
         </div>
-        <div class="independence-card">
+        <div class="independence-card glass-panel hover-scale">
           <h3>Une borne de recharge rapide, qui attend dans votre garage</h3>
           <p>
             La station de recharge WattCharge a été pensée pour tous les profils d'utilisateurs de véhicule électrique. Composée d'un boîtier de recharge robuste, étanche et léger, elle se fixe simplement au mur d'un garage ou dans un endroit couvert de votre cour extérieure pour être toujours prête.
@@ -362,39 +376,70 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     </div>
   </section>
 
-  <!-- SECTION 5 : SIMULATEUR DE CHARGE -->
+  <!-- SECTION 5 : INTERACTIVE HUD CHARGING SIMULATOR (Défouloir Visuel et Speedomètre Interactif SVG) -->
   <section class="section-simulator">
     <div class="container">
-      <div class="product-simulator-wrapper glass-panel">
+      <div class="product-simulator-wrapper glass-panel glow-panel-teal">
         <div class="simulator-header">
-          <h3>Simulateur de Temps de Recharge</h3>
-          <p>Configurez le niveau de batterie souhaité pour mesurer la vitesse de charge par rapport à une prise classique.</p>
+          <h3><i class="fa-solid fa-gauge text-gradient-electric"></i> Simulateur Interactif HUD de Vitesse de Charge</h3>
+          <p>Ajustez le niveau cible pour simuler la charge en direct et observer l'aiguille du tachymètre de la borne.</p>
         </div>
         
         <div class="simulator-inner-grid">
+          
           <div class="simulator-fields">
             <div class="control-group">
-              <label for="slider-qualif">Niveau de charge ciblé</label>
+              <label for="slider-qualif">Niveau de recharge requis :</label>
               <div class="slider-display">
                 <span id="slider-range-text">De 20% à 80%</span>
-                <strong id="slider-percentage-text">+60%</strong>
+                <strong id="slider-percentage-text" class="text-gradient-electric">+60%</strong>
               </div>
               <input type="range" id="slider-qualif" min="10" max="100" value="60" class="range-slider" />
             </div>
+
+            <!-- Animated SVG Battery -->
+            <div class="battery-svg-wrapper">
+              <svg viewBox="0 0 100 40" class="battery-svg">
+                <rect x="2" y="2" width="90" height="36" rx="4" fill="none" stroke="var(--border-color)" stroke-width="2" />
+                <rect x="94" y="12" width="4" height="16" rx="2" fill="var(--border-color)" />
+                <!-- Glowing inner progress -->
+                <rect id="battery-fill" x="5" y="5" width="54" height="30" rx="2" fill="url(#battery-glow)" />
+                <defs>
+                  <linearGradient id="battery-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#53B7A8" />
+                    <stop offset="100%" stop-color="#6F94A6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
             
             <div class="simulator-vehicle-specs">
-              <span>Puissance délivrée par cette borne : <strong>{product.power_output}</strong></span>
-              <span>Réseau nécessaire : <strong>{product.phase} ({product.current_rating})</strong></span>
+              <span>Puissance nominale délivrée : <strong>{product.power_output}</strong></span>
+              <span>Alimentation requise : <strong>{product.phase} ({product.current_rating})</strong></span>
             </div>
           </div>
 
           <div class="simulator-visual-results">
+            <!-- Tachometer Gauges HUD -->
+            <div class="tachometers-wrapper">
+              <div class="gauge-item">
+                <div class="gauge-dial">
+                  <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" stroke-width="8" stroke-dasharray="188 250" stroke-dashoffset="-31" />
+                    <circle id="gauge-progress" cx="50" cy="50" r="40" fill="none" stroke="var(--accent-teal)" stroke-width="8" stroke-dasharray="188 250" stroke-dashoffset="-31" />
+                  </svg>
+                  <div class="gauge-value" id="gauge-power-display">--</div>
+                </div>
+                <span>Ampérage Actuel</span>
+              </div>
+            </div>
+
             <div class="vis-result-item">
-              <span>Prise Domestique Standard (2.3 kW)</span>
+              <span>Temps Prise Classique (2.3 kW)</span>
               <strong id="time-standard-val">--</strong>
             </div>
             <div class="vis-result-item highlight-item">
-              <span class="text-gradient-electric"><i class="fa-solid fa-bolt"></i> Borne WattCharge ({product.power_output})</span>
+              <span class="text-gradient-electric"><i class="fa-solid fa-bolt"></i> Temps Borne WattCharge</span>
               <strong id="time-borne-val" class="text-gradient-electric">--</strong>
             </div>
           </div>
@@ -404,7 +449,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   </section>
 </Layout>
 
-<!-- Scripts client pour l'interactivité, Stripe et PayPal -->
+<!-- Scripts client pour l'interactivité, Stripe, PayPal et effets 3D / HUD -->
 <script define:vars={{ productId: product.id, basePrice: product.price, powerOutput: product.power_output, paypalClientId }}>
   // DOM
   const stripeBtn = document.getElementById('stripe-buy-btn');
@@ -492,14 +537,56 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
   initPayPalSDK();
 
-  // 3. Code du mini-simulateur de charge
+  // 3. Effet 3D Tilt interactif sur la carte principale et HUD Tooltips
+  const tiltCard = document.getElementById('main-image-card');
+  const tiltWrapper = document.getElementById('hud-3d-wrapper');
+
+  if (tiltWrapper && tiltCard) {
+    tiltWrapper.addEventListener('mousemove', (e) => {
+      const rect = tiltWrapper.getBoundingClientRect();
+      const x = e.clientX - rect.left; // x position inside element.
+      const y = e.clientY - rect.top;  // y position inside element.
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      // Calculate rotation (-10deg to 10deg)
+      const rotateX = ((centerY - y) / centerY) * 12;
+      const rotateY = ((x - centerX) / centerX) * 12;
+      
+      tiltCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+    });
+
+    tiltWrapper.addEventListener('mouseleave', () => {
+      tiltCard.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+    });
+  }
+
+  // Hotspots HUD tooltip logic
+  const hotspots = document.querySelectorAll('.hud-hotspot');
+  const tooltipCard = document.getElementById('hud-tooltip-card');
+  const tooltipText = document.getElementById('hud-tooltip-text');
+
+  hotspots.forEach(hotspot => {
+    hotspot.addEventListener('mouseenter', () => {
+      const tip = hotspot.getAttribute('data-tooltip');
+      tooltipText.textContent = tip;
+      tooltipCard.classList.add('active');
+    });
+  });
+
+  // 4. Code du mini-simulateur de charge (Speedometer + SVG)
   const sliderQualif = document.getElementById('slider-qualif');
   const sliderRangeText = document.getElementById('slider-range-text');
   const sliderPercentageText = document.getElementById('slider-percentage-text');
   const timeStandardVal = document.getElementById('time-standard-val');
   const timeBorneVal = document.getElementById('time-borne-val');
+  const batteryFill = document.getElementById('battery-fill');
+  const gaugeProgress = document.getElementById('gauge-progress');
+  const gaugePowerDisplay = document.getElementById('gauge-power-display');
 
   const maxPower = parseFloat(powerOutput);
+  const maxCurrent = productId.includes('7') ? 32 : productId.includes('11') ? 16 : 32;
 
   function updateSimulation() {
     const value = parseInt(sliderQualif.value);
@@ -514,6 +601,18 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
     const hoursBorne = energyNeeded / maxPower;
     timeBorneVal.textContent = formatHours(hoursBorne);
+
+    // Update battery SVG width (max width = 84px inside the rect)
+    const fillWidth = (value / 100) * 84;
+    batteryFill.setAttribute('width', fillWidth.toString());
+
+    // Update Speedometer Gauge (max dashoffset = -31, min = -219)
+    const currentAmp = Math.round((value / 100) * maxCurrent);
+    gaugePowerDisplay.textContent = `${currentAmp}A`;
+
+    // Map 0 -> maxCurrent to range 0 -> 188
+    const progressOffset = -31 - ((currentAmp / maxCurrent) * 188);
+    gaugeProgress.style.strokeDashoffset = progressOffset.toString();
   }
 
   function formatHours(decimalHours) {
@@ -525,14 +624,43 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
   sliderQualif.addEventListener('input', updateSimulation);
   updateSimulation();
+
+  // 5. Scroll Reveal animations
+  const revealElements = document.querySelectorAll('.scroll-reveal');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  revealElements.forEach(el => observer.observe(el));
 </script>
 
 <style>
+  /* Cyber Grid Background style */
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
   .product-detail-section {
     padding-top: 150px;
     padding-bottom: 60px;
     position: relative;
     background: var(--gradient-dark);
+    z-index: 2;
   }
 
   .product-glow {
@@ -577,29 +705,42 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     transform: translateX(-2px);
   }
 
-  /* Main product image wrapper */
+  /* HUD 3D Tilt wrapper */
+  .hud-3d-wrapper {
+    perspective: 1000px;
+    margin-bottom: 24px;
+    cursor: pointer;
+  }
+
   .main-image-card {
-    padding: 40px;
+    padding: 50px 40px;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    margin-bottom: 24px;
     box-shadow: var(--shadow-card);
     background: #ffffff;
+    transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+    transform-style: preserve-3d;
   }
 
-  .main-image-card::after {
-    content: '';
+  /* HUD scanline and effects */
+  .hud-scanner-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
-    background: radial-gradient(circle, rgba(83, 183, 168, 0.15) 0%, transparent 70%);
-    filter: blur(25px);
-    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 90%, rgba(83, 183, 168, 0.15) 95%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 20px;
+    animation: scan 4s linear infinite;
+    pointer-events: none;
+    border-radius: 12px;
+  }
+
+  @keyframes scan {
+    0% { background-position: 0 -200px; }
+    100% { background-position: 0 800px; }
   }
 
   .detail-product-img {
@@ -607,6 +748,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     height: auto;
     max-height: 400px;
     object-fit: contain;
+    transform: translateZ(50px);
   }
 
   .power-overlay {
@@ -620,6 +762,82 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     border-radius: 8px;
     font-size: 1rem;
     box-shadow: var(--shadow-glow);
+    transform: translateZ(60px);
+  }
+
+  /* HUD Hotspots */
+  .hud-hotspot {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    transform: translate(-50%, -50%) translateZ(80px);
+    z-index: 10;
+  }
+
+  .hotspot-ping {
+    position: absolute;
+    display: inline-flex;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    opacity: 0.75;
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .hotspot-dot {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-teal);
+    box-shadow: 0 0 10px var(--accent-teal);
+    border: 2px solid #ffffff;
+  }
+
+  @keyframes ping {
+    75%, 100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  /* HUD Tooltip Card */
+  .hud-tooltip-card {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--border-color);
+    padding: 12px 18px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px) translateZ(60px);
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    pointer-events: none;
+    text-align: left;
+  }
+
+  .hud-tooltip-card.active {
+    opacity: 1;
+    transform: translateY(0) translateZ(60px);
+  }
+
+  .hud-tooltip-card h5 {
+    margin-top: 0;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .hud-tooltip-card p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
   }
 
   .product-guarantees-grid {
@@ -806,7 +1024,21 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   .section-tech-specs {
     background: #000000;
     color: #ffffff;
-    padding: 80px 0;
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .specs-neon-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.05) 0%, transparent 70%);
+    filter: blur(50px);
+    pointer-events: none;
   }
 
   .section-title-specs {
@@ -823,6 +1055,8 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     grid-template-columns: repeat(4, 1fr);
     gap: 40px 20px;
     text-align: center;
+    position: relative;
+    z-index: 2;
   }
 
   @media (max-width: 992px) {
@@ -842,17 +1076,43 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    padding: 20px;
+    padding: 30px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    transition: all 0.3s ease;
   }
 
-  .spec-icon-card i {
-    font-size: 2.5rem;
+  .spec-icon-card:hover {
+    border-color: rgba(83, 183, 168, 0.4);
+    box-shadow: 0 0 20px rgba(83, 183, 168, 0.1);
+    transform: translateY(-4px);
+  }
+
+  .spec-icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .spec-icon-card:hover .spec-icon-circle {
+    background: var(--gradient-electric);
     color: #ffffff;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .spec-icon-circle i {
+    font-size: 1.6rem;
   }
 
   .spec-icon-card h4 {
     font-size: 0.95rem;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.5;
     color: #cccccc;
     max-width: 220px;
@@ -861,17 +1121,17 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   /* SECTION 2: FONCTIONNALITÉS (Design BornePlus) */
   .section-features {
     background: var(--bg-secondary);
-    padding: 80px 0;
+    padding: 100px 0;
   }
 
   .features-flex {
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 60px;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
     align-items: center;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
     .features-flex {
       grid-template-columns: 1fr;
       gap: 40px;
@@ -883,25 +1143,40 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     justify-content: center;
   }
 
+  /* Pulse Glow Box Mockup */
   .visual-box-mockup {
-    padding: 40px;
+    padding: 50px;
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 24px;
     box-shadow: var(--shadow-card);
     display: flex;
     justify-content: center;
-    max-width: 400px;
+    max-width: 420px;
     width: 100%;
+    position: relative;
+  }
+
+  .pulse-glow-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.15) 0%, transparent 70%);
+    filter: blur(20px);
+    pointer-events: none;
   }
 
   .visual-box-mockup img {
     max-width: 100%;
     height: auto;
     object-fit: contain;
+    z-index: 2;
   }
 
   .features-content h2 {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     font-family: var(--font-heading);
     margin-bottom: 24px;
     color: var(--text-primary);
@@ -915,27 +1190,27 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   }
 
   .features-checked-list li {
-    font-size: 1rem;
+    font-size: 1.05rem;
     color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
   }
 
   .features-checked-list li i {
     color: var(--accent-teal);
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 
   /* SECTION 3: SÉCURITÉ (Design BornePlus) */
   .section-security {
     background: #ffffff;
-    padding: 80px 0;
+    padding: 100px 0;
   }
 
   .security-grid {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
+    grid-template-columns: 1.2fr 1.0fr;
     gap: 60px;
     align-items: center;
   }
@@ -948,17 +1223,17 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   }
 
   .security-left h2 {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     font-family: var(--font-heading);
     margin-bottom: 8px;
     color: var(--text-primary);
   }
 
   .security-subtitle-text {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     color: var(--text-muted);
     font-weight: 600;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
   }
 
   .security-cards-box {
@@ -976,21 +1251,21 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   .security-detail-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    padding: 20px;
-    border-radius: 12px;
+    padding: 24px;
+    border-radius: 16px;
     display: flex;
     gap: 16px;
     align-items: flex-start;
   }
 
   .security-detail-card i {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: var(--text-primary);
     margin-top: 2px;
   }
 
   .security-detail-card h4 {
-    font-size: 1rem;
+    font-size: 1.05rem;
     color: var(--text-primary);
     margin-bottom: 6px;
   }
@@ -998,13 +1273,15 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   .security-detail-card p {
     font-size: 0.85rem;
     color: var(--text-secondary);
-    line-height: 1.4;
+    line-height: 1.45;
   }
 
+  /* Electrician visual card */
   .security-visual-image-wrapper {
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
     box-shadow: var(--shadow-card);
+    position: relative;
   }
 
   .security-visual-image-wrapper img {
@@ -1014,26 +1291,42 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     object-fit: cover;
   }
 
+  .image-hud-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent-teal);
+    box-shadow: 0 0 10px var(--accent-teal);
+    animation: sweep 3.5s ease-in-out infinite;
+  }
+
+  @keyframes sweep {
+    0% { top: 0%; }
+    50% { top: 100%; }
+    100% { top: 0%; }
+  }
+
   /* SECTION 4: VOTRE INDÉPENDANCE, À PORTÉE DE MAIN (Design BornePlus) */
   .section-independence {
     background: var(--bg-secondary);
-    padding: 80px 0;
+    padding: 100px 0;
   }
 
   .independence-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
   }
 
   .independence-header h2 {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     font-family: var(--font-heading);
     color: var(--text-primary);
     margin-bottom: 8px;
   }
 
   .independence-header p {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     color: var(--text-muted);
     font-weight: 600;
   }
@@ -1041,7 +1334,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   .independence-cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: 40px;
   }
 
   @media (max-width: 768px) {
@@ -1054,7 +1347,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     background: #ffffff;
     border: 1px solid var(--border-color);
     padding: 40px;
-    border-radius: 16px;
+    border-radius: 20px;
     box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
@@ -1063,7 +1356,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   }
 
   .independence-card h3 {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     color: var(--text-primary);
     line-height: 1.3;
   }
@@ -1071,7 +1364,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   .independence-card p {
     font-size: 0.95rem;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.65;
   }
 
   .btn-learn-more {
@@ -1095,25 +1388,25 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
   /* SECTION 5: SIMULATEUR DE CHARGE */
   .section-simulator {
-    padding: 80px 0;
+    padding: 100px 0;
     background: #ffffff;
   }
 
   .product-simulator-wrapper {
-    padding: 40px;
+    padding: 50px;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
+    border-radius: 24px;
   }
 
   .simulator-header {
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 16px;
+    padding-bottom: 20px;
   }
 
   .simulator-header h3 {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     margin-bottom: 6px;
     color: var(--text-primary);
   }
@@ -1126,7 +1419,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   .simulator-inner-grid {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
-    gap: 40px;
+    gap: 50px;
     align-items: center;
   }
 
@@ -1148,8 +1441,18 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     color: var(--accent-teal);
   }
 
+  .battery-svg-wrapper {
+    margin: 30px 0;
+  }
+
+  .battery-svg {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+  }
+
   .simulator-vehicle-specs {
-    margin-top: 20px;
+    margin-top: 25px;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -1160,14 +1463,55 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   .simulator-visual-results {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
+  }
+
+  /* GAUGE TACHOMETER STYLES */
+  .tachometers-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .gauge-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .gauge-dial {
+    position: relative;
+    width: 120px;
+    height: 120px;
+  }
+
+  .gauge-dial svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(45deg);
+  }
+
+  .gauge-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  #gauge-progress {
+    transition: stroke-dashoffset 0.4s ease-out;
   }
 
   .vis-result-item {
     background: #ffffff;
     border: 1px solid var(--border-color);
-    padding: 16px;
-    border-radius: 8px;
+    padding: 16px 20px;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1193,6 +1537,33 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     background: #10b981;
     box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
     animation: pulse 1.5s infinite;
+  }
+
+  /* Scroll Reveal animation triggers */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hover-scale {
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .independence-card.hover-scale:hover,
+  .security-detail-card.hover-scale:hover {
+    transform: scale(1.02);
+    border-color: rgba(83, 183, 168, 0.3);
+    box-shadow: 0 0 15px rgba(83, 183, 168, 0.05);
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
   }
 
   @keyframes pulse {
