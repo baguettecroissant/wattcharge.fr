@@ -8,18 +8,34 @@ export const prerender = false;
   title="À Propos | La Vision WattCharge"
   description="Découvrez comment WattCharge réinvente la recharge électrique : circuits directs, technologie connectée de pointe et sécurité sans compromis au meilleur prix."
 >
+  <!-- Interactive Particle Canvas Background -->
+  <canvas id="electric-canvas" class="electric-canvas"></canvas>
+
   <!-- Cyber grid overlay -->
   <div class="cyber-grid-bg"></div>
 
-  <!-- Hero Section avec image de fond futuriste -->
+  <!-- Hero Section avec image de fond futuriste + Parallax -->
   <section class="about-hero-section">
     <div class="about-hero-img-overlay"></div>
     <div class="container about-hero-container">
-      <span class="badge-certified"><i class="fa-solid fa-bolt-lightning text-gradient-electric"></i> Le Manifeste WattCharge</span>
-      <h1 class="about-main-title">RÉINVENTER LA RECHARGE.<br /><span class="text-gradient-electric">LIBÉRER LA ROUTE.</span></h1>
-      <p class="about-lead-text">
+      <div class="hero-badge-wrapper scroll-reveal">
+        <span class="badge-certified"><i class="fa-solid fa-bolt-lightning text-gradient-electric"></i> Le Manifeste WattCharge</span>
+      </div>
+      <h1 class="about-main-title scroll-reveal">
+        RÉINVENTER LA RECHARGE.<br />
+        <span class="text-glow-neon">LIBÉRER LA ROUTE.</span>
+      </h1>
+      <p class="about-lead-text scroll-reveal">
         Nous éliminons les intermédiaires pour proposer des bornes connectées haut de gamme, sécurisées et conformes directement de l'usine à votre garage.
       </p>
+      
+      <!-- Interactive Scroll Indicator -->
+      <div class="scroll-indicator-wrapper">
+        <span>Découvrir la Révolution</span>
+        <div class="scroll-mouse">
+          <div class="scroll-wheel"></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -27,7 +43,10 @@ export const prerender = false;
   <section class="about-vision-section">
     <div class="container vision-grid">
       <div class="vision-left scroll-reveal">
-        <h2>NOTRE VISION</h2>
+        <div class="vision-header">
+          <span class="small-tag text-gradient-electric">Notre Engagement</span>
+          <h2>NOTRE VISION</h2>
+        </div>
         <p class="lead-paragraph">
           La transition vers la mobilité électrique ne devrait pas être freinée par des barrières tarifaires artificielles ou des installations complexes surfacturées.
         </p>
@@ -41,6 +60,7 @@ export const prerender = false;
       
       <div class="vision-right scroll-reveal">
         <div class="vision-pillars-box glass-panel glow-panel-teal">
+          <div class="hud-scanner-overlay"></div>
           <h3>Les 3 Piliers de notre Révolution</h3>
           
           <div class="pillar-item">
@@ -71,78 +91,87 @@ export const prerender = false;
     </div>
   </section>
 
-  <!-- Section Chiffres Clés (Stats HUD) -->
+  <!-- Section Chiffres Clés (Stats HUD avec compteurs animés) -->
   <section class="about-stats-section">
     <div class="container">
       <div class="stats-grid">
-        <div class="stat-card glass-panel hover-scale scroll-reveal">
-          <strong class="stat-number text-gradient-electric">-60%</strong>
+        <div class="stat-card glass-panel hover-scale scroll-reveal" data-stat-card>
+          <strong class="stat-number text-gradient-electric" data-target="-60">-0%</strong>
           <span>D'économie sur le budget global de recharge à domicile</span>
         </div>
-        <div class="stat-card glass-panel hover-scale scroll-reveal">
-          <strong class="stat-number">100%</strong>
+        <div class="stat-card glass-panel hover-scale scroll-reveal" data-stat-card>
+          <strong class="stat-number" data-target="100">0%</strong>
           <span>Bornes connectées WiFi & configurables via application</span>
         </div>
-        <div class="stat-card glass-panel hover-scale scroll-reveal">
-          <strong class="stat-number text-gradient-electric">IP66</strong>
-          <span>Étanchéité maximale garantie contre la pluie et la poussière</span>
+        <div class="stat-card glass-panel hover-scale scroll-reveal" data-stat-card>
+          <strong class="stat-number text-gradient-electric" data-target="6">0mA</strong>
+          <span>Détection active intégrée des fuites de courant continu</span>
         </div>
-        <div class="stat-card glass-panel hover-scale scroll-reveal">
-          <strong class="stat-number">48h</strong>
+        <div class="stat-card glass-panel hover-scale scroll-reveal" data-stat-card>
+          <strong class="stat-number" data-target="48">0h</strong>
           <span>Délai moyen d'expédition depuis nos entrepôts européens</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Section DNA / Processus de Livraison Sourcing -->
+  <!-- Section DNA / Processus de Livraison Sourcing avec ligne laser animée au scroll -->
   <section class="about-process-section">
     <div class="container">
-      <div class="process-header scroll-reveal">
-        <h2>NOTRE CHAINE DE VALEUR DROPSHIPPING</h2>
-        <p class="text-gradient-electric">Du fabricant à votre tableau électrique, sans friction</p>
+      <div class="process-header scroll-reveal text-center">
+        <span class="small-tag text-gradient-electric">Transparence Totale</span>
+        <h2>NOTRE CHAINE DE VALEUR DIRECTE</h2>
+        <p class="process-sub">Du fabricant à votre tableau électrique, sans friction</p>
       </div>
 
-      <div class="process-steps">
-        <div class="process-step-item scroll-reveal">
-          <div class="step-badge">01</div>
-          <h3>Sourcing Direct Usine</h3>
-          <p>
-            Nous travaillons main dans la main avec le fabricant leader Feyree pour produire des bornes connectées dotées de puces WiFi intelligentes et de lecteurs RFID.
-          </p>
+      <div class="process-timeline-wrapper">
+        <!-- Glowing laser line -->
+        <div class="timeline-laser-line">
+          <div class="laser-fill" id="laser-fill"></div>
         </div>
 
-        <div class="process-step-item scroll-reveal">
-          <div class="step-badge">02</div>
-          <h3>Contrôle Qualité CE</h3>
-          <p>
-            Chaque lot de production est soumis à des tests rigoureux de résistance aux surtensions et de détection de courant de fuite DC 6mA.
-          </p>
-        </div>
+        <div class="process-steps">
+          <div class="process-step-card scroll-reveal">
+            <div class="step-num-badge">01</div>
+            <h3>Sourcing Direct Usine</h3>
+            <p>
+              Nous travaillons main dans la main avec le fabricant leader Feyree pour produire des bornes connectées dotées de puces WiFi intelligentes et de lecteurs RFID.
+            </p>
+          </div>
 
-        <div class="process-step-item scroll-reveal">
-          <div class="step-badge">03</div>
-          <h3>Stockage en Europe</h3>
-          <p>
-            Les bornes sont stockées dans nos entrepôts en Espagne, Pologne et Allemagne pour assurer un transit douanier nul et une livraison express.
-          </p>
-        </div>
+          <div class="process-step-card scroll-reveal">
+            <div class="step-num-badge">02</div>
+            <h3>Contrôle Qualité CE</h3>
+            <p>
+              Chaque lot de production est soumis à des tests rigoureux de résistance aux surtensions et de détection de courant de fuite DC 6mA.
+            </p>
+          </div>
 
-        <div class="process-step-item scroll-reveal">
-          <div class="step-badge">04</div>
-          <h3>Expédition Gratuite 48h</h3>
-          <p>
-            Dès validation de votre paiement, l'ordre d'envoi est transmis. Vous recevez par e-mail votre numéro de suivi DHL / GLS sous 24h.
-          </p>
+          <div class="process-step-card scroll-reveal">
+            <div class="step-num-badge">03</div>
+            <h3>Stockage en Europe</h3>
+            <p>
+              Les bornes sont stockées dans nos entrepôts en Espagne, Pologne et Allemagne pour assurer un transit douanier nul et une livraison express.
+            </p>
+          </div>
+
+          <div class="process-step-card scroll-reveal">
+            <div class="step-num-badge">04</div>
+            <h3>Expédition Gratuite 48h</h3>
+            <p>
+              Dès validation de votre paiement, l'ordre d'envoi est transmis. Vous recevez par e-mail votre numéro de suivi DHL / GLS sous 24h.
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA de fin -->
+  <!-- CTA de fin avec effet de glow dynamique -->
   <section class="about-cta-section">
     <div class="container">
       <div class="about-cta-box glass-panel glow-panel-teal text-center scroll-reveal">
+        <div class="hud-scanner-overlay"></div>
         <h2>Prêt à passer à la vitesse supérieure ?</h2>
         <p>Commandez votre borne intelligente WattCharge aujourd'hui et commencez à économiser dès la première recharge.</p>
         <div class="cta-actions">
@@ -154,7 +183,144 @@ export const prerender = false;
 </Layout>
 
 <script>
-  // Scroll Reveal triggers
+  // 1. Interactive Particle Canvas Background (Wow effect)
+  const canvas = document.getElementById('electric-canvas') as HTMLCanvasElement;
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    // Particles array
+    const particles: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+    }> = [];
+
+    const particleCount = 45;
+    const connectionDist = 120;
+
+    // Create particles
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        radius: Math.random() * 2 + 1,
+      });
+    }
+
+    // Mouse coords
+    let mouse = { x: -1000, y: -1000 };
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener('mouseleave', () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    });
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    function draw() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
+        
+        // Link to mouse
+        const mDist = Math.hypot(p1.x - mouse.x, p1.y - mouse.y);
+        if (mDist < 180) {
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(83, 183, 168, ${0.15 * (1 - mDist / 180)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+
+          if (dist < connectionDist) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(83, 183, 168, ${0.18 * (1 - dist / connectionDist)})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw dots
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(83, 183, 168, 0.4)';
+        ctx.fill();
+
+        // Move
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Bound check
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  }
+
+  // 2. Count-up Stats Anim (Wow effect)
+  const statCards = document.querySelectorAll('[data-stat-card]');
+  
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const numEl = entry.target.querySelector('.stat-number') as HTMLElement;
+        if (numEl && !numEl.classList.contains('counted')) {
+          numEl.classList.add('counted');
+          const target = parseInt(numEl.getAttribute('data-target') || '0');
+          const isNegative = target < 0;
+          const absTarget = Math.abs(target);
+          let current = 0;
+          const duration = 1500; // ms
+          const stepTime = Math.max(Math.floor(duration / absTarget), 15);
+          
+          const suffix = numEl.textContent?.includes('mA') ? 'mA' : numEl.textContent?.includes('h') ? 'h' : '%';
+          
+          const timer = setInterval(() => {
+            current += Math.ceil(absTarget / 30);
+            if (current >= absTarget) {
+              current = absTarget;
+              clearInterval(timer);
+            }
+            numEl.textContent = `${isNegative ? '-' : ''}${current}${suffix}`;
+          }, stepTime);
+        }
+      }
+    });
+  }, { threshold: 0.2 });
+
+  statCards.forEach(card => statObserver.observe(card));
+
+  // 3. Scroll Reveal with 3D translation effect
   const revealElements = document.querySelectorAll('.scroll-reveal');
 
   const observer = new IntersectionObserver((entries) => {
@@ -163,12 +329,38 @@ export const prerender = false;
         entry.target.classList.add('visible');
       }
     });
-  }, { threshold: 0.15 });
+  }, { threshold: 0.1 });
 
   revealElements.forEach(el => observer.observe(el));
+
+  // 4. Scroll driven timeline laser fill
+  const laserFill = document.getElementById('laser-fill');
+  const processSection = document.querySelector('.about-process-section');
+
+  if (laserFill && processSection) {
+    window.addEventListener('scroll', () => {
+      const rect = processSection.getBoundingClientRect();
+      const sectionHeight = rect.height;
+      // Calculate how far the section has scrolled relative to viewport center
+      const scrolled = window.innerHeight / 2 - rect.top;
+      const pct = Math.max(0, Math.min(100, (scrolled / (sectionHeight - 200)) * 100));
+      laserFill.style.height = `${pct}%`;
+    });
+  }
 </script>
 
 <style>
+  /* Interactive Particle Canvas style */
+  .electric-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
   /* Cyber Grid Background style */
   .cyber-grid-bg {
     position: absolute;
@@ -187,8 +379,8 @@ export const prerender = false;
   /* Hero Section style */
   .about-hero-section {
     position: relative;
-    padding-top: 240px;
-    padding-bottom: 120px;
+    padding-top: 260px;
+    padding-bottom: 160px;
     background-image: url('/images/about_hero_car.png');
     background-size: cover;
     background-position: center;
@@ -205,7 +397,7 @@ export const prerender = false;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.95) 100%);
+    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.96) 100%);
     z-index: 1;
   }
 
@@ -215,28 +407,70 @@ export const prerender = false;
   }
 
   .about-main-title {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-family: var(--font-heading);
     font-weight: 900;
     line-height: 1.1;
     color: #ffffff;
-    margin-top: 16px;
+    margin-top: 20px;
     margin-bottom: 24px;
     letter-spacing: -0.5px;
   }
 
   @media (max-width: 768px) {
     .about-main-title {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
     }
   }
 
+  .text-glow-neon {
+    color: #ffffff;
+    text-shadow: 0 0 25px rgba(83, 183, 168, 0.6);
+  }
+
   .about-lead-text {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     color: #e2e8f0;
-    max-width: 700px;
-    line-height: 1.6;
+    max-width: 720px;
+    line-height: 1.65;
     margin: 0;
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator-wrapper {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .scroll-mouse {
+    width: 24px;
+    height: 38px;
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    position: relative;
+  }
+
+  .scroll-wheel {
+    width: 4px;
+    height: 8px;
+    background: var(--accent-teal);
+    border-radius: 2px;
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scrollWheel 1.5s infinite;
+  }
+
+  @keyframes scrollWheel {
+    0% { transform: translate(-50%, 0); opacity: 1; }
+    100% { transform: translate(-50%, 12px); opacity: 0; }
   }
 
   /* Vision Section */
@@ -266,19 +500,29 @@ export const prerender = false;
     font-family: var(--font-heading);
     color: var(--text-primary);
     margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+
+  .small-tag {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: block;
+    margin-bottom: 6px;
   }
 
   .lead-paragraph {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     line-height: 1.6;
     color: var(--text-primary);
-    font-weight: 600;
-    margin-bottom: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
   }
 
   .vision-left p {
     color: var(--text-secondary);
-    line-height: 1.65;
+    line-height: 1.7;
     margin-bottom: 16px;
     font-size: 0.98rem;
   }
@@ -293,6 +537,26 @@ export const prerender = false;
     display: flex;
     flex-direction: column;
     gap: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* HUD scanner line on cards */
+  .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.1) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 5s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes scanHUD {
+    0% { background-position: 0 -300px; }
+    100% { background-position: 0 900px; }
   }
 
   .vision-pillars-box h3 {
@@ -300,12 +564,16 @@ export const prerender = false;
     font-family: var(--font-heading);
     color: var(--text-primary);
     margin-bottom: 10px;
+    position: relative;
+    z-index: 2;
   }
 
   .pillar-item {
     display: flex;
     gap: 20px;
     align-items: flex-start;
+    position: relative;
+    z-index: 2;
   }
 
   .pillar-icon {
@@ -339,7 +607,7 @@ export const prerender = false;
 
   /* Stats Section */
   .about-stats-section {
-    padding: 60px 0;
+    padding: 80px 0;
     background: var(--bg-secondary);
     position: relative;
     z-index: 2;
@@ -377,21 +645,22 @@ export const prerender = false;
   }
 
   .stat-number {
-    font-size: 3rem;
+    font-size: 3.2rem;
     font-weight: 800;
     font-family: var(--font-heading);
     color: var(--text-primary);
     line-height: 1;
+    letter-spacing: -1px;
   }
 
   .stat-card span {
     font-size: 0.85rem;
     color: var(--text-secondary);
-    line-height: 1.4;
+    line-height: 1.45;
     font-weight: 500;
   }
 
-  /* Process Section */
+  /* Process / Sourcing Section */
   .about-process-section {
     padding: 100px 0;
     background: #ffffff;
@@ -401,7 +670,7 @@ export const prerender = false;
 
   .process-header {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 70px;
   }
 
   .process-header h2 {
@@ -409,48 +678,86 @@ export const prerender = false;
     font-family: var(--font-heading);
     color: var(--text-primary);
     margin-bottom: 8px;
+    letter-spacing: 0.5px;
   }
 
-  .process-header p {
+  .process-sub {
     font-size: 1.1rem;
     font-weight: 600;
   }
 
-  .process-steps {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
+  /* Timeline Laser line layout */
+  .process-timeline-wrapper {
     position: relative;
+    padding: 20px 0;
+  }
+
+  .timeline-laser-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    background: var(--border-color);
+    z-index: 1;
   }
 
   @media (max-width: 992px) {
-    .process-steps {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 40px;
+    .timeline-laser-line {
+      left: 30px;
+      transform: none;
     }
   }
 
-  @media (max-width: 576px) {
-    .process-steps {
-      grid-template-columns: 1fr;
-    }
+  .laser-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%; /* Scrolled dynamically */
+    background: var(--gradient-electric);
+    box-shadow: 0 0 10px var(--accent-teal);
+    transition: height 0.1s ease-out;
   }
 
-  .process-step-item {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    padding: 30px;
-    border-radius: 20px;
-    position: relative;
+  .process-steps {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 60px;
+    position: relative;
+    z-index: 2;
   }
 
-  .step-badge {
+  .process-step-card {
+    width: 45%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 35px;
+    border-radius: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  /* Alternate left/right columns */
+  .process-step-card:nth-child(odd) {
+    align-self: flex-start;
+  }
+
+  .process-step-card:nth-child(even) {
+    align-self: flex-end;
+  }
+
+  @media (max-width: 992px) {
+    .process-step-card {
+      width: calc(100% - 70px);
+      align-self: flex-end !important;
+    }
+  }
+
+  .step-num-badge {
     position: absolute;
-    top: -20px;
-    right: 20px;
+    top: 20px;
     width: 44px;
     height: 44px;
     border-radius: 50%;
@@ -463,18 +770,43 @@ export const prerender = false;
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow-glow);
+    z-index: 10;
   }
 
-  .process-step-item h3 {
-    font-size: 1.15rem;
+  /* Badge positioning relative to timeline */
+  .process-step-card:nth-child(odd) .step-num-badge {
+    right: -22px;
+    transform: translateX(50%);
+  }
+
+  .process-step-card:nth-child(even) .step-num-badge {
+    left: -22px;
+    transform: translateX(-50%);
+  }
+
+  @media (max-width: 992px) {
+    .process-step-card .step-num-badge {
+      left: -52px !important;
+      transform: none !important;
+    }
+  }
+
+  .process-step-card h3 {
+    font-size: 1.2rem;
     color: var(--text-primary);
-    margin-top: 10px;
+    margin-bottom: 12px;
   }
 
-  .process-step-item p {
-    font-size: 0.85rem;
+  .process-step-card p {
+    font-size: 0.9rem;
     color: var(--text-secondary);
-    line-height: 1.5;
+    line-height: 1.55;
+  }
+
+  .process-step-card:hover {
+    transform: scale(1.02);
+    border-color: rgba(83, 183, 168, 0.4);
+    box-shadow: 0 0 25px rgba(83, 183, 168, 0.05);
   }
 
   /* CTA Section */
@@ -493,12 +825,16 @@ export const prerender = false;
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    position: relative;
+    overflow: hidden;
   }
 
   .about-cta-box h2 {
     font-size: 2.2rem;
     font-family: var(--font-heading);
     color: var(--text-primary);
+    position: relative;
+    z-index: 2;
   }
 
   .about-cta-box p {
@@ -507,10 +843,14 @@ export const prerender = false;
     max-width: 600px;
     line-height: 1.5;
     margin: 0;
+    position: relative;
+    z-index: 2;
   }
 
   .cta-actions {
     margin-top: 10px;
+    position: relative;
+    z-index: 2;
   }
 
   .cta-actions .btn-primary {
@@ -518,26 +858,26 @@ export const prerender = false;
     font-size: 1.05rem;
   }
 
-  /* Scroll Reveal elements */
+  /* Scroll Reveal elements with 3D translation */
   .scroll-reveal {
     opacity: 0;
-    transform: translateY(25px);
-    transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: translateY(50px) rotateX(10deg) scale(0.96);
+    transform-origin: top center;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .scroll-reveal.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) rotateX(0deg) scale(1);
   }
 
   .hover-scale {
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .stat-card.hover-scale:hover,
-  .process-step-item.hover-scale:hover {
+  .stat-card.hover-scale:hover {
     transform: scale(1.03);
     border-color: rgba(83, 183, 168, 0.3);
-    box-shadow: 0 0 15px rgba(83, 183, 168, 0.05);
+    box-shadow: 0 0 20px rgba(83, 183, 168, 0.08);
   }
 </style>
