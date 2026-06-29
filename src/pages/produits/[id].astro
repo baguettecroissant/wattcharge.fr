@@ -5,85 +5,94 @@ export const prerender = false;
 
 const { id } = Astro.params;
 
-// Catalogue de secours local
+// Catalogue de produits physique ultra-détaillé
 const DEFAULT_PRODUCTS = [
   {
     id: 'wattcharge-home-7',
-    name: 'WattCharge Home 7.4',
-    description: 'La borne de recharge connectée WattCharge Home 7.4kW est la solution idéale pour charger rapidement et sereinement votre voiture électrique à domicile. Compacte, moderne et étanche, elle s\'adapte à toutes les installations monophasées standard. Grâce à l\'application Tuya Smart Life intégrée, suivez votre consommation et planifiez votre charge pendant les heures creuses pour réaliser des économies maximales.',
+    name: 'Borne de Recharge Monophasée 7.4 kW | Connectée WiFi',
+    subtitle: 'Modèle Intelligent - 7.4 kW / 32A monophasé',
+    description: 'La borne de recharge connectée WattCharge Home 7.4 kW est conçue pour charger rapidement et sereinement votre véhicule électrique à domicile. Grâce à l\'application Tuya Smart Life intégrée, planifiez vos charges en heures creuses, suivez votre consommation en temps réel et réglez le courant de charge (de 8A à 32A) d\'un simple geste. Son boîtier IP66 robuste et son écran LCD couleur de 2,8" en font une borne premium, idéale pour l\'intérieur comme l\'extérieur.',
     price: 389.00,
     compare_at_price: 599.00,
     power_output: '7.4 kW',
     phase: 'Monophasé',
     current_rating: '32A',
-    features: [
-      'Puissance de charge réglable (jusqu\'à 7.4 kW)',
-      'Raccordement standard Monophasé 230V',
-      'Application WiFi / Bluetooth Tuya Smart Life',
-      'Protection RCD DC 6mA + AC 30mA intégrée (conforme NF C 15-100)',
-      'Câble de recharge Type 2 de 5 mètres inclus',
-      'Étanchéité IP66 pour installation extérieure'
-    ],
-    technical_specs: {
-      'Tension nominale': '230V AC ± 10%',
-      'Courant maximal': '32 A',
-      'Connecteur': 'Type 2 (standard européen)',
-      'Température de fonctionnement': '-30°C à +55°C',
-      'Protection différentielle': 'Intégrée DC 6mA + AC 30mA (Type B)',
-      'Certifications': 'CE, RoHS, WEEE'
-    }
+    specs_grid: {
+      power: '7.4 kW',
+      current: '32A',
+      phase: 'Monophasé',
+      cable: '5 mètres (Type 2 intégré)',
+      ground_cable: '90 cm (Câble de terre)',
+      wifi: 'Oui (Tuya WiFi / Bluetooth)',
+      material: 'Polycarbonate haute résistance',
+      rcd: 'DC 6mA + AC 30mA intégré'
+    },
+    protections: [
+      { name: 'Protection contre les surcharges', desc: 'Désactivation automatique si le véhicule demande plus de courant que le calibre réglé.' },
+      { name: 'Protection contre la sur-décharge', desc: 'Gestion de l\'équilibre et arrêt en cas d\'inversion ou baisse brutale de tension.' },
+      { name: 'Protection contre les courts-circuits', desc: 'Coupure électronique instantanée en cas de court-circuit sur la prise.' },
+      { name: 'Protection contre la surchauffe', desc: 'Arrêt automatique à 85°C avec reprise automatique sécurisée à 70°C.' },
+      { name: 'Protection contre la surtension', desc: 'Dispositif de sécurité coupant l\'alimentation en cas de surtension réseau (>265V).' },
+      { name: 'Protection contre la basse tension', desc: 'Alerte et mise en sécurité si la tension chute sous un seuil critique (<180V).' }
+    ]
   },
   {
     id: 'wattcharge-home-11',
-    name: 'WattCharge Home 11',
-    description: 'La borne WattCharge Home 11kW offre une puissance de charge triphasée équilibrée pour les maisons dotées d\'un compteur triphasé. Elle permet de diviser par trois le temps de recharge de votre véhicule par rapport à une installation classique, tout en conservant une connectivité complète via WiFi. Sa conception sécurisée intègre toutes les protections différentielles exigées par les assurances.',
+    name: 'Borne de Recharge Triphasée 11 kW | Connectée WiFi',
+    subtitle: 'Modèle Intelligent - 11 kW / 16A triphasé',
+    description: 'Bénéficiez d\'une recharge accélérée et sécurisée avec la borne triphasée WattCharge 11 kW. Spécifiquement calibrée pour les installations électriques triphasées de 400V, elle équilibre la puissance sur les 3 phases pour délivrer une charge stable et rapide à 16A. Équipée du WiFi Tuya pour un contrôle intelligent à distance, elle intègre toutes les sécurités indispensables à une charge de nuit sans surveillance.',
     price: 449.00,
     compare_at_price: 699.00,
     power_output: '11 kW',
     phase: 'Triphasé',
     current_rating: '16A',
-    features: [
-      'Puissance de charge stable (jusqu\'à 11 kW)',
-      'Raccordement Triphasé 400V (équilibrage automatique)',
-      'Application WiFi / Bluetooth Tuya Smart Life',
-      'Protection RCD DC 6mA + AC 30mA intégrée (conforme NF C 15-100)',
-      'Câble de recharge Type 2 de 5 mètres inclus',
-      'Accès sécurisé par 3 badges RFID inclus'
-    ],
-    technical_specs: {
-      'Tension nominale': '400V AC ± 10%',
-      'Courant maximal': '16 A per phase',
-      'Connecteur': 'Type 2 (standard européen)',
-      'Température de fonctionnement': '-30°C à +55°C',
-      'Protection différentielle': 'Intégrée DC 6mA + AC 30mA (Type B)',
-      'Certifications': 'CE, RoHS, WEEE'
-    }
+    specs_grid: {
+      power: '11 kW',
+      current: '16A (par phase)',
+      phase: 'Triphasé',
+      cable: '5 mètres (Type 2 intégré)',
+      ground_cable: '90 cm (Câble de terre)',
+      wifi: 'Oui (Tuya WiFi / Bluetooth)',
+      material: 'Polycarbonate haute résistance',
+      rcd: 'DC 6mA + AC 30mA intégré'
+    },
+    protections: [
+      { name: 'Protection contre les surcharges', desc: 'Surveillance des 3 phases pour couper le circuit en cas de surcharge d\'une phase.' },
+      { name: 'Protection contre la sur-décharge', desc: 'Sécurité de phase inversée et coupure immédiate en cas de défaut d\'isolement.' },
+      { name: 'Protection contre les courts-circuits', desc: 'Coupure triphasée ultra-rapide (<50ms) en cas de court-circuit franc.' },
+      { name: 'Protection contre la surchauffe', desc: 'Capteur de température électronique avec arrêt à 85°C et redémarrage à 70°C.' },
+      { name: 'Protection contre la surtension', desc: 'Arrêt de sécurité en cas de hausse anormale de tension sur l\'une des phases.' },
+      { name: 'Protection contre la basse tension', desc: 'Mise en sécurité si la tension triphasée passe sous 320V entre phases.' }
+    ]
   },
   {
     id: 'wattcharge-pro-22',
-    name: 'WattCharge Pro 22',
-    description: 'Notre borne la plus rapide et la plus robuste. Délivrant jusqu\'à 22kW de puissance de recharge sur réseau triphasé, la WattCharge Pro 22 est le choix sans compromis pour charger à vitesse maximale. Que ce soit pour votre domicile ou votre parking d\'entreprise, elle gère intelligemment la distribution d\'énergie, offre une interface connectée Tuya et dispose d\'une étanchéité IP66.',
+    name: 'Borne de Recharge Triphasée 22 kW | Performance Ultime',
+    subtitle: 'Modèle Intelligent - 22 kW / 32A triphasé',
+    description: 'La borne WattCharge Pro 22 kW est le choix sans compromis pour recharger votre voiture électrique à vitesse maximale. Délivrant jusqu\'à 22 kW en triphasé 32A, elle est capable de diviser par 8 le temps de recharge par rapport à une prise classique. Son écran LCD de 2,8" affiche tous les détails de charge (kW injectés, ampérage, temps) tandis que l\'application Tuya permet de gérer l\'accès ou de restreindre l\'usage de la borne.',
     price: 489.00,
     compare_at_price: 799.00,
     power_output: '22 kW',
     phase: 'Triphasé',
     current_rating: '32A',
-    features: [
-      'Puissance maximale de charge (jusqu\'à 22 kW)',
-      'Raccordement Triphasé 400V 32A',
-      'Application WiFi / Bluetooth Tuya Smart Life',
-      'Protection RCD DC 6mA + AC 30mA intégrée (conforme NF C 15-100)',
-      'Câble de recharge Type 2 de 5 mètres inclus',
-      'Idéal pour recharges quotidiennes express'
-    ],
-    technical_specs: {
-      'Tension nominale': '400V AC ± 10%',
-      'Courant maximal': '32 A per phase',
-      'Connecteur': 'Type 2 (standard européen)',
-      'Température de fonctionnement': '-30°C à +55°C',
-      'Protection différentielle': 'Intégrée DC 6mA + AC 30mA (Type B)',
-      'Certifications': 'CE, RoHS, WEEE'
-    }
+    specs_grid: {
+      power: '22 kW',
+      current: '32A (par phase)',
+      phase: 'Triphasé',
+      cable: '5 mètres (Type 2 intégré)',
+      ground_cable: '90 cm (Câble de terre)',
+      wifi: 'Oui (Tuya WiFi / Bluetooth)',
+      material: 'Polycarbonate haute résistance',
+      rcd: 'DC 6mA + AC 30mA intégré'
+    },
+    protections: [
+      { name: 'Protection contre les surcharges', desc: 'Coupure automatique pour éviter l\'échauffement de l\'installation triphasée 32A.' },
+      { name: 'Protection contre la sur-décharge', desc: 'Système d\'équilibrage actif et arrêt de sécurité en cas de pic de puissance.' },
+      { name: 'Protection contre les courts-circuits', desc: 'Coupure ultra-rapide préservant l\'électronique interne de la borne.' },
+      { name: 'Protection contre la surchauffe', desc: 'Sonde de protection thermique limitant ou coupant le courant au-delà de 85°C.' },
+      { name: 'Protection contre la surtension', desc: 'Coupe le raccordement en cas de surtension transitoire sur le réseau.' },
+      { name: 'Protection contre la basse tension', desc: 'Mise en veille sécurisée de la borne si le réseau triphasé s\'affaisse.' }
+    ]
   }
 ];
 
@@ -97,7 +106,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 ---
 
 <Layout 
-  title={`${product.name} | Borne de Recharge Connectée`} 
+  title={`${product.name}`} 
   description={product.description.substring(0, 160)}
 >
   <section class="product-detail-section">
@@ -114,12 +123,19 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
             <div class="power-overlay">{product.power_output}</div>
           </div>
           
-          <div class="warranty-badge-box glass-panel">
-            <div class="badge-item">
-              <i class="fa-solid fa-shield-check"></i>
+          <div class="product-guarantees-grid">
+            <div class="guarantee-badge-item glass-panel">
+              <i class="fa-solid fa-shield-check text-gradient-electric"></i>
               <div>
-                <strong>Garantie 2 ans constructeur</strong>
-                <p>Échange à neuf en cas de défaut matériel.</p>
+                <strong>Garantie 2 Ans</strong>
+                <p>Échange standard gratuit.</p>
+              </div>
+            </div>
+            <div class="guarantee-badge-item glass-panel">
+              <i class="fa-solid fa-truck-fast text-gradient-electric"></i>
+              <div>
+                <strong>Livraison Offerte</strong>
+                <p>Expédition sous 24/48h.</p>
               </div>
             </div>
           </div>
@@ -128,8 +144,9 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
         <!-- Colonne Droite : Configuration & Achat -->
         <div class="product-info-column">
           <div class="product-header">
-            <span class="badge-certified">{product.phase}</span>
+            <span class="badge-certified"><i class="fa-solid fa-circle-check"></i> Produit Certifié CE</span>
             <h1 class="product-title">{product.name}</h1>
+            <p class="product-subtitle">{product.subtitle}</p>
             
             <div class="product-rating">
               <div class="stars">
@@ -139,11 +156,12 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
                 <i class="fa-solid fa-star"></i>
                 <i class="fa-solid fa-star"></i>
               </div>
-              <span>(43 avis certifiés)</span>
+              <span>(43 avis clients)</span>
+              <span class="stock-indicator"><span class="pulse-indicator"></span> En Stock (3-5 jours)</span>
             </div>
 
             <div class="price-header-block">
-              <span class="detail-price" id="display-price">{Number(product.price).toFixed(2).replace('.', ',')} €</span>
+              <span class="detail-price">{Number(product.price).toFixed(2).replace('.', ',')} €</span>
               {product.compare_at_price && (
                 <span class="detail-compare-price">{Number(product.compare_at_price).toFixed(2).replace('.', ',')} €</span>
               )}
@@ -152,7 +170,15 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
           <p class="detail-desc">{product.description}</p>
 
-
+          <!-- Avantages Clés -->
+          <div class="key-features-bullets">
+            <h4><i class="fa-solid fa-circle-info"></i> Points clés :</h4>
+            <ul>
+              {product.features.map(f => (
+                <li><i class="fa-solid fa-check text-gradient-electric"></i> {f}</li>
+              ))}
+            </ul>
+          </div>
 
           <!-- Module d'Achat direct -->
           <div class="checkout-actions-block">
@@ -167,17 +193,158 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
           </div>
 
           <div class="secure-badge-row">
-            <span><i class="fa-solid fa-lock"></i> Paiement sécurisé SSL</span>
-            <span><i class="fa-solid fa-truck-fast"></i> Livraison gratuite</span>
+            <span><i class="fa-solid fa-lock"></i> Transaction Sécurisée SSL</span>
+            <span><i class="fa-solid fa-rotate-left"></i> Satisfait ou Remboursé 14j</span>
           </div>
 
         </div>
       </div>
+    </div>
+  </section>
 
-      <!-- Section Simulateur Spécifique -->
+  <!-- SECTION 1 : CARACTÉRISTIQUES TECHNIQUES DE LA BORNE DE RECHARGE (Design BornePlus) -->
+  <section class="section-tech-specs">
+    <div class="container">
+      <h2 class="section-title-specs">CARACTÉRISTIQUES TECHNIQUES DE LA BORNE DE RECHARGE</h2>
+      
+      <div class="specs-icons-grid">
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-bolt"></i>
+          <h4>Max puissance de charge : {product.specs_grid.power}</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-tv"></i>
+          <h4>Écran LED Couleur</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-circle-nodes"></i>
+          <h4>Courant de sortie : {product.specs_grid.current}</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-arrows-left-right"></i>
+          <h4>Longueur du câble de terre : {product.specs_grid.ground_cable}</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-plug"></i>
+          <h4>Prise : Type 2</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-circle-notch"></i>
+          <h4>Statut par grand cercle LED coloré</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-shield-halved"></i>
+          <h4>Antivol électronique du véhicule</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-power-off"></i>
+          <h4>Bouton d'arrêt d'urgence latéral</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-wifi"></i>
+          <h4>Possibilité de connexion WIFI : Oui</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-toolbox"></i>
+          <h4>Support mural métallique inclus</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-box"></i>
+          <h4>Matériau du boîtier : Polycarbonate</h4>
+        </div>
+        <div class="spec-icon-card">
+          <i class="fa-solid fa-shield-check"></i>
+          <h4>{product.specs_grid.rcd}</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 : FONCTIONNALITÉS (Design BornePlus) -->
+  <section class="section-features">
+    <div class="container features-flex">
+      <div class="features-visual">
+        <div class="visual-box-mockup">
+          <img src="/images/charger.png" alt="WattCharge Smart Wallbox" />
+        </div>
+      </div>
+      <div class="features-content">
+        <h2>FONCTIONNALITÉS</h2>
+        <ul class="features-checked-list">
+          <li><i class="fa-solid fa-check"></i> Démarrage de la recharge par carte de recharge IC</li>
+          <li><i class="fa-solid fa-check"></i> Démarrage à distance par application mobile</li>
+          <li><i class="fa-solid fa-check"></i> Contrôle de charge à distance</li>
+          <li><i class="fa-solid fa-check"></i> Arrêt de la recharge à distance ou par bouton</li>
+          <li><i class="fa-solid fa-check"></i> Vérification à distance de la charge de réserve</li>
+          <li><i class="fa-solid fa-check"></i> Notifications en temps réel</li>
+          <li><i class="fa-solid fa-check"></i> Contrôle intelligent de la température</li>
+          <li><i class="fa-solid fa-check"></i> Contrôle précis de la tension</li>
+          <li><i class="fa-solid fa-check"></i> Historique complet des recharges</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 : SÉCURITÉ (Design BornePlus) -->
+  <section class="section-security">
+    <div class="container security-grid">
+      <div class="security-left">
+        <h2>SÉCURITÉ</h2>
+        <p class="security-subtitle-text">Protection garantie contre les risques</p>
+        
+        <div class="security-cards-box">
+          {product.protections.map(p => (
+            <div class="security-detail-card">
+              <i class="fa-solid fa-shield-halved"></i>
+              <div>
+                <h4>{p.name}</h4>
+                <p>{p.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="security-right">
+        <div class="security-visual-image-wrapper">
+          <img src="/images/electrician_installation.png" alt="Professionnel de la sécurité électrique" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 : VOTRE INDÉPENDANCE, À PORTÉE DE MAIN (Design BornePlus) -->
+  <section class="section-independence">
+    <div class="container">
+      <div class="independence-header">
+        <h2>VOTRE INDÉPENDANCE, À PORTÉE DE MAIN</h2>
+        <p>La solution qui vous rend autonome</p>
+      </div>
+      
+      <div class="independence-cards">
+        <div class="independence-card">
+          <h3>Ne dépendez pas des bornes publiques</h3>
+          <p>
+            Malgré le programme de déploiement de 100 000 bornes sur le territoire français, le droit à la prise est loin d'être effectif, sachant que les structures de recharge publiques sont rarement libres en journée. Les conducteurs et propriétaires de voiture électrique doivent faire la queue ou partir à la recherche d'une autre borne en poursuivant leur chargemap, ce qui est très coûteux en temps et en argent.
+          </p>
+          <a href="/#catalog" class="btn-learn-more"><i class="fa-solid fa-plus"></i> EN SAVOIR PLUS</a>
+        </div>
+        <div class="independence-card">
+          <h3>Une borne de recharge rapide, qui attend dans votre garage</h3>
+          <p>
+            La station de recharge WattCharge a été pensée pour tous les profils d'utilisateurs de véhicule électrique. Composée d'un boîtier de recharge robuste, étanche et léger, elle se fixe simplement au mur d'un garage ou dans un endroit couvert de votre cour extérieure pour être toujours prête.
+          </p>
+          <a href="/#catalog" class="btn-learn-more"><i class="fa-solid fa-plus"></i> EN SAVOIR PLUS</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5 : SIMULATEUR DE CHARGE -->
+  <section class="section-simulator">
+    <div class="container">
       <div class="product-simulator-wrapper glass-panel">
         <div class="simulator-header">
-          <h3>Simulateur de Charge pour la borne {product.name}</h3>
+          <h3>Simulateur de Temps de Recharge</h3>
           <p>Configurez le niveau de batterie souhaité pour mesurer la vitesse de charge par rapport à une prise classique.</p>
         </div>
         
@@ -204,36 +371,12 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
               <strong id="time-standard-val">--</strong>
             </div>
             <div class="vis-result-item highlight-item">
-              <span class="text-gradient-electric"><i class="fa-solid fa-bolt"></i> Borne {product.name} ({product.power_output})</span>
+              <span class="text-gradient-electric"><i class="fa-solid fa-bolt"></i> Borne WattCharge ({product.power_output})</span>
               <strong id="time-borne-val" class="text-gradient-electric">--</strong>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Fiche Technique Spécifications -->
-      <div class="specs-table-wrapper glass-panel">
-        <h3>Spécifications Techniques</h3>
-        <table class="specs-table">
-          <tbody>
-            <tr>
-              <th>Puissance de charge maximale</th>
-              <td>{product.power_output}</td>
-            </tr>
-            <tr>
-              <th>Alimentation électrique</th>
-              <td>{product.phase} ({product.current_rating})</td>
-            </tr>
-            {Object.entries(product.technical_specs || {}).map(([key, val]) => (
-              <tr>
-                <th>{key}</th>
-                <td>{val}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
     </div>
   </section>
 </Layout>
@@ -326,7 +469,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
   initPayPalSDK();
 
-  // 4. Code du mini-simulateur de charge
+  // 3. Code du mini-simulateur de charge
   const sliderQualif = document.getElementById('slider-qualif');
   const sliderRangeText = document.getElementById('slider-range-text');
   const sliderPercentageText = document.getElementById('slider-percentage-text');
@@ -364,7 +507,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 <style>
   .product-detail-section {
     padding-top: 150px;
-    padding-bottom: 90px;
+    padding-bottom: 60px;
     position: relative;
     background: var(--gradient-dark);
   }
@@ -385,7 +528,6 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     grid-template-columns: 1.1fr 1fr;
     gap: 60px;
     align-items: start;
-    margin-bottom: 60px;
   }
 
   @media (max-width: 992px) {
@@ -457,30 +599,33 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     box-shadow: var(--shadow-glow);
   }
 
-  .warranty-badge-box {
-    padding: 20px 24px;
-    background: #ffffff;
+  .product-guarantees-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
   }
 
-  .badge-item {
+  .guarantee-badge-item {
+    padding: 16px 20px;
+    background: #ffffff;
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
   }
 
-  .badge-item i {
-    font-size: 1.8rem;
-    color: var(--accent-teal);
+  .guarantee-badge-item i {
+    font-size: 1.6rem;
   }
 
-  .badge-item strong {
-    font-size: 0.95rem;
+  .guarantee-badge-item strong {
+    font-size: 0.9rem;
     color: var(--text-primary);
+    display: block;
   }
 
-  .badge-item p {
+  .guarantee-badge-item p {
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     margin-top: 2px;
   }
 
@@ -495,17 +640,33 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   }
 
   .product-title {
-    font-size: 2.8rem;
+    font-size: 2.3rem;
     line-height: 1.2;
     color: var(--text-primary);
+  }
+
+  .product-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: -6px;
   }
 
   .product-rating {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-size: 0.9rem;
     color: var(--text-muted);
+    flex-wrap: wrap;
+  }
+
+  .stock-indicator {
+    color: #10b981;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .price-header-block {
@@ -532,150 +693,45 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     color: var(--text-secondary);
     line-height: 1.6;
     font-size: 0.95rem;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
   }
 
-  /* Custom checkbox card for upsell option */
-  .addon-selection-card {
-    padding: 0;
-    margin-bottom: 30px;
-    border-color: rgba(83, 183, 168, 0.2);
-    background: #ffffff;
-    overflow: hidden;
-  }
-
-  .addon-label {
-    display: flex;
-    gap: 20px;
-    padding: 24px;
-    cursor: pointer;
-    position: relative;
-    user-select: none;
-    align-items: flex-start;
-  }
-
-  .addon-label input[type="checkbox"] {
-    display: none;
-  }
-
-  .addon-checkbox-custom {
-    width: 24px;
-    height: 24px;
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    position: relative;
-    flex-shrink: 0;
-    transition: var(--transition-fast);
+  .key-features-bullets {
     background: var(--bg-secondary);
-    margin-top: 2px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
   }
 
-  .addon-label input[type="checkbox"]:checked + .addon-checkbox-custom {
-    border-color: var(--accent-teal);
-    background: var(--accent-teal);
-    box-shadow: 0 0 10px rgba(83, 183, 168, 0.3);
-  }
-
-  .addon-label input[type="checkbox"]:checked + .addon-checkbox-custom::after {
-    content: '\f00c';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    font-size: 0.8rem;
-    color: #fff;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .addon-content {
-    flex-grow: 1;
-  }
-
-  .addon-header-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .addon-header-title strong {
-    font-size: 1.05rem;
-    color: var(--text-primary);
-  }
-
-  .addon-price-tag {
-    background: rgba(83, 183, 168, 0.1);
-    color: var(--accent-teal);
-    border: 1px solid rgba(83, 183, 168, 0.2);
-    padding: 2px 10px;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 0.95rem;
-  }
-
-  .addon-desc {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    line-height: 1.5;
+  .key-features-bullets h4 {
+    font-size: 1rem;
     margin-bottom: 12px;
-  }
-
-  .tax-credit-notice {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--accent-teal);
-    font-size: 0.85rem;
-    background: rgba(83, 183, 168, 0.05);
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: 1px solid rgba(83, 183, 168, 0.1);
-  }
-
-  /* Pricing Summary Card */
-  .pricing-summary-card {
-    padding: 24px;
-    background: var(--bg-secondary);
-    margin-bottom: 30px;
-  }
-
-  .summary-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-  }
-
-  .summary-divider {
-    height: 1px;
-    background: var(--border-color);
-    margin: 16px 0;
-  }
-
-  .total-row {
-    margin-bottom: 0;
     color: var(--text-primary);
   }
 
-  .total-row strong {
-    font-size: 1.6rem;
-    font-family: var(--font-heading);
-    color: var(--accent-teal);
+  .key-features-bullets ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
-  .summary-net-notice {
+  .key-features-bullets li {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+  }
+
+  .key-features-bullets li i {
+    margin-top: 2px;
     font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 12px;
-    text-align: right;
-  }
-
-  .summary-net-notice strong {
-    color: var(--accent-teal);
   }
 
   /* Direct Checkout Blocks */
@@ -723,11 +779,308 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     margin-right: 4px;
   }
 
-  /* Simulator block */
+  /* SECTION 1: CARACTÉRISTIQUES TECHNIQUES DE LA BORNE DE RECHARGE (Design BornePlus) */
+  .section-tech-specs {
+    background: #000000;
+    color: #ffffff;
+    padding: 80px 0;
+  }
+
+  .section-title-specs {
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 60px;
+    letter-spacing: 0.5px;
+  }
+
+  .specs-icons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px 20px;
+    text-align: center;
+  }
+
+  @media (max-width: 992px) {
+    .specs-icons-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .specs-icons-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .spec-icon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .spec-icon-card i {
+    font-size: 2.5rem;
+    color: #ffffff;
+  }
+
+  .spec-icon-card h4 {
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #cccccc;
+    max-width: 220px;
+  }
+
+  /* SECTION 2: FONCTIONNALITÉS (Design BornePlus) */
+  .section-features {
+    background: var(--bg-secondary);
+    padding: 80px 0;
+  }
+
+  .features-flex {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .features-flex {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  .features-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .visual-box-mockup {
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    justify-content: center;
+    max-width: 400px;
+    width: 100%;
+  }
+
+  .visual-box-mockup img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .features-content h2 {
+    font-size: 2.2rem;
+    font-family: var(--font-heading);
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+
+  .features-checked-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .features-checked-list li {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .features-checked-list li i {
+    color: var(--accent-teal);
+    font-size: 1.1rem;
+  }
+
+  /* SECTION 3: SÉCURITÉ (Design BornePlus) */
+  .section-security {
+    background: #ffffff;
+    padding: 80px 0;
+  }
+
+  .security-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  @media (max-width: 992px) {
+    .security-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  .security-left h2 {
+    font-size: 2.2rem;
+    font-family: var(--font-heading);
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .security-subtitle-text {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+
+  .security-cards-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 576px) {
+    .security-cards-box {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .security-detail-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .security-detail-card i {
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    margin-top: 2px;
+  }
+
+  .security-detail-card h4 {
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .security-detail-card p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .security-visual-image-wrapper {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+
+  .security-visual-image-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* SECTION 4: VOTRE INDÉPENDANCE, À PORTÉE DE MAIN (Design BornePlus) */
+  .section-independence {
+    background: var(--bg-secondary);
+    padding: 80px 0;
+  }
+
+  .independence-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .independence-header h2 {
+    font-size: 2.2rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .independence-header p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .independence-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  @media (max-width: 768px) {
+    .independence-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .independence-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: space-between;
+  }
+
+  .independence-card h3 {
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .independence-card p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .btn-learn-more {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--accent-teal);
+    width: fit-content;
+    padding-bottom: 4px;
+    transition: var(--transition-fast);
+  }
+
+  .btn-learn-more:hover {
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+  }
+
+  /* SECTION 5: SIMULATEUR DE CHARGE */
+  .section-simulator {
+    padding: 80px 0;
+    background: #ffffff;
+  }
+
   .product-simulator-wrapper {
     padding: 40px;
-    margin-bottom: 60px;
-    background: #ffffff;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
   }
 
   .simulator-header {
@@ -788,7 +1141,7 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   }
 
   .vis-result-item {
-    background: var(--bg-secondary);
+    background: #ffffff;
     border: 1px solid var(--border-color);
     padding: 16px;
     border-radius: 8px;
@@ -806,45 +1159,31 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
 
   .highlight-item {
     border-color: var(--accent-teal);
-    background: rgba(83, 183, 168, 0.05);
-    box-shadow: 0 0 15px rgba(83, 183, 168, 0.05);
+    background: rgba(83, 183, 168, 0.03);
   }
 
-  /* Technical Specs table */
-  .specs-table-wrapper {
-    padding: 40px;
-    background: #ffffff;
+  .pulse-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulse 1.5s infinite;
   }
 
-  .specs-table-wrapper h3 {
-    font-size: 1.4rem;
-    margin-bottom: 24px;
-    color: var(--text-primary);
-  }
-
-  .specs-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .specs-table th, .specs-table td {
-    padding: 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 0.95rem;
-  }
-
-  .specs-table th {
-    font-weight: 600;
-    color: var(--text-secondary);
-    width: 40%;
-  }
-
-  .specs-table td {
-    color: var(--text-primary);
-  }
-
-  .hidden {
-    display: none !important;
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
   }
 </style>
