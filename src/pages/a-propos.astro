@@ -1,0 +1,543 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = false;
+---
+
+<Layout 
+  title="À Propos | La Vision WattCharge"
+  description="Découvrez comment WattCharge réinvente la recharge électrique : circuits directs, technologie connectée de pointe et sécurité sans compromis au meilleur prix."
+>
+  <!-- Cyber grid overlay -->
+  <div class="cyber-grid-bg"></div>
+
+  <!-- Hero Section avec image de fond futuriste -->
+  <section class="about-hero-section">
+    <div class="about-hero-img-overlay"></div>
+    <div class="container about-hero-container">
+      <span class="badge-certified"><i class="fa-solid fa-bolt-lightning text-gradient-electric"></i> Le Manifeste WattCharge</span>
+      <h1 class="about-main-title">RÉINVENTER LA RECHARGE.<br /><span class="text-gradient-electric">LIBÉRER LA ROUTE.</span></h1>
+      <p class="about-lead-text">
+        Nous éliminons les intermédiaires pour proposer des bornes connectées haut de gamme, sécurisées et conformes directement de l'usine à votre garage.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section Manifeste / Vision -->
+  <section class="about-vision-section">
+    <div class="container vision-grid">
+      <div class="vision-left scroll-reveal">
+        <h2>NOTRE VISION</h2>
+        <p class="lead-paragraph">
+          La transition vers la mobilité électrique ne devrait pas être freinée par des barrières tarifaires artificielles ou des installations complexes surfacturées.
+        </p>
+        <p>
+          Chez WattCharge, nous avons fait un constat simple : les réseaux d'installateurs traditionnels importent les mêmes bornes, ajoutent des marges exorbitantes et revendent des packs d'installation à plus de 1500 €. 
+        </p>
+        <p>
+          En adoptant un modèle **100% E-commerce Direct**, nous sourçons nos bornes auprès des plus grands fabricants mondiaux (conception Feyree haut de gamme), intégrons nativement les protections électriques obligatoires RCD DC 6mA, et vous expédions le colis gratuitement en 24/48h. Vous êtes libre de confier la pose à l'électricien de votre choix, ou de la poser vous-même, en économisant jusqu'à 60% sur le budget global.
+        </p>
+      </div>
+      
+      <div class="vision-right scroll-reveal">
+        <div class="vision-pillars-box glass-panel glow-panel-teal">
+          <h3>Les 3 Piliers de notre Révolution</h3>
+          
+          <div class="pillar-item">
+            <div class="pillar-icon"><i class="fa-solid fa-microchip"></i></div>
+            <div>
+              <h4>Technologie WiFi Native</h4>
+              <p>Toutes nos bornes intègrent le WiFi Tuya Smart Life. Pas d'options payantes pour planifier vos charges en heures creuses.</p>
+            </div>
+          </div>
+
+          <div class="pillar-item">
+            <div class="pillar-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+              <h4>Sécurité Totale RCD DC 6mA</h4>
+              <p>Protection contre les fuites de courant continu intégrée directement dans le boîtier. Conforme NF C 15-100 sans surcoût.</p>
+            </div>
+          </div>
+
+          <div class="pillar-item">
+            <div class="pillar-icon"><i class="fa-solid fa-handshake-slash"></i></div>
+            <div>
+              <h4>Zéro Intermédiaire</h4>
+              <p>Pas de force de vente, pas de réseau d'installateurs franchisés à rémunérer. Un prix usine net et transparent.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Chiffres Clés (Stats HUD) -->
+  <section class="about-stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card glass-panel hover-scale scroll-reveal">
+          <strong class="stat-number text-gradient-electric">-60%</strong>
+          <span>D'économie sur le budget global de recharge à domicile</span>
+        </div>
+        <div class="stat-card glass-panel hover-scale scroll-reveal">
+          <strong class="stat-number">100%</strong>
+          <span>Bornes connectées WiFi & configurables via application</span>
+        </div>
+        <div class="stat-card glass-panel hover-scale scroll-reveal">
+          <strong class="stat-number text-gradient-electric">IP66</strong>
+          <span>Étanchéité maximale garantie contre la pluie et la poussière</span>
+        </div>
+        <div class="stat-card glass-panel hover-scale scroll-reveal">
+          <strong class="stat-number">48h</strong>
+          <span>Délai moyen d'expédition depuis nos entrepôts européens</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section DNA / Processus de Livraison Sourcing -->
+  <section class="about-process-section">
+    <div class="container">
+      <div class="process-header scroll-reveal">
+        <h2>NOTRE CHAINE DE VALEUR DROPSHIPPING</h2>
+        <p class="text-gradient-electric">Du fabricant à votre tableau électrique, sans friction</p>
+      </div>
+
+      <div class="process-steps">
+        <div class="process-step-item scroll-reveal">
+          <div class="step-badge">01</div>
+          <h3>Sourcing Direct Usine</h3>
+          <p>
+            Nous travaillons main dans la main avec le fabricant leader Feyree pour produire des bornes connectées dotées de puces WiFi intelligentes et de lecteurs RFID.
+          </p>
+        </div>
+
+        <div class="process-step-item scroll-reveal">
+          <div class="step-badge">02</div>
+          <h3>Contrôle Qualité CE</h3>
+          <p>
+            Chaque lot de production est soumis à des tests rigoureux de résistance aux surtensions et de détection de courant de fuite DC 6mA.
+          </p>
+        </div>
+
+        <div class="process-step-item scroll-reveal">
+          <div class="step-badge">03</div>
+          <h3>Stockage en Europe</h3>
+          <p>
+            Les bornes sont stockées dans nos entrepôts en Espagne, Pologne et Allemagne pour assurer un transit douanier nul et une livraison express.
+          </p>
+        </div>
+
+        <div class="process-step-item scroll-reveal">
+          <div class="step-badge">04</div>
+          <h3>Expédition Gratuite 48h</h3>
+          <p>
+            Dès validation de votre paiement, l'ordre d'envoi est transmis. Vous recevez par e-mail votre numéro de suivi DHL / GLS sous 24h.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA de fin -->
+  <section class="about-cta-section">
+    <div class="container">
+      <div class="about-cta-box glass-panel glow-panel-teal text-center scroll-reveal">
+        <h2>Prêt à passer à la vitesse supérieure ?</h2>
+        <p>Commandez votre borne intelligente WattCharge aujourd'hui et commencez à économiser dès la première recharge.</p>
+        <div class="cta-actions">
+          <a href="/boutique" class="btn-primary cyber-btn">Découvrir le catalogue <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Scroll Reveal triggers
+  const revealElements = document.querySelectorAll('.scroll-reveal');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  revealElements.forEach(el => observer.observe(el));
+</script>
+
+<style>
+  /* Cyber Grid Background style */
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Hero Section style */
+  .about-hero-section {
+    position: relative;
+    padding-top: 240px;
+    padding-bottom: 120px;
+    background-image: url('/images/about_hero_car.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .about-hero-img-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.95) 100%);
+    z-index: 1;
+  }
+
+  .about-hero-container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .about-main-title {
+    font-size: 3.5rem;
+    font-family: var(--font-heading);
+    font-weight: 900;
+    line-height: 1.1;
+    color: #ffffff;
+    margin-top: 16px;
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+  }
+
+  @media (max-width: 768px) {
+    .about-main-title {
+      font-size: 2.5rem;
+    }
+  }
+
+  .about-lead-text {
+    font-size: 1.25rem;
+    color: #e2e8f0;
+    max-width: 700px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Vision Section */
+  .about-vision-section {
+    padding: 100px 0;
+    position: relative;
+    z-index: 2;
+    background: #ffffff;
+  }
+
+  .vision-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  @media (max-width: 992px) {
+    .vision-grid {
+      grid-template-columns: 1fr;
+      gap: 50px;
+    }
+  }
+
+  .vision-left h2 {
+    font-size: 2.2rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 24px;
+  }
+
+  .lead-paragraph {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .vision-left p {
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 16px;
+    font-size: 0.98rem;
+  }
+
+  .vision-left p strong {
+    color: var(--text-primary);
+  }
+
+  .vision-pillars-box {
+    padding: 40px;
+    background: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .vision-pillars-box h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .pillar-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .pillar-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(83, 183, 168, 0.05);
+    border: 1px solid rgba(83, 183, 168, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-teal);
+    flex-shrink: 0;
+  }
+
+  .pillar-icon i {
+    font-size: 1.3rem;
+  }
+
+  .pillar-item h4 {
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .pillar-item p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Stats Section */
+  .about-stats-section {
+    padding: 60px 0;
+    background: var(--bg-secondary);
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
+
+  @media (max-width: 992px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-card {
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .stat-card span {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  /* Process Section */
+  .about-process-section {
+    padding: 100px 0;
+    background: #ffffff;
+    position: relative;
+    z-index: 2;
+  }
+
+  .process-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .process-header h2 {
+    font-size: 2.2rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .process-header p {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    position: relative;
+  }
+
+  @media (max-width: 992px) {
+    .process-steps {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .process-steps {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .process-step-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    border-radius: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .step-badge {
+    position: absolute;
+    top: -20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--gradient-electric);
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .process-step-item h3 {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    margin-top: 10px;
+  }
+
+  .process-step-item p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* CTA Section */
+  .about-cta-section {
+    padding-bottom: 100px;
+    background: #ffffff;
+    position: relative;
+    z-index: 2;
+  }
+
+  .about-cta-box {
+    padding: 60px 40px;
+    background: var(--bg-secondary);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .about-cta-box h2 {
+    font-size: 2.2rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+  }
+
+  .about-cta-box p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .cta-actions {
+    margin-top: 10px;
+  }
+
+  .cta-actions .btn-primary {
+    padding: 16px 36px;
+    font-size: 1.05rem;
+  }
+
+  /* Scroll Reveal elements */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hover-scale {
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .stat-card.hover-scale:hover,
+  .process-step-item.hover-scale:hover {
+    transform: scale(1.03);
+    border-color: rgba(83, 183, 168, 0.3);
+    box-shadow: 0 0 15px rgba(83, 183, 168, 0.05);
+  }
+</style>
