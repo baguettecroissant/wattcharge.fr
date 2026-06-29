@@ -5,7 +5,6 @@ export const prerender = false;
 
 const { id } = Astro.params;
 
-// Catalogue de produits physique ultra-détaillé
 const DEFAULT_PRODUCTS = [
   {
     id: 'wattcharge-home-7',
@@ -17,6 +16,14 @@ const DEFAULT_PRODUCTS = [
     power_output: '7.4 kW',
     phase: 'Monophasé',
     current_rating: '32A',
+    features: [
+      'Puissance de charge réglable en direct (8A/10A/13A/16A/32A)',
+      'WiFi & Bluetooth intégrés - Application Tuya Smart Life',
+      'Écran LCD couleur 2,8" avec indicateur d\'état LED',
+      'Lecteur de badge RFID (3 badges inclus) ou Plug & Charge',
+      'Étanchéité IP66 maximale pour installation extérieure',
+      'Protection différentielle intégrée RCD DC 6mA + AC 30mA (Évite un différentiel Type B onéreux)'
+    ],
     specs_grid: {
       power: '7.4 kW',
       current: '32A',
@@ -46,6 +53,14 @@ const DEFAULT_PRODUCTS = [
     power_output: '11 kW',
     phase: 'Triphasé',
     current_rating: '16A',
+    features: [
+      'Puissance de charge triphasée réglable (8A/10A/13A/16A)',
+      'WiFi & Bluetooth intégrés - Application Tuya Smart Life',
+      'Écran LCD couleur 2,8" avec statut dynamique de charge',
+      'Accès sécurisé par badges RFID (3 badges inclus) ou démarrage libre',
+      'Châssis étanche IP66 résistant aux projections d\'eau et poussières',
+      'Protection différentielle intégrée RCD DC 6mA + AC 30mA conforme aux normes'
+    ],
     specs_grid: {
       power: '11 kW',
       current: '16A (par phase)',
@@ -75,6 +90,14 @@ const DEFAULT_PRODUCTS = [
     power_output: '22 kW',
     phase: 'Triphasé',
     current_rating: '32A',
+    features: [
+      'Puissance maximale de 22 kW en triphasé 32A (ajustable en continu)',
+      'WiFi & Bluetooth intégrés - Application Tuya Smart Life',
+      'Écran LCD couleur 2,8" complet (indicateur de puissance, tension, ampérage)',
+      'Accès par badge RFID (3 inclus) pour éviter l\'utilisation non autorisée',
+      'Boîtier renforcé IK10 et étanchéité IP66 extérieure',
+      'Conforme NF C 15-100 avec détection intégrée DC 6mA'
+    ],
     specs_grid: {
       power: '22 kW',
       current: '32A (par phase)',
