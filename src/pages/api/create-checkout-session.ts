@@ -57,7 +57,7 @@ export const POST: APIRoute = async ({ request }) => {
           product_data: {
             name: productDetails.name + (promoCode === 'WATT10' ? ' (Promo WATT10)' : ''),
             description: productDetails.description,
-            images: [`${origin}/images/charger.png`],
+            images: [`${origin}/images/feyree_wallbox.png`],
           },
           unit_amount: Math.round(price * 100),
         },
