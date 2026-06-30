@@ -82,6 +82,53 @@ export const prerender = false;
         </div>
 
       </div>
+
+      <!-- SECTION SEO & MAILLAGE INTERNE -->
+      <div class="outil-seo-content glass-panel">
+        <h2>Règles de Dimensionnement des Câbles pour Bornes de Recharge (Norme NF C 15-100)</h2>
+        <p>
+          L'installation d'une borne de recharge électrique à domicile ne s'improvise pas. En France, la norme <strong>NF C 15-100</strong> encadre strictement la section des conducteurs d'alimentation afin de prévenir tout risque d'échauffement ou d'incendie dû aux courants forts prolongés. Une borne tirant 32A en continu pendant plusieurs heures sollicite la ligne électrique à son maximum.
+        </p>
+
+        <h3>Quelle section de câble choisir en monophasé 7,4 kW (32A) ?</h3>
+        <p>
+          Pour alimenter une borne de recharge monophasée de 7.4 kW (comme notre <a href="/produits/wattcharge-home-7">WattCharge Home 7.4 kW</a>), la section minimale de cuivre requise par la norme est de <strong>6 mm²</strong> pour une longueur de câble standard (jusqu'à environ 20-25 mètres). 
+        </p>
+        <p>
+          Si la distance entre votre tableau électrique et votre borne est supérieure à 25 mètres, il est indispensable de passer à une section de <strong>10 mm²</strong>, voire <strong>16 mm²</strong> au-delà de 50 mètres pour limiter la chute de tension en ligne.
+        </p>
+
+        <h3>Quelle section de câble choisir en triphasé 11 kW (16A) & 22 kW (32A) ?</h3>
+        <ul>
+          <li><strong>Pour 11 kW (16A) :</strong> Le courant étant divisé sur 3 phases, la section minimale requise est de <strong>2,5 mm²</strong>. Nous conseillons généralement du <strong>4 mm²</strong> pour plus de sécurité sur les grandes longueurs. Voir notre modèle <a href="/produits/wattcharge-home-11">WattCharge Home 11 kW</a>.</li>
+          <li><strong>Pour 22 kW (32A) :</strong> La puissance maximale nécessite une section cuivre minimale de <strong>6 mm²</strong> (5G6 mm² avec 3 phases, neutre et terre). Au-delà de 35 mètres de distance, il faut surdimensionner en <strong>10 mm²</strong>. Voir notre modèle <a href="/produits/wattcharge-pro-22">WattCharge Pro 22 kW</a>.</li>
+        </ul>
+
+        <h3>Pourquoi respecter la règle de la chute de tension &lt; 3% ?</h3>
+        <p>
+          Au fil de la distance, la résistance du câble provoque une baisse de tension. Une chute de tension supérieure à 3% entraîne non seulement une perte de rendement (la borne charge moins vite car une partie de l'énergie est perdue en chaleur dans le câble), mais aussi des risques de mise en sécurité de la voiture (le chargeur embarqué du véhicule détecte une sous-tension et coupe la recharge).
+        </p>
+
+        <div class="outil-related-links">
+          <h4>💡 Nos autres outils & guides d'aide à la décision :</h4>
+          <div class="related-links-grid">
+            <a href="/outils/temps-de-recharge" class="related-link-card">
+              <i class="fa-solid fa-clock"></i>
+              <div>
+                <strong>Temps de Recharge</strong>
+                <span>Estimez la durée nécessaire pour remplir votre batterie.</span>
+              </div>
+            </a>
+            <a href="/outils/economies-carburant" class="related-link-card">
+              <i class="fa-solid fa-wallet"></i>
+              <div>
+                <strong>Calculateur d'Économies</strong>
+                <span>Estimez vos gains annuels nets face à l'essence.</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </Layout>
@@ -358,5 +405,150 @@ export const prerender = false;
     background-size: 100% 30px;
     animation: scanHUD 5s linear infinite;
     pointer-events: none;
+  }
+
+  /* SEO content styles */
+  .outil-seo-content {
+    margin-top: 50px;
+    background: #ffffff;
+    padding: 50px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    text-align: left;
+  }
+
+  @media (max-width: 768px) {
+    .outil-seo-content {
+      padding: 30px 20px;
+    }
+  }
+
+  .outil-seo-content h2 {
+    font-size: 1.8rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 800;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+  }
+
+  .outil-seo-content h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-top: 15px;
+    margin-bottom: -5px;
+  }
+
+  .outil-seo-content p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .outil-seo-content ul {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .outil-seo-content li {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .outil-seo-content strong {
+    color: var(--text-primary);
+  }
+
+  .outil-seo-content a {
+    color: var(--accent-teal);
+    text-decoration: none;
+    font-weight: 700;
+    transition: var(--transition-fast);
+    border-bottom: 1px dashed var(--accent-teal);
+  }
+
+  .outil-seo-content a:hover {
+    color: var(--text-primary);
+    border-bottom-color: var(--text-primary);
+  }
+
+  /* Related Links styles */
+  .outil-related-links {
+    margin-top: 25px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 30px;
+  }
+
+  .outil-related-links h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+
+  .related-links-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .related-links-grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+  }
+
+  .related-link-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    transition: all 0.3s ease;
+  }
+
+  .related-link-card:hover {
+    border-color: var(--accent-teal) !important;
+    background: rgba(83, 183, 168, 0.03);
+    transform: translateY(-2px);
+  }
+
+  .related-link-card i {
+    font-size: 1.5rem;
+    color: var(--accent-teal);
+  }
+
+  .related-link-card div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .related-link-card strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .related-link-card span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
   }
 </style>

@@ -119,6 +119,50 @@ export const prerender = false;
         </div>
 
       </div>
+
+      <!-- SECTION SEO & MAILLAGE INTERNE -->
+      <div class="outil-seo-content glass-panel">
+        <h2>Comprendre le Calcul du Temps de Recharge d'un Véhicule Électrique</h2>
+        <p>
+          Calculer le temps de recharge d'une voiture électrique peut sembler complexe, mais repose sur une formule mathématique simple : <strong>Temps de charge = Capacité de la batterie (kWh) / Puissance de charge (kW)</strong>. Cependant, dans la réalité, des facteurs physiques comme la perte d'énergie (environ 10% d'effet Joule et d'échauffement) et la courbe de charge gérée par le BMS (Battery Management System) influencent cette durée.
+        </p>
+
+        <h3>Quelle puissance de recharge choisir pour son domicile ?</h3>
+        <p>
+          La puissance délivrée détermine directement la vitesse à laquelle les cellules de votre batterie se remplissent. Voici un comparatif des solutions de recharge à domicile :
+        </p>
+        <ul>
+          <li><strong>Prise domestique standard (2.3 kW - 10A) :</strong> La solution de secours. Comptez plus de 25 heures pour une charge complète sur une batterie de 60 kWh.</li>
+          <li><strong>Prise renforcée (3.7 kW - 16A) :</strong> Permet de recharger en environ 15-18 heures.</li>
+          <li><strong>Borne intelligente Monophasée (7.4 kW - 32A) :</strong> Le standard recommandé. Rechargez votre véhicule durant la nuit en seulement 7 à 8 heures. Découvrez notre <a href="/produits/wattcharge-home-7">WattCharge Home 7.4 kW</a>.</li>
+          <li><strong>Borne Triphasée (11 kW à 22 kW) :</strong> Destinée aux véhicules compatibles avec la recharge triphasée (comme la Renault Zoe, Tesla Model 3/Y). Une charge complète s'effectue en 3 à 5 heures. Découvrez nos modèles <a href="/produits/wattcharge-home-11">WattCharge Home 11 kW</a> et <a href="/produits/wattcharge-pro-22">WattCharge Pro 22 kW</a>.</li>
+        </ul>
+
+        <h3>Pourquoi la charge ralentit-elle après 80% ?</h3>
+        <p>
+          Pour préserver la durée de vie de la chimie lithium-ion de votre batterie, le chargeur embarqué diminue considérablement l'ampérage dès que le niveau atteint 80%. C'est pourquoi la charge des derniers 20% prend souvent autant de temps que celle de 20% à 80%. Il est donc conseillé au quotidien de programmer votre borne intelligente pour cibler un SOC de 80% maximum.
+        </p>
+
+        <div class="outil-related-links">
+          <h4>💡 Nos autres outils & guides d'aide à la décision :</h4>
+          <div class="related-links-grid">
+            <a href="/outils/economies-carburant" class="related-link-card">
+              <i class="fa-solid fa-wallet"></i>
+              <div>
+                <strong>Calculateur d'Économies</strong>
+                <span>Estimez vos gains annuels nets face à l'essence.</span>
+              </div>
+            </a>
+            <a href="/outils/section-cable" class="related-link-card">
+              <i class="fa-solid fa-wire-coiled"></i>
+              <div>
+                <strong>Section de Câble NFC 15-100</strong>
+                <span>Dimensionnez vos câbles pour une installation sûre.</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </Layout>
@@ -426,5 +470,150 @@ export const prerender = false;
     background-size: 100% 30px;
     animation: scanHUD 5s linear infinite;
     pointer-events: none;
+  }
+
+  /* SEO content styles */
+  .outil-seo-content {
+    margin-top: 50px;
+    background: #ffffff;
+    padding: 50px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    text-align: left;
+  }
+
+  @media (max-width: 768px) {
+    .outil-seo-content {
+      padding: 30px 20px;
+    }
+  }
+
+  .outil-seo-content h2 {
+    font-size: 1.8rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 800;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+  }
+
+  .outil-seo-content h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-top: 15px;
+    margin-bottom: -5px;
+  }
+
+  .outil-seo-content p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .outil-seo-content ul {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .outil-seo-content li {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .outil-seo-content strong {
+    color: var(--text-primary);
+  }
+
+  .outil-seo-content a {
+    color: var(--accent-teal);
+    text-decoration: none;
+    font-weight: 700;
+    transition: var(--transition-fast);
+    border-bottom: 1px dashed var(--accent-teal);
+  }
+
+  .outil-seo-content a:hover {
+    color: var(--text-primary);
+    border-bottom-color: var(--text-primary);
+  }
+
+  /* Related Links styles */
+  .outil-related-links {
+    margin-top: 25px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 30px;
+  }
+
+  .outil-related-links h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+
+  .related-links-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .related-links-grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+  }
+
+  .related-link-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    transition: all 0.3s ease;
+  }
+
+  .related-link-card:hover {
+    border-color: var(--accent-teal) !important;
+    background: rgba(83, 183, 168, 0.03);
+    transform: translateY(-2px);
+  }
+
+  .related-link-card i {
+    font-size: 1.5rem;
+    color: var(--accent-teal);
+  }
+
+  .related-link-card div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .related-link-card strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .related-link-card span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
   }
 </style>
