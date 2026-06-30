@@ -1,0 +1,929 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = false;
+---
+
+<Layout 
+  title="Outils & Simulateurs Gratuits de Recharge EV | WattCharge.fr"
+  description="Calculez le temps de recharge de votre voiture électrique, estimez vos économies carburant et déterminez la section de câble idéale pour votre installation."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <section class="outils-hero">
+    <div class="outils-glow"></div>
+    <div class="container text-center">
+      <span class="badge-certified"><i class="fa-solid fa-wand-magic-sparkles"></i> Simulateurs Gratuits</span>
+      <h1 class="outils-title text-glow-teal">Vos Outils d'Aide à la Décision</h1>
+      <p class="outils-subtitle">
+        Calculez instantanément votre temps de charge, vos économies financières face au thermique et déterminez la section de câble conforme à la norme NF C 15-100.
+      </p>
+    </div>
+  </section>
+
+  <section class="outils-section">
+    <div class="container">
+      
+      <!-- Outils Tab Menu HUD -->
+      <div class="outils-tabs-wrapper glass-panel">
+        <button class="tab-btn active" data-tab="tab-time">
+          <i class="fa-solid fa-clock"></i> Temps de Recharge
+        </button>
+        <button class="tab-btn" data-tab="tab-savings">
+          <i class="fa-solid fa-wallet"></i> Économies Carburant
+        </button>
+        <button class="tab-btn" data-tab="tab-cable">
+          <i class="fa-solid fa-wire-coiled"></i> Section de Câble
+        </button>
+      </div>
+
+      <!-- TAB 1 : Simulateur de Temps de Recharge -->
+      <div class="tab-content active" id="tab-time">
+        <div class="outils-grid">
+          
+          <div class="outils-inputs glass-panel">
+            <h3><i class="fa-solid fa-sliders text-gradient-electric"></i> Configurer la recharge</h3>
+            
+            <div class="input-group">
+              <label for="car-preset">Modèle de véhicule (Capacité Batterie) :</label>
+              <select id="car-preset" class="form-input">
+                <option value="60">Tesla Model Y / 3 SR (60 kWh)</option>
+                <option value="75">Tesla Model Y / 3 LR (75 kWh)</option>
+                <option value="52">Renault Zoé E-Tech (52 kWh)</option>
+                <option value="50">Peugeot e-208 / e-2008 (50 kWh)</option>
+                <option value="77">Volkswagen ID.3 / ID.4 (77 kWh)</option>
+                <option value="custom">Autre / Capacité personnalisée</option>
+              </select>
+            </div>
+
+            <div class="input-group id-custom-battery hidden" id="custom-battery-wrapper">
+              <label for="battery-capacity">Capacité batterie personnalisée (kWh) :</label>
+              <input type="number" id="battery-capacity" value="60" min="5" max="150" class="form-input" />
+            </div>
+
+            <div class="double-inputs">
+              <div class="input-group">
+                <label for="soc-start">Niveau actuel (%) :</label>
+                <input type="number" id="soc-start" value="20" min="0" max="99" class="form-input" />
+              </div>
+              <div class="input-group">
+                <label for="soc-end">Cible de recharge (%) :</label>
+                <input type="number" id="soc-end" value="80" min="1" max="100" class="form-input" />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label>Puissance de la borne de recharge :</label>
+              <div class="power-cards-selector">
+                <label class="power-card-option">
+                  <input type="radio" name="charge-power" value="2.3" />
+                  <div class="p-card-inner">
+                    <strong>2.3 kW</strong>
+                    <span>Prise standard (10A)</span>
+                  </div>
+                </label>
+                <label class="power-card-option active">
+                  <input type="radio" name="charge-power" value="7.4" checked />
+                  <div class="p-card-inner">
+                    <strong>7.4 kW</strong>
+                    <span>WattCharge 32A Mono</span>
+                  </div>
+                </label>
+                <label class="power-card-option">
+                  <input type="radio" name="charge-power" value="11" />
+                  <div class="p-card-inner">
+                    <strong>11 kW</strong>
+                    <span>WattCharge 16A Tri</span>
+                  </div>
+                </label>
+                <label class="power-card-option">
+                  <input type="radio" name="charge-power" value="22" />
+                  <div class="p-card-inner">
+                    <strong>22 kW</strong>
+                    <span>WattCharge 32A Tri</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="outils-results glass-panel glow-panel-teal">
+            <div class="hud-scanner-overlay"></div>
+            <h3><i class="fa-solid fa-chart-simple text-gradient-electric"></i> Temps estimé</h3>
+            
+            <div class="big-result-timer">
+              <i class="fa-regular fa-clock text-gradient-electric"></i>
+              <strong id="res-time-display">--</strong>
+            </div>
+
+            <div class="results-details-list">
+              <div class="res-detail-row">
+                <span>Énergie à injecter</span>
+                <strong id="res-energy-injected">-- kWh</strong>
+              </div>
+              <div class="res-detail-row">
+                <span>Autonomie récupérée (estimée)</span>
+                <strong id="res-range-added" class="text-gradient-electric">-- km</strong>
+              </div>
+            </div>
+
+            <div class="result-action-box">
+              <p class="small">Besoin d'équiper votre domicile pour cette puissance de charge ?</p>
+              <a href="/boutique" class="btn-primary-sm btn-primary">Découvrir nos bornes connectées</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 2 : Calculateur d'Économies Financières -->
+      <div class="tab-content" id="tab-savings">
+        <div class="outils-grid">
+          
+          <div class="outils-inputs glass-panel">
+            <h3><i class="fa-solid fa-sliders text-gradient-electric"></i> Vos habitudes de conduite</h3>
+            
+            <div class="input-group">
+              <label for="annual-mileage">Kilométrage annuel parcouru :</label>
+              <div class="slider-display">
+                <input type="range" id="annual-mileage" min="5000" max="50000" step="1000" value="15000" class="range-slider" />
+                <strong id="mileage-val" class="text-gradient-electric">15 000 km</strong>
+              </div>
+            </div>
+
+            <div class="double-inputs">
+              <div class="input-group">
+                <label for="fuel-price">Prix carburant thermique (€/L) :</label>
+                <input type="number" id="fuel-price" value="1.85" step="0.05" class="form-input" />
+              </div>
+              <div class="input-group">
+                <label for="fuel-cons">Consommation moyenne (L/100km) :</label>
+                <input type="number" id="fuel-cons" value="6.5" step="0.2" class="form-input" />
+              </div>
+            </div>
+
+            <div class="double-inputs">
+              <div class="input-group">
+                <label for="elec-price">Tarif électricité (€/kWh) :</label>
+                <input type="number" id="elec-price" value="0.25" step="0.01" class="form-input" />
+              </div>
+              <div class="input-group">
+                <label for="ev-cons">Consommation électrique (kWh/100km) :</label>
+                <input type="number" id="ev-cons" value="17" step="0.5" class="form-input" />
+              </div>
+            </div>
+          </div>
+
+          <div class="outils-results glass-panel glow-panel-teal">
+            <div class="hud-scanner-overlay"></div>
+            <h3><i class="fa-solid fa-wallet text-gradient-electric"></i> Vos Économies Annuelles</h3>
+            
+            <div class="big-savings-amount">
+              <strong id="res-savings-amount" class="text-gradient-electric">-- €</strong>
+              <span>D'économie nette / an</span>
+            </div>
+
+            <div class="chart-comparison-wrapper">
+              <div class="chart-bar-group">
+                <div class="c-bar-label">Coût Thermique</div>
+                <div class="c-bar-container">
+                  <div class="c-bar-fill fuel-color" id="bar-fuel-cost" style="width: 0%;"></div>
+                  <span class="bar-value" id="val-fuel-cost">0 €</span>
+                </div>
+              </div>
+
+              <div class="chart-bar-group">
+                <div class="c-bar-label">Coût Électrique</div>
+                <div class="c-bar-container">
+                  <div class="c-bar-fill ev-color" id="bar-ev-cost" style="width: 0%;"></div>
+                  <span class="bar-value" id="val-ev-cost">0 €</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="result-action-box">
+              <p class="small">Amortissez votre borne connectée en rechargeant à prix réduit à la maison !</p>
+              <a href="/boutique" class="btn-primary-sm btn-primary">Voir la Boutique</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 3 : Calculateur de Section de Câble -->
+      <div class="tab-content" id="tab-cable">
+        <div class="outils-grid">
+          
+          <div class="outils-inputs glass-panel">
+            <h3><i class="fa-solid fa-sliders text-gradient-electric"></i> Spécifications d'installation</h3>
+            
+            <div class="input-group">
+              <label>Puissance de charge et Intensité :</label>
+              <select id="cable-power-select" class="form-input">
+                <option value="7.4-32">7.4 kW Monophasé (32A)</option>
+                <option value="11-16">11 kW Triphasé (16A)</option>
+                <option value="22-32">22 kW Triphasé (32A)</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="cable-length">Longueur du câble (distance tableau - borne) :</label>
+              <div class="slider-display">
+                <input type="range" id="cable-length" min="5" id="cable-length" max="100" step="5" value="20" class="range-slider" />
+                <strong id="cable-length-val" class="text-gradient-electric">20 mètres</strong>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="cable-material">Matériau du conducteur :</label>
+              <select id="cable-material" class="form-input">
+                <option value="copper">Cuivre (Recommandé)</option>
+                <option value="aluminum">Aluminium</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="outils-results glass-panel glow-panel-teal">
+            <div class="hud-scanner-overlay"></div>
+            <h3><i class="fa-solid fa-circle-nodes text-gradient-electric"></i> Recommandation de Câble</h3>
+            
+            <div class="big-result-cable">
+              <i class="fa-solid fa-wire-coiled text-gradient-electric"></i>
+              <strong id="res-cable-section">-- mm²</strong>
+            </div>
+
+            <div class="results-details-list">
+              <div class="res-detail-row">
+                <span>Chute de tension estimée</span>
+                <strong id="res-voltage-drop">-- %</strong>
+              </div>
+              <div class="res-detail-row">
+                <span>Conformité NF C 15-100</span>
+                <strong id="res-nf-compliance" class="status-ok"><i class="fa-solid fa-circle-check"></i> Conforme (<3% max)</strong>
+              </div>
+            </div>
+
+            <div class="result-action-box">
+              <p class="small">Chaque borne de recharge doit disposer d'une ligne dédiée protégée.</p>
+              <a href="/mentions-legales" class="btn-primary-sm btn-primary">Guides Techniques</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // 1. Tab Menu Navigation
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+
+      tab.classList.add('active');
+      const targetId = tab.getAttribute('data-tab');
+      if (targetId) {
+        document.getElementById(targetId)?.classList.add('active');
+      }
+    });
+  });
+
+  // ==========================================
+  // TAB 1 : Simulateur de Temps de Recharge
+  // ==========================================
+  const carPreset = document.getElementById('car-preset') as HTMLSelectElement;
+  const customBatteryWrapper = document.getElementById('custom-battery-wrapper');
+  const batteryCapacityInput = document.getElementById('battery-capacity') as HTMLInputElement;
+  const socStartInput = document.getElementById('soc-start') as HTMLInputElement;
+  const socEndInput = document.getElementById('soc-end') as HTMLInputElement;
+  const powerRadios = document.getElementsByName('charge-power') as NodeListOf<HTMLInputElement>;
+  const resTimeDisplay = document.getElementById('res-time-display') as HTMLElement;
+  const resEnergyInjected = document.getElementById('res-energy-injected') as HTMLElement;
+  const resRangeAdded = document.getElementById('res-range-added') as HTMLElement;
+
+  function updateChargeTimeSimulation() {
+    let batteryCapacity = parseFloat(carPreset.value);
+    
+    if (carPreset.value === 'custom') {
+      customBatteryWrapper?.classList.remove('hidden');
+      batteryCapacity = parseFloat(batteryCapacityInput.value) || 60;
+    } else {
+      customBatteryWrapper?.classList.add('hidden');
+    }
+
+    const socStart = parseFloat(socStartInput.value) || 0;
+    const socEnd = parseFloat(socEndInput.value) || 80;
+
+    let power = 7.4;
+    powerRadios.forEach(radio => {
+      if (radio.checked) {
+        power = parseFloat(radio.value);
+        // Toggle parent active class
+        radio.closest('.power-card-option')?.classList.add('active');
+      } else {
+        radio.closest('.power-card-option')?.classList.remove('active');
+      }
+    });
+
+    const targetSOCDifference = socEnd - socStart;
+    if (targetSOCDifference <= 0) {
+      resTimeDisplay.textContent = 'Valeurs incohérentes';
+      resEnergyInjected.textContent = '0 kWh';
+      resRangeAdded.textContent = '0 km';
+      return;
+    }
+
+    const energyNeeded = batteryCapacity * (targetSOCDifference / 100);
+    // 10% conversion loss
+    const decimalHours = (energyNeeded * 1.1) / power; 
+    const hours = Math.floor(decimalHours);
+    const minutes = Math.round((decimalHours - hours) * 60);
+
+    resTimeDisplay.textContent = hours === 0 ? `${minutes} min` : `${hours}h ${minutes.toString().padStart(2, '0')}m`;
+    resEnergyInjected.textContent = `${energyNeeded.toFixed(1)} kWh`;
+    
+    // Estimating 6.5 km of range per kWh
+    const rangeAdded = energyNeeded * 6.5; 
+    resRangeAdded.textContent = `~${Math.round(rangeAdded)} km`;
+  }
+
+  // Bind change events
+  carPreset.addEventListener('change', updateChargeTimeSimulation);
+  batteryCapacityInput.addEventListener('input', updateChargeTimeSimulation);
+  socStartInput.addEventListener('input', updateChargeTimeSimulation);
+  socEndInput.addEventListener('input', updateChargeTimeSimulation);
+  powerRadios.forEach(radio => radio.addEventListener('change', updateChargeTimeSimulation));
+
+  // Initialize
+  updateChargeTimeSimulation();
+
+  // ==========================================
+  // TAB 2 : Calculateur d'Économies
+  // ==========================================
+  const annualMileageInput = document.getElementById('annual-mileage') as HTMLInputElement;
+  const mileageVal = document.getElementById('mileage-val') as HTMLElement;
+  const fuelPriceInput = document.getElementById('fuel-price') as HTMLInputElement;
+  const fuelConsInput = document.getElementById('fuel-cons') as HTMLInputElement;
+  const elecPriceInput = document.getElementById('elec-price') as HTMLInputElement;
+  const evConsInput = document.getElementById('ev-cons') as HTMLInputElement;
+  
+  const resSavingsAmount = document.getElementById('res-savings-amount') as HTMLElement;
+  const barFuelCost = document.getElementById('bar-fuel-cost') as HTMLElement;
+  const barEvCost = document.getElementById('bar-ev-cost') as HTMLElement;
+  const valFuelCost = document.getElementById('val-fuel-cost') as HTMLElement;
+  const valEvCost = document.getElementById('val-ev-cost') as HTMLElement;
+
+  function updateSavingsSimulation() {
+    const mileage = parseInt(annualMileageInput.value);
+    mileageVal.textContent = `${mileage.toLocaleString('fr-FR')} km`;
+
+    const fuelPrice = parseFloat(fuelPriceInput.value) || 1.85;
+    const fuelCons = parseFloat(fuelConsInput.value) || 6.5;
+    const elecPrice = parseFloat(elecPriceInput.value) || 0.25;
+    const evCons = parseFloat(evConsInput.value) || 17;
+
+    const annualFuelCost = (mileage / 100) * fuelCons * fuelPrice;
+    const annualEvCost = (mileage / 100) * evCons * elecPrice;
+
+    const savings = annualFuelCost - annualEvCost;
+
+    resSavingsAmount.textContent = `${Math.round(savings).toLocaleString('fr-FR')} €`;
+
+    valFuelCost.textContent = `${Math.round(annualFuelCost).toLocaleString('fr-FR')} €`;
+    valEvCost.textContent = `${Math.round(annualEvCost).toLocaleString('fr-FR')} €`;
+
+    // Bars width percentage relative to max cost
+    const maxCost = Math.max(annualFuelCost, annualEvCost, 1);
+    barFuelCost.style.width = `${(annualFuelCost / maxCost) * 100}%`;
+    barEvCost.style.width = `${(annualEvCost / maxCost) * 100}%`;
+  }
+
+  annualMileageInput.addEventListener('input', updateSavingsSimulation);
+  fuelPriceInput.addEventListener('input', updateSavingsSimulation);
+  fuelConsInput.addEventListener('input', updateSavingsSimulation);
+  elecPriceInput.addEventListener('input', updateSavingsSimulation);
+  evConsInput.addEventListener('input', updateSavingsSimulation);
+
+  updateSavingsSimulation();
+
+  // ==========================================
+  // TAB 3 : Calculateur de Section de Câble
+  // ==========================================
+  const cablePowerSelect = document.getElementById('cable-power-select') as HTMLSelectElement;
+  const cableLengthInput = document.getElementById('cable-length') as HTMLInputElement;
+  const cableLengthVal = document.getElementById('cable-length-val') as HTMLElement;
+  const cableMaterial = document.getElementById('cable-material') as HTMLSelectElement;
+
+  const resCableSection = document.getElementById('res-cable-section') as HTMLElement;
+  const resVoltageDrop = document.getElementById('res-voltage-drop') as HTMLElement;
+  const resNfCompliance = document.getElementById('res-nf-compliance') as HTMLElement;
+
+  function updateCableSimulation() {
+    const powerSelectVal = cablePowerSelect.value;
+    const length = parseInt(cableLengthInput.value);
+    cableLengthVal.textContent = `${length} mètres`;
+
+    const material = cableMaterial.value; // copper or aluminum
+    
+    // resistivity (ohm.mm2/m)
+    const rho = material === 'copper' ? 0.0179 : 0.0286; 
+
+    // Split power and current
+    const [powerKW, currentA] = powerSelectVal.split('-').map(Number);
+    const isTri = powerKW > 10; // 11kW or 22kW are triphase
+
+    // Calculate voltage drop for each cable section option
+    // Sections standard (mm2)
+    const standardSections = [2.5, 4, 6, 10, 16, 25];
+    let recommendedSection = 10;
+    let finalVdropPct = 0;
+
+    for (let s of standardSections) {
+      // Delta V formula
+      // Monophasé: dV = 2 * I * L * rho / S
+      // Triphasé: dV = sqrt(3) * I * L * rho / S
+      let dV = 0;
+      if (!isTri) {
+        dV = (2 * currentA * length * rho) / s;
+      } else {
+        dV = (Math.sqrt(3) * currentA * length * rho) / s;
+      }
+
+      const vNominal = isTri ? 400 : 230;
+      const vDropPct = (dV / vNominal) * 100;
+
+      // NF C 15-100 constraint: Voltage drop must be < 3% for power/charging circuits
+      // Also we enforce minimum sections for EV chargers:
+      // Monophase 32A -> min 6mm2 copper, Triphase 16A -> min 2.5mm2, Triphase 32A -> min 6mm2.
+      const minAllowedSection = !isTri ? 6 : currentA === 16 ? 2.5 : 6;
+
+      if (vDropPct < 2.5 && s >= minAllowedSection) {
+        recommendedSection = s;
+        finalVdropPct = vDropPct;
+        break;
+      }
+    }
+
+    resCableSection.textContent = `${recommendedSection} mm²`;
+    resVoltageDrop.textContent = `${finalVdropPct.toFixed(2)} %`;
+
+    if (finalVdropPct < 3.0) {
+      resNfCompliance.className = 'status-ok';
+      resNfCompliance.innerHTML = `<i class="fa-solid fa-circle-check"></i> Conforme (<3% max)`;
+    } else {
+      resNfCompliance.className = 'status-fail';
+      resNfCompliance.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Chute de tension élevée`;
+    }
+  }
+
+  cablePowerSelect.addEventListener('change', updateCableSimulation);
+  cableLengthInput.addEventListener('input', updateCableSimulation);
+  cableMaterial.addEventListener('change', updateCableSimulation);
+
+  updateCableSimulation();
+</script>
+
+<style is:global>
+  /* Cyber Grid Background style */
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .outils-hero {
+    padding-top: 170px;
+    padding-bottom: 50px;
+    position: relative;
+    background: var(--gradient-dark);
+    z-index: 2;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .outils-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.06) 0%, rgba(111, 148, 166, 0.02) 50%, transparent 100%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .outils-title {
+    font-size: 2.8rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+  }
+
+  .outils-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .outils-section {
+    padding: 60px 0 100px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Tabs menu */
+  .outils-tabs-wrapper {
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
+  }
+
+  @media (max-width: 640px) {
+    .outils-tabs-wrapper {
+      flex-direction: column;
+    }
+  }
+
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 20px 30px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-right: 1px solid var(--border-color);
+  }
+
+  .tab-btn:last-child {
+    border-right: none;
+  }
+
+  .tab-btn:hover {
+    color: var(--accent-teal);
+    background: rgba(83, 183, 168, 0.02);
+  }
+
+  .tab-btn.active {
+    background: var(--gradient-electric);
+    color: #ffffff;
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Tab content show/hide */
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Grid simulator layout */
+  .outils-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    align-items: stretch;
+  }
+
+  @media (max-width: 992px) {
+    .outils-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
+  .outils-inputs {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .outils-inputs h3 {
+    font-size: 1.35rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .double-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 576px) {
+    .double-inputs {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+  }
+
+  .input-group label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .form-input {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition-fast);
+  }
+
+  .form-input:focus {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 10px rgba(83, 183, 168, 0.1);
+  }
+
+  /* Power radio selector cards */
+  .power-cards-selector {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 480px) {
+    .power-cards-selector {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .power-card-option {
+    cursor: pointer;
+    position: relative;
+  }
+
+  .power-card-option input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .p-card-inner {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: all 0.3s ease;
+  }
+
+  .p-card-inner strong {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+  }
+
+  .p-card-inner span {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .power-card-option.active .p-card-inner {
+    border-color: var(--accent-teal);
+    background: rgba(83, 183, 168, 0.03);
+    box-shadow: 0 0 15px rgba(83, 183, 168, 0.05);
+  }
+
+  .power-card-option.active strong {
+    color: var(--accent-teal);
+  }
+
+  /* Results Card styles */
+  .outils-results {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 40px 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .outils-results h3 {
+    font-size: 1.35rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Big Display Metrics */
+  .big-result-timer, 
+  .big-savings-amount, 
+  .big-result-cable {
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .big-result-timer i, 
+  .big-result-cable i {
+    font-size: 2.2rem;
+  }
+
+  .big-result-timer strong, 
+  .big-savings-amount strong, 
+  .big-result-cable strong {
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: var(--font-heading);
+  }
+
+  .big-savings-amount span {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .results-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .res-detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .res-detail-row strong {
+    color: var(--text-primary);
+  }
+
+  .status-ok {
+    color: #10b981;
+  }
+
+  .status-fail {
+    color: #ef4444;
+  }
+
+  .result-action-box {
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .result-action-box p {
+    color: var(--text-muted);
+  }
+
+  .result-action-box .btn-primary-sm {
+    width: 100%;
+    justify-content: center;
+    padding: 14px;
+  }
+
+  /* Savings dynamic comparison bar charts */
+  .chart-comparison-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .chart-bar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .c-bar-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .c-bar-container {
+    height: 30px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .c-bar-fill {
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .c-bar-fill.fuel-color {
+    background: #94a3b8;
+  }
+
+  .c-bar-fill.ev-color {
+    background: var(--gradient-electric);
+  }
+
+  .bar-value {
+    position: absolute;
+    right: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+
+  /* HUD scanner overlay on results card */
+  .outils-results .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.05) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 5s linear infinite;
+    pointer-events: none;
+  }
+</style>
