@@ -40,6 +40,33 @@ const DEFAULT_PRODUCTS = [
 ];
 
 const products = DEFAULT_PRODUCTS;
+
+const BLOG_ARTICLES = [
+  {
+    slug: 'optimiser-charge-domicile',
+    title: 'Comment optimiser la charge de sa voiture électrique à domicile ?',
+    excerpt: 'Découvrez nos astuces indispensables pour programmer votre borne intelligente en heures creuses, configurer l\'ampérage idéal et maximiser la durée de vie de votre batterie.',
+    date: '29 Juin 2026',
+    image: '/images/blog_charge_domicile.png',
+    author: 'Thomas R.'
+  },
+  {
+    slug: 'norme-nf-c-15-100-rcd-dc-6ma',
+    title: 'Norme NF C 15-100 & Protection DC 6mA : Ce qu\'il faut absolument savoir',
+    excerpt: 'La protection contre les fuites de courant continu est obligatoire en France pour la recharge de véhicules électriques. Pourquoi le RCD DC 6mA intégré vous fait économiser 300 €.',
+    date: '25 Juin 2026',
+    image: '/images/blog_electrical_panel.png',
+    author: 'Sarah L.'
+  },
+  {
+    slug: 'wifi-vs-bluetooth-borne-connectee',
+    title: 'WiFi vs Bluetooth : Pourquoi connecter votre borne de recharge en WiFi ?',
+    excerpt: 'Domotique Tuya, statistiques de consommation, programmation horaire avancée et mises à jour logicielles : pourquoi le WiFi surpasse le Bluetooth pour votre borne.',
+    date: '20 Juin 2026',
+    image: '/images/blog_wifi_bluetooth.png',
+    author: 'Marc D.'
+  }
+];
 ---
 
 <Layout 
@@ -281,6 +308,43 @@ const products = DEFAULT_PRODUCTS;
           <h4>Paiement 100% Sécurisé</h4>
           <p>Stripe (CB/Apple Pay) et PayPal (Option 4x sans frais).</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION BLOG TEASER SUR LA HOME -->
+  <section class="home-blog-section">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <span class="badge-certified"><i class="fa-solid fa-graduation-cap"></i> Nos Actualités & Guides</span>
+        <h2>Derniers articles du blog</h2>
+        <p>Retrouvez les conseils de nos experts mobilité pour optimiser vos charges et maîtriser les normes.</p>
+      </div>
+
+      <div class="home-blog-grid">
+        {BLOG_ARTICLES.map(art => (
+          <article class="home-blog-card glass-panel hover-scale scroll-reveal">
+            <div class="home-blog-card-image">
+              <img src={art.image} alt={art.title} />
+              <div class="home-blog-card-date">{art.date}</div>
+            </div>
+            
+            <div class="home-blog-card-content">
+              <h3 class="home-blog-card-title">{art.title}</h3>
+              <p class="home-blog-card-excerpt">{art.excerpt}</p>
+              
+              <div class="home-blog-card-footer">
+                <a href={`/blog/${art.slug}`} class="btn-read-more">
+                  Lire la suite <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="home-blog-cta text-center scroll-reveal">
+        <a href="/blog" class="btn-secondary">Voir tous les articles <i class="fa-solid fa-chevron-right"></i></a>
       </div>
     </div>
   </section>
@@ -917,5 +981,122 @@ const products = DEFAULT_PRODUCTS;
     background-size: 100% 30px;
     animation: scanHUD 6s linear infinite;
     pointer-events: none;
+  }
+
+  /* Homepage Blog Teaser styles */
+  .home-blog-section {
+    background: var(--bg-secondary);
+    padding: 100px 0;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .home-blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-bottom: 50px;
+  }
+
+  @media (max-width: 992px) {
+    .home-blog-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .home-blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .home-blog-card {
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s ease;
+  }
+
+  .home-blog-card-image {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background: var(--bg-secondary);
+  }
+
+  .home-blog-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .home-blog-card:hover .home-blog-card-image img {
+    transform: scale(1.04);
+  }
+
+  .home-blog-card-date {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .home-blog-card-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .home-blog-card-title {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    line-height: 1.35;
+    font-weight: 700;
+  }
+
+  .home-blog-card-excerpt {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .home-blog-card-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+    margin-top: 5px;
+  }
+
+  .btn-read-more {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-teal);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: var(--transition-fast);
+  }
+
+  .btn-read-more:hover {
+    color: var(--text-primary);
+    transform: translateX(3px);
+  }
+
+  .home-blog-cta {
+    margin-top: 20px;
   }
 </style>

@@ -1,0 +1,743 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = false;
+
+const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-id';
+---
+
+<Layout 
+  title="Votre Panier | WattCharge.fr"
+  description="Finalisez vos achats et configurez votre borne de recharge en direct."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <section class="panier-section">
+    <div class="container">
+      <div class="panier-header text-center scroll-reveal">
+        <span class="badge-certified"><i class="fa-solid fa-cart-shopping"></i> E-commerce Sécurisé</span>
+        <h1 class="panier-main-title text-glow-teal">Total Panier</h1>
+      </div>
+
+      <div class="panier-grid" id="cart-content-grid">
+        
+        <!-- Colonne Gauche : Liste des articles -->
+        <div class="cart-items-column scroll-reveal">
+          <div class="cart-table-wrapper glass-panel">
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th class="col-delete"></th>
+                  <th class="col-product">Produit</th>
+                  <th class="col-price">Prix</th>
+                  <th class="col-qty">Quantité</th>
+                  <th class="col-subtotal">Sous-total</th>
+                </tr>
+              </thead>
+              <tbody id="cart-items-tbody">
+                <!-- Dynamically populated via client script -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="cart-actions-row">
+            <div class="promo-code-box glass-panel">
+              <input type="text" id="promo-input" placeholder="Code promo" class="promo-input" />
+              <button id="apply-promo-btn" class="btn-primary-sm btn-primary">Appliquer le code promo</button>
+            </div>
+            <button id="update-cart-btn" class="btn-secondary update-btn">Mettre à jour le panier</button>
+          </div>
+        </div>
+
+        <!-- Colonne Droite : Total & Checkout -->
+        <div class="cart-total-column scroll-reveal">
+          <div class="cart-totals-card glass-panel glow-panel-teal">
+            <div class="hud-scanner-overlay"></div>
+            <h3>TOTAL PANIER</h3>
+            
+            <div class="totals-list">
+              <div class="total-row">
+                <span>Sous-total</span>
+                <span id="subtotal-display">-- €</span>
+              </div>
+              <div class="total-row" id="promo-row" style="display: none;">
+                <span class="promo-discount-text">Code Promo (<span id="promo-code-name">--</span>)</span>
+                <span id="promo-discount-display" class="promo-discount-val">-- €</span>
+              </div>
+              <div class="total-row">
+                <span>Expédition</span>
+                <div>
+                  <strong>Livraison Standard : 30,00 € (TTC)</strong>
+                  <p class="shipping-note">Les options de livraison seront mises à jour lors de la commande.</p>
+                </div>
+              </div>
+              
+              <div class="total-divider"></div>
+              
+              <div class="total-row grand-total-row">
+                <span>Total</span>
+                <strong id="grand-total-display" class="text-gradient-electric">-- €</strong>
+              </div>
+              <div class="vat-note">
+                <span id="vat-display">(dont -- € TVA)</span>
+              </div>
+            </div>
+
+            <!-- Checkout button groups -->
+            <div class="checkout-buttons-group">
+              <button id="stripe-checkout-btn" class="btn-primary cyber-btn">
+                Valider la commande <i class="fa-solid fa-credit-card"></i>
+              </button>
+              
+              <div class="checkout-divider">
+                <span>OU PAYER AVEC</span>
+              </div>
+
+              <!-- PayPal Container -->
+              <div id="paypal-button-container"></div>
+            </div>
+
+            <div class="secure-badge-footer">
+              <span><i class="fa-solid fa-lock"></i> SSL Cryptage de bout en bout</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Panier Vide State -->
+      <div class="empty-cart-state hidden" id="empty-cart-state">
+        <i class="fa-solid fa-cart-arrow-down empty-cart-icon"></i>
+        <h2>Votre panier est actuellement vide.</h2>
+        <p>Découvrez nos modèles de bornes de recharge intelligentes et performantes.</p>
+        <a href="/boutique" class="btn-primary">Retour à la boutique <i class="fa-solid fa-store"></i></a>
+      </div>
+
+    </div>
+  </section>
+</Layout>
+
+<!-- Client Side script for Cart interaction -->
+<script define:vars={{ paypalClientId }}>
+  // DOM Elements
+  const cartGrid = document.getElementById('cart-content-grid');
+  const emptyState = document.getElementById('empty-cart-state');
+  const tbody = document.getElementById('cart-items-tbody');
+  
+  const subtotalDisplay = document.getElementById('subtotal-display');
+  const grandTotalDisplay = document.getElementById('grand-total-display');
+  const vatDisplay = document.getElementById('vat-display');
+  const promoRow = document.getElementById('promo-row');
+  const promoCodeName = document.getElementById('promo-code-name');
+  const promoDiscountDisplay = document.getElementById('promo-discount-display');
+
+  const promoInput = document.getElementById('promo-input');
+  const applyPromoBtn = document.getElementById('apply-promo-btn');
+  const updateCartBtn = document.getElementById('update-cart-btn');
+  const stripeBtn = document.getElementById('stripe-checkout-btn');
+
+  let activeDiscount = 0; // percentage
+  let activePromoCode = '';
+
+  const SHIPPING_COST = 30.0;
+
+  function loadCart() {
+    try {
+      return JSON.parse(localStorage.getItem('wattcharge_cart') || '[]');
+    } catch(e) {
+      console.error(e);
+      return [];
+    }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem('wattcharge_cart', JSON.stringify(cart));
+    if (window.updateNavCartCount) {
+      window.updateNavCartCount();
+    }
+  }
+
+  function renderCart() {
+    const cart = loadCart();
+    if (cart.length === 0) {
+      cartGrid.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      return;
+    }
+
+    cartGrid.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    tbody.innerHTML = '';
+
+    let subtotal = 0;
+
+    cart.forEach((item, index) => {
+      const itemSubtotal = item.price * item.quantity;
+      subtotal += itemSubtotal;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="col-delete">
+          <button class="remove-item-btn" data-index="${index}"><i class="fa-solid fa-xmark"></i></button>
+        </td>
+        <td class="col-product">
+          <div class="cart-product-info">
+            <img src="${item.image || '/images/charger.png'}" alt="${item.name}" />
+            <div>
+              <strong>${item.name}</strong>
+            </div>
+          </div>
+        </td>
+        <td class="col-price">${formatPrice(item.price)} €</td>
+        <td class="col-qty">
+          <div class="qty-controls-small">
+            <button type="button" class="qty-control-btn qty-dec" data-index="${index}">-</button>
+            <input type="number" value="${item.quantity}" min="1" max="99" readonly />
+            <button type="button" class="qty-control-btn qty-inc" data-index="${index}">+</button>
+          </div>
+        </td>
+        <td class="col-subtotal">${formatPrice(itemSubtotal)} €</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+    // Bind event listeners inside table
+    document.querySelectorAll('.remove-item-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const index = parseInt(btn.getAttribute('data-index'));
+        const currentCart = loadCart();
+        currentCart.splice(index, 1);
+        saveCart(currentCart);
+        renderCart();
+      });
+    });
+
+    document.querySelectorAll('.qty-dec').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.getAttribute('data-index'));
+        const currentCart = loadCart();
+        if (currentCart[index].quantity > 1) {
+          currentCart[index].quantity--;
+          saveCart(currentCart);
+          renderCart();
+        }
+      });
+    });
+
+    document.querySelectorAll('.qty-inc').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.getAttribute('data-index'));
+        const currentCart = loadCart();
+        if (currentCart[index].quantity < 99) {
+          currentCart[index].quantity++;
+          saveCart(currentCart);
+          renderCart();
+        }
+      });
+    });
+
+    // Compute Totals
+    const discountAmount = subtotal * (activeDiscount / 100);
+    const total = subtotal + SHIPPING_COST - discountAmount;
+    const vatAmount = total * 0.20; // 20% VAT
+
+    subtotalDisplay.textContent = `${formatPrice(subtotal)} €`;
+    
+    if (activeDiscount > 0) {
+      promoCodeName.textContent = activePromoCode;
+      promoDiscountDisplay.textContent = `-${formatPrice(discountAmount)} €`;
+      promoRow.style.display = 'flex';
+    } else {
+      promoRow.style.display = 'none';
+    }
+
+    grandTotalDisplay.textContent = `${formatPrice(total)} €`;
+    vatDisplay.textContent = `(dont ${formatPrice(vatAmount)} € TVA)`;
+  }
+
+  function formatPrice(number) {
+    return Number(number).toFixed(2).replace('.', ',');
+  }
+
+  // Promo Code Validation
+  applyPromoBtn.addEventListener('click', () => {
+    const code = promoInput.value.trim().toUpperCase();
+    if (code === 'WATT10') {
+      activeDiscount = 10;
+      activePromoCode = 'WATT10 (-10%)';
+      alert('Code promo WATT10 appliqué avec succès ! (10% de réduction)');
+      renderCart();
+    } else if (code === '') {
+      alert('Veuillez saisir un code promo.');
+    } else {
+      alert('Code promo invalide ou expiré.');
+    }
+  });
+
+  // Update Cart Button
+  updateCartBtn.addEventListener('click', () => {
+    renderCart();
+    alert('Panier mis à jour !');
+  });
+
+  // Stripe Checkout integration
+  stripeBtn.addEventListener('click', async () => {
+    const cart = loadCart();
+    if (cart.length === 0) return;
+
+    stripeBtn.disabled = true;
+    stripeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Redirection...';
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          items: cart.map(item => ({ id: item.id, quantity: item.quantity })),
+          promoCode: activeDiscount > 0 ? 'WATT10' : undefined
+        })
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Erreur Stripe : ' + (data.error || 'Inconnue'));
+        stripeBtn.disabled = false;
+        stripeBtn.innerHTML = 'Valider la commande <i class="fa-solid fa-credit-card"></i>';
+      }
+    } catch(e) {
+      console.error(e);
+      alert('Erreur de connexion. Impossible de valider la commande.');
+      stripeBtn.disabled = false;
+      stripeBtn.innerHTML = 'Valider la commande <i class="fa-solid fa-credit-card"></i>';
+    }
+  });
+
+  // PayPal Checkout integration
+  function initPayPalSDK() {
+    if (window.paypal) {
+      renderPayPalButtons();
+    } else {
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=EUR&components=buttons`;
+      script.onload = renderPayPalButtons;
+      document.body.appendChild(script);
+    }
+  }
+
+  function renderPayPalButtons() {
+    window.paypal.Buttons({
+      createOrder: async function() {
+        const cart = loadCart();
+        const response = await fetch('/api/create-paypal-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            items: cart.map(item => ({ id: item.id, quantity: item.quantity })),
+            promoCode: activeDiscount > 0 ? 'WATT10' : undefined
+          })
+        });
+        const order = await response.json();
+        return order.id;
+      },
+      onApprove: async function(data) {
+        const response = await fetch('/api/capture-paypal-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            orderID: data.orderID
+          })
+        });
+        const captureData = await response.json();
+        if (captureData.status === 'COMPLETED') {
+          // Clear cart on success
+          localStorage.removeItem('wattcharge_cart');
+          window.location.href = `/checkout/success?order_id=${captureData.orderId}`;
+        } else {
+          alert('Le paiement PayPal n\'a pas pu être capturé.');
+        }
+      },
+      onError: function(err) {
+        console.error('PayPal Error:', err);
+        alert('Erreur PayPal. Veuillez réessayer.');
+      }
+    }).render('#paypal-button-container');
+  }
+
+  // Initial Load
+  renderCart();
+  initPayPalSDK();
+</script>
+
+<style>
+  /* Cyber Grid Background style */
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .panier-section {
+    padding-top: 170px;
+    padding-bottom: 100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .panier-header {
+    margin-bottom: 50px;
+  }
+
+  .panier-main-title {
+    font-size: 3rem;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-top: 10px;
+  }
+
+  .panier-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (max-width: 992px) {
+    .panier-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
+  /* Cart Table styles */
+  .cart-table-wrapper {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 30px;
+    overflow-x: auto;
+    margin-bottom: 25px;
+  }
+
+  .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .cart-table th, 
+  .cart-table td {
+    padding: 18px 12px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+
+  .cart-table th {
+    font-weight: 700;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .col-delete { width: 5%; text-align: center; }
+  .col-product { width: 50%; }
+  .col-price { width: 15%; }
+  .col-qty { width: 15%; }
+  .col-subtotal { width: 15%; text-align: right; font-weight: 700; color: var(--text-primary); }
+
+  .remove-item-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+  }
+
+  .remove-item-btn:hover {
+    color: #ef4444;
+  }
+
+  .cart-product-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .cart-product-info img {
+    height: 60px;
+    object-fit: contain;
+  }
+
+  /* Qty Controls Small */
+  .qty-controls-small {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    width: fit-content;
+    background: var(--bg-secondary);
+  }
+
+  .qty-control-btn {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+  }
+
+  .qty-control-btn:hover {
+    background: rgba(83, 183, 168, 0.08);
+    color: var(--accent-teal);
+  }
+
+  .qty-controls-small input {
+    width: 36px;
+    height: 32px;
+    border: none;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: #ffffff;
+    color: var(--text-primary);
+  }
+
+  /* Cart Action Row */
+  .cart-actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .promo-code-box {
+    background: #ffffff;
+    padding: 12px 20px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+    max-width: 440px;
+  }
+
+  .promo-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    background: transparent;
+  }
+
+  .update-btn {
+    padding: 14px 24px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  /* Totals card styles */
+  .cart-totals-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 40px 30px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cart-totals-card h3 {
+    font-size: 1.35rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .totals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .total-row strong {
+    color: var(--text-primary);
+  }
+
+  .shipping-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.3;
+    max-width: 180px;
+    text-align: right;
+  }
+
+  .total-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 10px 0;
+  }
+
+  .grand-total-row {
+    font-size: 1.15rem;
+  }
+
+  .grand-total-row strong {
+    font-size: 1.7rem;
+    font-weight: 800;
+  }
+
+  .vat-note {
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: -12px;
+  }
+
+  .promo-discount-text {
+    color: #10b981;
+    font-weight: 700;
+  }
+
+  .promo-discount-val {
+    color: #10b981;
+    font-weight: 700;
+  }
+
+  /* Checkout buttons */
+  .checkout-buttons-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .checkout-buttons-group .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 16px;
+    font-size: 1.05rem;
+  }
+
+  .checkout-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .checkout-divider::before,
+  .checkout-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+    margin: 0 15px;
+  }
+
+  .secure-badge-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    position: relative;
+    z-index: 2;
+  }
+
+  .secure-badge-footer i {
+    color: var(--accent-teal);
+    margin-right: 4px;
+  }
+
+  /* Empty Cart State */
+  .empty-cart-state {
+    text-align: center;
+    padding: 80px 40px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    box-shadow: var(--shadow-card);
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .empty-cart-icon {
+    font-size: 4rem;
+    color: var(--text-muted);
+  }
+
+  .empty-cart-state h2 {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+  }
+
+  .empty-cart-state p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    margin: 0;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+
+  /* HUD scanner overlay */
+  .cart-totals-card .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.05) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 5s linear infinite;
+    pointer-events: none;
+  }
+</style>

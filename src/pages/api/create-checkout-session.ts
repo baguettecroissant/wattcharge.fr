@@ -23,33 +23,62 @@ const PRODUCTS_MAP: Record<string, { name: string; price: number; description: s
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { productId } = await request.json();
-    
-    if (!productId || !PRODUCTS_MAP[productId]) {
-      return new Response(JSON.stringify({ error: 'Produit invalide ou manquant.' }), {
+    const body = await request.json();
+    const items = body.items || (body.productId ? [{ id: body.productId, quantity: 1 }] : []);
+    const promoCode = body.promoCode;
+
+    if (items.length === 0) {
+      return new Response(JSON.stringify({ error: 'Panier vide ou invalide.' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    const productDetails = PRODUCTS_MAP[productId];
     const origin = new URL(request.url).origin;
+    const line_items: any[] = [];
 
-    // Préparation des lignes d'articles pour Stripe Checkout
-    const line_items: any[] = [
-      {
+    for (const item of items) {
+      const productDetails = PRODUCTS_MAP[item.id];
+      if (!productDetails) {
+        return new Response(JSON.stringify({ error: `Produit ${item.id} inconnu.` }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      let price = productDetails.price;
+      if (promoCode === 'WATT10') {
+        price = price * 0.9;
+      }
+
+      line_items.push({
         price_data: {
           currency: 'eur',
           product_data: {
-            name: productDetails.name,
+            name: productDetails.name + (promoCode === 'WATT10' ? ' (Promo WATT10)' : ''),
             description: productDetails.description,
             images: [`${origin}/images/charger.png`],
           },
-          unit_amount: Math.round(productDetails.price * 100),
+          unit_amount: Math.round(price * 100),
         },
-        quantity: 1,
-      }
-    ];
+        quantity: item.quantity,
+      });
+    }
+
+    // Ajout des frais de port fixes de 30 €
+    line_items.push({
+      price_data: {
+        currency: 'eur',
+        product_data: {
+          name: 'Livraison Standard',
+          description: 'Expédition sécurisée par DHL / GLS',
+        },
+        unit_amount: 3000,
+      },
+      quantity: 1,
+    });
+
+    const firstProduct = items[0].id;
 
     // Création de la session Stripe Checkout
     const session = await stripe.checkout.sessions.create({
@@ -59,12 +88,12 @@ export const POST: APIRoute = async ({ request }) => {
       shipping_address_collection: {
         allowed_countries: ['FR', 'BE', 'LU', 'CH'],
       },
-      success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}&formula_id=${productId}`,
+      success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}&formula_id=${firstProduct}`,
       cancel_url: `${origin}/checkout/cancel`,
       metadata: {
-        productId: productId,
+        items: JSON.stringify(items),
         installAddon: 'false',
-        formule: productId.includes('22') ? 'pro' : 'home'
+        promoCode: promoCode || ''
       }
     });
 

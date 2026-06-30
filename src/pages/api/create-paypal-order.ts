@@ -11,19 +11,37 @@ const PRODUCTS_MAP: Record<string, { price: number }> = {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const { productId } = await request.json();
+    const body = await request.json();
+    const items = body.items || (body.productId ? [{ id: body.productId, quantity: 1 }] : []);
+    const promoCode = body.promoCode;
 
-    if (!productId || !PRODUCTS_MAP[productId]) {
-      return new Response(JSON.stringify({ error: 'Produit invalide ou manquant.' }), {
+    if (items.length === 0) {
+      return new Response(JSON.stringify({ error: 'Panier vide ou invalide.' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    const finalPrice = PRODUCTS_MAP[productId].price;
+    let subtotal = 0;
+    for (const item of items) {
+      const productDetails = PRODUCTS_MAP[item.id];
+      if (!productDetails) {
+        return new Response(JSON.stringify({ error: `Produit ${item.id} inconnu.` }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      subtotal += productDetails.price * item.quantity;
+    }
+
+    const discount = promoCode === 'WATT10' ? subtotal * 0.1 : 0;
+    const shipping = 30.0;
+    const finalTotal = subtotal + shipping - discount;
+
+    const referenceId = items[0].id;
 
     // Création de la commande auprès de l'API PayPal
-    const orderData = await createPayPalOrder(productId, finalPrice.toFixed(2));
+    const orderData = await createPayPalOrder(referenceId, finalTotal.toFixed(2));
 
     return new Response(JSON.stringify({ id: orderData.id }), {
       status: 200,

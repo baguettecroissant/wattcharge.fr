@@ -42,8 +42,8 @@ const { title, description } = Astro.props;
           <a href="/blog" class="nav-link">Blog</a>
         </nav>
         <div class="nav-actions">
-          <a href="/boutique" class="btn-primary-sm btn-primary">
-            Commander <i class="fa-solid fa-arrow-right"></i>
+          <a href="/panier" class="cart-link-nav">
+            <i class="fa-solid fa-cart-shopping"></i> Panier (<span id="cart-count">0</span>)
           </a>
         </div>
       </div>
@@ -58,12 +58,12 @@ const { title, description } = Astro.props;
     <footer class="footer-wrapper">
       <div class="container footer-content">
         <div class="footer-brand-sec">
-          <a href="/" class="brand-logo footer-logo">
+          <a href="/" class="brand-logo">
             <i class="fa-solid fa-bolt-lightning text-gradient-electric logo-icon"></i>
             <span>Watt<span class="text-gradient-electric">Charge</span></span>
           </a>
-          <p class="footer-desc">
-            Solutions de recharges connectées intelligentes et sûres pour véhicules électriques, conformes aux normes et garanties.
+          <p class="footer-brand-desc">
+            Le pionnier de la recharge intelligente connectée directe fabricant. Conforme NF C 15-100.
           </p>
           <div class="certified-logos">
             <span class="badge-certified"><i class="fa-solid fa-shield-halved"></i> Norme CE</span>
@@ -97,6 +97,24 @@ const { title, description } = Astro.props;
         </div>
       </div>
     </footer>
+
+    <script is:inline>
+      function updateNavCartCount() {
+        try {
+          const cart = JSON.parse(localStorage.getItem('wattcharge_cart') || '[]');
+          const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+          const countEl = document.getElementById('cart-count');
+          if (countEl) {
+            countEl.textContent = count;
+          }
+        } catch (e) {
+          console.error('Error reading cart', e);
+        }
+      }
+      document.addEventListener('DOMContentLoaded', updateNavCartCount);
+      window.addEventListener('storage', updateNavCartCount);
+      window.updateNavCartCount = updateNavCartCount;
+    </script>
   </body>
 </html>
 
@@ -265,5 +283,25 @@ const { title, description } = Astro.props;
 
   .payment-badges i:hover {
     color: #ffffff;
+  }
+
+  .cart-link-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gradient-electric);
+    color: #ffffff;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    box-shadow: var(--shadow-glow);
+    transition: var(--transition-fast);
+  }
+
+  .cart-link-nav:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
   }
 </style>
