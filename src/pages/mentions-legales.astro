@@ -1,0 +1,307 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = false;
+---
+
+<Layout 
+  title="Mentions Légales | WattCharge.fr"
+  description="Consultez les mentions légales de WattCharge.fr, éditeur et hébergeur du site de vente de bornes de recharge."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <section class="legal-section">
+    <div class="container">
+      <div class="legal-header text-center">
+        <span class="badge-certified"><i class="fa-solid fa-scale-balanced"></i> Transparence & Conformité</span>
+        <h1 class="legal-title text-glow-teal">Mentions Légales</h1>
+        <p class="legal-subtitle">En vigueur au 30 Juin 2026</p>
+      </div>
+
+      <div class="legal-grid">
+        
+        <!-- Table des matières latérale -->
+        <aside class="legal-sidebar glass-panel">
+          <h4>Sommaire</h4>
+          <ul>
+            <li><a href="#art1" class="active">1. Éditeur du site</a></li>
+            <li><a href="#art2">2. Hébergement</a></li>
+            <li><a href="#art3">3. Propriété intellectuelle</a></li>
+            <li><a href="#art4">4. Données personnelles</a></li>
+            <li><a href="#art5">5. Cookies & traceurs</a></li>
+            <li><a href="#art6">6. Litiges & médiation</a></li>
+          </ul>
+        </aside>
+
+        <!-- Contenu des mentions légales -->
+        <article class="legal-content glass-panel">
+          
+          <div id="art1" class="legal-block">
+            <h2>1. Éditeur du site</h2>
+            <p>
+              Le site internet <strong>WattCharge.fr</strong> est édité par la société <strong>WattCharge SAS</strong>, société par actions simplifiée au capital social de 15 000 €, immatriculée au Registre du Commerce et des Sociétés (RCS) de Paris sous le numéro B 987 654 321.
+            </p>
+            <ul>
+              <li><strong>Siège Social :</strong> 115 rue de la Performance, 83390 Cuers, France</li>
+              <li><strong>Numéro de TVA intracommunautaire :</strong> FR 98 987 654 321</li>
+              <li><strong>Directeur de la publication :</strong> Marc D., en sa qualité de Président</li>
+              <li><strong>E-mail de contact :</strong> <a href="mailto:support@wattcharge.fr">support@wattcharge.fr</a></li>
+              <li><strong>Téléphone :</strong> 06 95 01 26 14</li>
+            </ul>
+          </div>
+
+          <div id="art2" class="legal-block">
+            <h2>2. Hébergement</h2>
+            <p>
+              Le site internet est hébergé par la société <strong>Vercel Inc.</strong>, situé au 340 S Lemon Ave #4133 Walnut, CA 91789, États-Unis.
+            </p>
+            <p>
+              Le stockage des données et des fichiers du site est sécurisé sur les serveurs de Vercel situés en Europe (région Europe Ouest).
+            </p>
+          </div>
+
+          <div id="art3" class="legal-block">
+            <h2>3. Propriété intellectuelle</h2>
+            <p>
+              L'ensemble du contenu présent sur ce site (textes, images, designs, logos, simulateurs interactifs, codes sources) est la propriété exclusive de <strong>WattCharge SAS</strong> ou de ses partenaires et est protégé par le droit d'auteur, le droit des marques et des brevets.
+            </p>
+            <p>
+              Toute reproduction, représentation, modification ou adaptation totale ou partielle de ces éléments, sans l'accord préalable écrit de l'éditeur, est strictement interdite et constitue un délit de contrefaçon sanctionné par les articles L.335-2 et suivants du Code de la propriété intellectuelle.
+            </p>
+          </div>
+
+          <div id="art4" class="legal-block">
+            <h2>4. Collecte et traitement des données personnelles</h2>
+            <p>
+              WattCharge s'engage à ce que la collecte et le traitement de vos données (formulaires de contact, commandes de bornes, coordonnées de facturation) soient conformes au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés.
+            </p>
+            <p>
+              Les informations collectées lors d'une commande (Stripe / PayPal) servent exclusivement au traitement et à l'expédition de votre commande ainsi qu'à l'établissement des factures légales. Vous disposez d'un droit d'accès, de rectification et de suppression de vos données en écrivant à <a href="mailto:support@wattcharge.fr">support@wattcharge.fr</a>.
+            </p>
+          </div>
+
+          <div id="art5" class="legal-block">
+            <h2>5. Cookies & traceurs</h2>
+            <p>
+              Ce site utilise des traceurs fonctionnels et indispensables pour le fonctionnement de votre panier d'achat (sauvegarde locale `localStorage` de vos articles) et la sécurisation des transactions bancaires (Stripe).
+            </p>
+            <p>
+              Aucun cookie de ciblage publicitaire intrusif ou de profilage tiers n'est utilisé sur WattCharge.fr afin de garantir la plus totale confidentialité de vos visites.
+            </p>
+          </div>
+
+          <div id="art6" class="legal-block">
+            <h2>6. Droit applicable et juridiction compétente</h2>
+            <p>
+              Les présentes mentions légales sont régies par le droit français. En cas de contestation ou de litige survenant à l'occasion de l'interprétation ou de l'exécution des présentes, et à défaut d'accord amiable, les tribunaux compétents seront ceux de la juridiction du siège social de l'éditeur.
+            </p>
+          </div>
+
+        </article>
+
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Simple Table of Contents active indicator logic on scroll
+  const sections = document.querySelectorAll('.legal-block');
+  const navLinks = document.querySelectorAll('.legal-sidebar ul li a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(sec => {
+      const secTop = (sec as HTMLElement).offsetTop;
+      const secHeight = sec.clientHeight;
+      if (pageYOffset >= secTop - 200) {
+        current = sec.getAttribute('id') || '';
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === `#${current}`) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+
+<style is:global>
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .legal-section {
+    padding-top: 170px;
+    padding-bottom: 100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .legal-header {
+    margin-bottom: 50px;
+  }
+
+  .legal-title {
+    font-size: 3rem;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-top: 10px;
+  }
+
+  .legal-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .legal-grid {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (max-width: 992px) {
+    .legal-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
+  /* Sidebar styling */
+  .legal-sidebar {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 30px;
+    position: sticky;
+    top: 120px;
+    box-shadow: var(--shadow-card);
+  }
+
+  @media (max-width: 992px) {
+    .legal-sidebar {
+      position: relative;
+      top: 0;
+    }
+  }
+
+  .legal-sidebar h4 {
+    font-size: 1.1rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+  }
+
+  .legal-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .legal-sidebar ul li a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: var(--transition-fast);
+    display: block;
+    padding: 4px 0;
+  }
+
+  .legal-sidebar ul li a:hover,
+  .legal-sidebar ul li a.active {
+    color: var(--accent-teal);
+    padding-left: 5px;
+  }
+
+  /* Content styling */
+  .legal-content {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 50px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  @media (max-width: 768px) {
+    .legal-content {
+      padding: 30px 20px;
+    }
+  }
+
+  .legal-block h2 {
+    font-size: 1.6rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 800;
+    margin-bottom: 16px;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 10px;
+  }
+
+  .legal-block p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+
+  .legal-block ul {
+    margin-bottom: 16px;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .legal-block li {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .legal-block strong {
+    color: var(--text-primary);
+  }
+
+  .legal-block a {
+    color: var(--accent-teal);
+    text-decoration: none;
+    font-weight: 700;
+    transition: var(--transition-fast);
+    border-bottom: 1px dashed var(--accent-teal);
+  }
+
+  .legal-block a:hover {
+    color: var(--text-primary);
+    border-bottom-color: var(--text-primary);
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+</style>
