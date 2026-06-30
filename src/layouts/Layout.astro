@@ -4,9 +4,10 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
+  headerMode?: 'light' | 'dark';
 }
 
-const { title, description } = Astro.props;
+const { title, description, headerMode = 'light' } = Astro.props;
 ---
 
 <!doctype html>
@@ -30,7 +31,7 @@ const { title, description } = Astro.props;
   </head>
   <body>
     <!-- Navbar -->
-    <header class="navbar-wrapper">
+    <header class={`navbar-wrapper ${headerMode === 'dark' ? 'header-dark-mode' : ''}`} id="main-header">
       <div class="container navbar-container">
         <a href="/" class="brand-logo">
           <i class="fa-solid fa-bolt-lightning text-gradient-electric logo-icon"></i>
@@ -190,6 +191,20 @@ const { title, description } = Astro.props;
         if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
         if (closeBg) closeBg.addEventListener('click', closeDrawer);
       });
+
+      // Header Scroll Contrast Tracker
+      document.addEventListener('DOMContentLoaded', () => {
+        const header = document.getElementById('main-header');
+        const handleScroll = () => {
+          if (window.scrollY > 20) {
+            header?.classList.add('scrolled');
+          } else {
+            header?.classList.remove('scrolled');
+          }
+        };
+        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+      });
     </script>
   </body>
 </html>
@@ -202,12 +217,31 @@ const { title, description } = Astro.props;
     left: 0;
     width: 100%;
     z-index: 100;
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    box-shadow: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .navbar-wrapper.scrolled {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(15, 23, 42, 0.06);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
-    transition: all 0.3s ease;
+  }
+
+  /* Dark Hero at-top State overrides */
+  .header-dark-mode:not(.scrolled) .nav-link {
+    color: #ffffff;
+  }
+
+  .header-dark-mode:not(.scrolled) .brand-logo {
+    color: #ffffff;
+  }
+
+  .header-dark-mode:not(.scrolled) .mobile-menu-toggle-btn {
+    color: #ffffff;
   }
 
   .navbar-container {
