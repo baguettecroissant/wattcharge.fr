@@ -1,0 +1,183 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = false;
+---
+
+<Layout 
+  title="Simulateurs & Outils Gratuits pour Véhicule Électrique | WattCharge.fr"
+  description="Accédez à nos outils en ligne gratuits : calculateur de temps de charge, estimateur d'économies carburant et simulateur de section de câble NFC 15-100."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <section class="outils-hero">
+    <div class="outils-glow"></div>
+    <div class="container text-center">
+      <span class="badge-certified"><i class="fa-solid fa-wand-magic-sparkles"></i> Outils d'Aide à la Décision</span>
+      <h1 class="outils-title text-glow-teal">Simulateurs & Outils Mobilité</h1>
+      <p class="outils-subtitle">
+        Des outils interactifs gratuits et conformes aux normes électriques françaises pour planifier votre transition vers le véhicule électrique.
+      </p>
+    </div>
+  </section>
+
+  <section class="hub-list-section">
+    <div class="container">
+      <div class="hub-cards-grid">
+        
+        <!-- Card 1: Temps de recharge -->
+        <div class="hub-card glass-panel hover-scale scroll-reveal">
+          <div class="hub-card-icon">
+            <i class="fa-solid fa-clock text-gradient-electric"></i>
+          </div>
+          <h3>Simulateur de Temps de Recharge</h3>
+          <p>Calculez le temps nécessaire pour recharger votre batterie selon la capacité (kWh) et la puissance de charge (2.3 kW à 22 kW).</p>
+          <a href="/outils/temps-de-recharge" class="btn-primary-sm btn-primary">Accéder au simulateur <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Card 2: Économies Carburant -->
+        <div class="hub-card glass-panel hover-scale scroll-reveal">
+          <div class="hub-card-icon">
+            <i class="fa-solid fa-wallet text-gradient-electric"></i>
+          </div>
+          <h3>Calculateur d'Économies Carburant</h3>
+          <p>Estimez le montant de vos économies annuelles nettes en passant d'une voiture thermique à la recharge électrique à domicile.</p>
+          <a href="/outils/economies-carburant" class="btn-primary-sm btn-primary">Calculer mes économies <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Card 3: Section de câble -->
+        <div class="hub-card glass-panel hover-scale scroll-reveal">
+          <div class="hub-card-icon">
+            <i class="fa-solid fa-wire-coiled text-gradient-electric"></i>
+          </div>
+          <h3>Calculateur Section de Câble</h3>
+          <p>Déterminez le diamètre de câble en cuivre ou aluminium conforme à la norme NF C 15-100 selon la longueur et l'intensité en ampères.</p>
+          <a href="/outils/section-cable" class="btn-primary-sm btn-primary">Calculer la section <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style is:global>
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .outils-hero {
+    padding-top: 170px;
+    padding-bottom: 50px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .outils-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.06) 0%, rgba(111, 148, 166, 0.02) 50%, transparent 100%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .outils-title {
+    font-size: 2.8rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+  }
+
+  .outils-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .hub-list-section {
+    padding: 40px 0 100px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hub-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+
+  @media (max-width: 992px) {
+    .hub-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hub-cards-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .hub-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-color);
+  }
+
+  .hub-card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+  }
+
+  .hub-card h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .hub-card p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .hub-card .btn-primary-sm {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+</style>

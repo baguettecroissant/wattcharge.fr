@@ -1,0 +1,430 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = false;
+---
+
+<Layout 
+  title="Simulateur de Temps de Recharge Voiture Électrique | WattCharge.fr"
+  description="Calculez le temps de recharge estimé de votre véhicule électrique à domicile selon la puissance de votre borne intelligente (2.3 kW à 22 kW)."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <section class="outil-detail-section">
+    <div class="container">
+      <div class="outil-breadcrumb">
+        <a href="/outils"><i class="fa-solid fa-arrow-left"></i> Retour au Hub des Simulateurs</a>
+      </div>
+
+      <div class="outil-header text-center">
+        <span class="badge-certified"><i class="fa-solid fa-clock"></i> Outil Gratuit de Calcul</span>
+        <h1 class="outil-title text-glow-teal">Simulateur Temps de Recharge</h1>
+        <p class="outil-desc">
+          Planifiez vos charges au quotidien. Ajustez la capacité batterie et la puissance pour connaître la durée exacte et l'autonomie récupérée.
+        </p>
+      </div>
+
+      <div class="outils-grid">
+        
+        <div class="outils-inputs glass-panel">
+          <h3><i class="fa-solid fa-sliders text-gradient-electric"></i> Paramètres du Véhicule & Borne</h3>
+          
+          <div class="input-group">
+            <label for="car-preset">Modèle de véhicule (Capacité Batterie) :</label>
+            <select id="car-preset" class="form-input">
+              <option value="60">Tesla Model Y / 3 SR (60 kWh)</option>
+              <option value="75">Tesla Model Y / 3 LR (75 kWh)</option>
+              <option value="52">Renault Zoé E-Tech (52 kWh)</option>
+              <option value="50">Peugeot e-208 / e-2008 (50 kWh)</option>
+              <option value="77">Volkswagen ID.3 / ID.4 (77 kWh)</option>
+              <option value="custom">Autre / Capacité personnalisée</option>
+            </select>
+          </div>
+
+          <div class="input-group id-custom-battery hidden" id="custom-battery-wrapper">
+            <label for="battery-capacity">Capacité batterie personnalisée (kWh) :</label>
+            <input type="number" id="battery-capacity" value="60" min="5" max="150" class="form-input" />
+          </div>
+
+          <div class="double-inputs">
+            <div class="input-group">
+              <label for="soc-start">Niveau actuel (%) :</label>
+              <input type="number" id="soc-start" value="20" min="0" max="99" class="form-input" />
+            </div>
+            <div class="input-group">
+              <label for="soc-end">Cible de recharge (%) :</label>
+              <input type="number" id="soc-end" value="80" min="1" max="100" class="form-input" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Puissance de la borne de recharge :</label>
+            <div class="power-cards-selector">
+              <label class="power-card-option">
+                <input type="radio" name="charge-power" value="2.3" />
+                <div class="p-card-inner">
+                  <strong>2.3 kW</strong>
+                  <span>Prise standard (10A)</span>
+                </div>
+              </label>
+              <label class="power-card-option active">
+                <input type="radio" name="charge-power" value="7.4" checked />
+                <div class="p-card-inner">
+                  <strong>7.4 kW</strong>
+                  <span>WattCharge 32A Mono</span>
+                </div>
+              </label>
+              <label class="power-card-option">
+                <input type="radio" name="charge-power" value="11" />
+                <div class="p-card-inner">
+                  <strong>11 kW</strong>
+                  <span>WattCharge 16A Tri</span>
+                </div>
+              </label>
+              <label class="power-card-option">
+                <input type="radio" name="charge-power" value="22" />
+                <div class="p-card-inner">
+                  <strong>22 kW</strong>
+                  <span>WattCharge 32A Tri</span>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="outils-results glass-panel glow-panel-teal">
+          <div class="hud-scanner-overlay"></div>
+          <h3><i class="fa-solid fa-chart-simple text-gradient-electric"></i> Temps estimé</h3>
+          
+          <div class="big-result-timer">
+            <i class="fa-regular fa-clock text-gradient-electric"></i>
+            <strong id="res-time-display">--</strong>
+          </div>
+
+          <div class="results-details-list">
+            <div class="res-detail-row">
+              <span>Énergie à injecter</span>
+              <strong id="res-energy-injected">-- kWh</strong>
+            </div>
+            <div class="res-detail-row">
+              <span>Autonomie récupérée (estimée)</span>
+              <strong id="res-range-added" class="text-gradient-electric">-- km</strong>
+            </div>
+          </div>
+
+          <div class="result-action-box">
+            <p class="small">Besoin d'équiper votre domicile pour cette puissance de charge ?</p>
+            <a href="/boutique" class="btn-primary-sm btn-primary">Découvrir nos bornes connectées</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const carPreset = document.getElementById('car-preset') as HTMLSelectElement;
+  const customBatteryWrapper = document.getElementById('custom-battery-wrapper');
+  const batteryCapacityInput = document.getElementById('battery-capacity') as HTMLInputElement;
+  const socStartInput = document.getElementById('soc-start') as HTMLInputElement;
+  const socEndInput = document.getElementById('soc-end') as HTMLInputElement;
+  const powerRadios = document.getElementsByName('charge-power') as NodeListOf<HTMLInputElement>;
+  const resTimeDisplay = document.getElementById('res-time-display') as HTMLElement;
+  const resEnergyInjected = document.getElementById('res-energy-injected') as HTMLElement;
+  const resRangeAdded = document.getElementById('res-range-added') as HTMLElement;
+
+  function updateChargeTimeSimulation() {
+    let batteryCapacity = parseFloat(carPreset.value);
+    
+    if (carPreset.value === 'custom') {
+      customBatteryWrapper?.classList.remove('hidden');
+      batteryCapacity = parseFloat(batteryCapacityInput.value) || 60;
+    } else {
+      customBatteryWrapper?.classList.add('hidden');
+    }
+
+    const socStart = parseFloat(socStartInput.value) || 0;
+    const socEnd = parseFloat(socEndInput.value) || 80;
+
+    let power = 7.4;
+    powerRadios.forEach(radio => {
+      if (radio.checked) {
+        power = parseFloat(radio.value);
+        radio.closest('.power-card-option')?.classList.add('active');
+      } else {
+        radio.closest('.power-card-option')?.classList.remove('active');
+      }
+    });
+
+    const targetSOCDifference = socEnd - socStart;
+    if (targetSOCDifference <= 0) {
+      resTimeDisplay.textContent = 'Valeurs incohérentes';
+      resEnergyInjected.textContent = '0 kWh';
+      resRangeAdded.textContent = '0 km';
+      return;
+    }
+
+    const energyNeeded = batteryCapacity * (targetSOCDifference / 100);
+    const decimalHours = (energyNeeded * 1.1) / power; 
+    const hours = Math.floor(decimalHours);
+    const minutes = Math.round((decimalHours - hours) * 60);
+
+    resTimeDisplay.textContent = hours === 0 ? `${minutes} min` : `${hours}h ${minutes.toString().padStart(2, '0')}m`;
+    resEnergyInjected.textContent = `${energyNeeded.toFixed(1)} kWh`;
+    
+    const rangeAdded = energyNeeded * 6.5; 
+    resRangeAdded.textContent = `~${Math.round(rangeAdded)} km`;
+  }
+
+  carPreset.addEventListener('change', updateChargeTimeSimulation);
+  batteryCapacityInput.addEventListener('input', updateChargeTimeSimulation);
+  socStartInput.addEventListener('input', updateChargeTimeSimulation);
+  socEndInput.addEventListener('input', updateChargeTimeSimulation);
+  powerRadios.forEach(radio => radio.addEventListener('change', updateChargeTimeSimulation));
+
+  updateChargeTimeSimulation();
+</script>
+
+<style is:global>
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .outil-detail-section {
+    padding-top: 150px;
+    padding-bottom: 100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .outil-breadcrumb {
+    margin-bottom: 30px;
+  }
+
+  .outil-breadcrumb a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: var(--transition-fast);
+  }
+
+  .outil-breadcrumb a:hover {
+    color: var(--accent-teal);
+  }
+
+  .outil-header {
+    margin-bottom: 50px;
+  }
+
+  .outil-title {
+    font-size: 2.8rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+  }
+
+  .outil-desc {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .outils-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+  }
+
+  @media (max-width: 992px) {
+    .outils-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
+  .outils-inputs {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border: 1px solid var(--border-color);
+  }
+
+  .outils-inputs h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .double-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .input-group label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .form-input {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition-fast);
+  }
+
+  .power-cards-selector {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .power-card-option {
+    cursor: pointer;
+    position: relative;
+  }
+
+  .power-card-option input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .p-card-inner {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .p-card-inner strong {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+  }
+
+  .power-card-option.active .p-card-inner {
+    border-color: var(--accent-teal);
+    background: rgba(83, 183, 168, 0.03);
+  }
+
+  .outils-results {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 40px 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .outils-results h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+  }
+
+  .big-result-timer {
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .big-result-timer i {
+    font-size: 2.2rem;
+  }
+
+  .big-result-timer strong {
+    font-size: 3rem;
+    font-weight: 800;
+  }
+
+  .results-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .res-detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .result-action-box {
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .result-action-box .btn-primary-sm {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+
+  .outils-results .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.05) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 5s linear infinite;
+    pointer-events: none;
+  }
+</style>

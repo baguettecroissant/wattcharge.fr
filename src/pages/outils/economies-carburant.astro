@@ -1,0 +1,390 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = false;
+---
+
+<Layout 
+  title="Calculateur d'Économies Électrique vs Essence | WattCharge.fr"
+  description="Calculez les économies financières réalisées en rechargeant votre véhicule électrique à domicile face au coût du carburant thermique d'une voiture essence/diesel."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <section class="outil-detail-section">
+    <div class="container">
+      <div class="outil-breadcrumb">
+        <a href="/outils"><i class="fa-solid fa-arrow-left"></i> Retour au Hub des Simulateurs</a>
+      </div>
+
+      <div class="outil-header text-center">
+        <span class="badge-certified"><i class="fa-solid fa-wallet"></i> Outil de Calcul Financier</span>
+        <h1 class="outil-title text-glow-teal">Économies Carburant</h1>
+        <p class="outil-desc">
+          Comparez les coûts de fonctionnement annuels réels de votre véhicule électrique face à un véhicule thermique et découvrez vos économies nettes.
+        </p>
+      </div>
+
+      <div class="outils-grid">
+        
+        <div class="outils-inputs glass-panel">
+          <h3><i class="fa-solid fa-sliders text-gradient-electric"></i> Habitudes de conduite</h3>
+          
+          <div class="input-group">
+            <label for="annual-mileage">Kilométrage annuel parcouru :</label>
+            <div class="slider-display">
+              <input type="range" id="annual-mileage" min="5000" max="50000" step="1000" value="15000" class="range-slider" />
+              <strong id="mileage-val" class="text-gradient-electric">15 000 km</strong>
+            </div>
+          </div>
+
+          <div class="double-inputs">
+            <div class="input-group">
+              <label for="fuel-price">Prix carburant thermique (€/L) :</label>
+              <input type="number" id="fuel-price" value="1.85" step="0.05" class="form-input" />
+            </div>
+            <div class="input-group">
+              <label for="fuel-cons">Consommation moyenne (L/100km) :</label>
+              <input type="number" id="fuel-cons" value="6.5" step="0.2" class="form-input" />
+            </div>
+          </div>
+
+          <div class="double-inputs">
+            <div class="input-group">
+              <label for="elec-price">Tarif électricité (€/kWh) :</label>
+              <input type="number" id="elec-price" value="0.25" step="0.01" class="form-input" />
+            </div>
+            <div class="input-group">
+              <label for="ev-cons">Consommation électrique (kWh/100km) :</label>
+              <input type="number" id="ev-cons" value="17" step="0.5" class="form-input" />
+            </div>
+          </div>
+        </div>
+
+        <div class="outils-results glass-panel glow-panel-teal">
+          <div class="hud-scanner-overlay"></div>
+          <h3><i class="fa-solid fa-wallet text-gradient-electric"></i> Vos Économies Annuelles</h3>
+          
+          <div class="big-savings-amount">
+            <strong id="res-savings-amount" class="text-gradient-electric">-- €</strong>
+            <span>D'économie nette / an</span>
+          </div>
+
+          <div class="chart-comparison-wrapper">
+            <div class="chart-bar-group">
+              <div class="c-bar-label">Coût Thermique</div>
+              <div class="c-bar-container">
+                <div class="c-bar-fill fuel-color" id="bar-fuel-cost" style="width: 0%;"></div>
+                <span class="bar-value" id="val-fuel-cost">0 €</span>
+              </div>
+            </div>
+
+            <div class="chart-bar-group">
+              <div class="c-bar-label">Coût Électrique</div>
+              <div class="c-bar-container">
+                <div class="c-bar-fill ev-color" id="bar-ev-cost" style="width: 0%;"></div>
+                <span class="bar-value" id="val-ev-cost">0 €</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-action-box">
+            <p class="small">Amortissez votre borne connectée en rechargeant à prix réduit à la maison !</p>
+            <a href="/boutique" class="btn-primary-sm btn-primary">Découvrir les Bornes de Recharge</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const annualMileageInput = document.getElementById('annual-mileage') as HTMLInputElement;
+  const mileageVal = document.getElementById('mileage-val') as HTMLElement;
+  const fuelPriceInput = document.getElementById('fuel-price') as HTMLInputElement;
+  const fuelConsInput = document.getElementById('fuel-cons') as HTMLInputElement;
+  const elecPriceInput = document.getElementById('elec-price') as HTMLInputElement;
+  const evConsInput = document.getElementById('ev-cons') as HTMLInputElement;
+  
+  const resSavingsAmount = document.getElementById('res-savings-amount') as HTMLElement;
+  const barFuelCost = document.getElementById('bar-fuel-cost') as HTMLElement;
+  const barEvCost = document.getElementById('bar-ev-cost') as HTMLElement;
+  const valFuelCost = document.getElementById('val-fuel-cost') as HTMLElement;
+  const valEvCost = document.getElementById('val-ev-cost') as HTMLElement;
+
+  function updateSavingsSimulation() {
+    const mileage = parseInt(annualMileageInput.value);
+    mileageVal.textContent = `${mileage.toLocaleString('fr-FR')} km`;
+
+    const fuelPrice = parseFloat(fuelPriceInput.value) || 1.85;
+    const fuelCons = parseFloat(fuelConsInput.value) || 6.5;
+    const elecPrice = parseFloat(elecPriceInput.value) || 0.25;
+    const evCons = parseFloat(evConsInput.value) || 17;
+
+    const annualFuelCost = (mileage / 100) * fuelCons * fuelPrice;
+    const annualEvCost = (mileage / 100) * evCons * elecPrice;
+
+    const savings = annualFuelCost - annualEvCost;
+
+    resSavingsAmount.textContent = `${Math.round(savings).toLocaleString('fr-FR')} €`;
+
+    valFuelCost.textContent = `${Math.round(annualFuelCost).toLocaleString('fr-FR')} €`;
+    valEvCost.textContent = `${Math.round(annualEvCost).toLocaleString('fr-FR')} €`;
+
+    const maxCost = Math.max(annualFuelCost, annualEvCost, 1);
+    barFuelCost.style.width = `${(annualFuelCost / maxCost) * 100}%`;
+    barEvCost.style.width = `${(annualEvCost / maxCost) * 100}%`;
+  }
+
+  annualMileageInput.addEventListener('input', updateSavingsSimulation);
+  fuelPriceInput.addEventListener('input', updateSavingsSimulation);
+  fuelConsInput.addEventListener('input', updateSavingsSimulation);
+  elecPriceInput.addEventListener('input', updateSavingsSimulation);
+  evConsInput.addEventListener('input', updateSavingsSimulation);
+
+  updateSavingsSimulation();
+</script>
+
+<style is:global>
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .outil-detail-section {
+    padding-top: 150px;
+    padding-bottom: 100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .outil-breadcrumb {
+    margin-bottom: 30px;
+  }
+
+  .outil-breadcrumb a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: var(--transition-fast);
+  }
+
+  .outil-breadcrumb a:hover {
+    color: var(--accent-teal);
+  }
+
+  .outil-header {
+    margin-bottom: 50px;
+  }
+
+  .outil-title {
+    font-size: 2.8rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+  }
+
+  .outil-desc {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .outils-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+  }
+
+  @media (max-width: 992px) {
+    .outils-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
+  .outils-inputs {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border: 1px solid var(--border-color);
+  }
+
+  .outils-inputs h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .double-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .input-group label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .form-input {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition-fast);
+  }
+
+  .outils-results {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 40px 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .outils-results h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+  }
+
+  .big-savings-amount {
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .big-savings-amount strong {
+    font-size: 3rem;
+    font-weight: 800;
+  }
+
+  .big-savings-amount span {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .chart-comparison-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .chart-bar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .c-bar-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .c-bar-container {
+    height: 30px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .c-bar-fill {
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .c-bar-fill.fuel-color {
+    background: #94a3b8;
+  }
+
+  .c-bar-fill.ev-color {
+    background: var(--gradient-electric);
+  }
+
+  .bar-value {
+    position: absolute;
+    right: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .result-action-box {
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .result-action-box .btn-primary-sm {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+
+  .outils-results .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.05) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 5s linear infinite;
+    pointer-events: none;
+  }
+</style>

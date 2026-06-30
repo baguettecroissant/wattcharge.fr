@@ -1,0 +1,362 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = false;
+---
+
+<Layout 
+  title="Calculateur Section de Câble Borne de Recharge | WattCharge.fr"
+  description="Déterminez la section de câble en cuivre (mm²) conforme à la norme NF C 15-100 pour l'installation de votre borne de recharge de véhicule électrique."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <section class="outil-detail-section">
+    <div class="container">
+      <div class="outil-breadcrumb">
+        <a href="/outils"><i class="fa-solid fa-arrow-left"></i> Retour au Hub des Simulateurs</a>
+      </div>
+
+      <div class="outil-header text-center">
+        <span class="badge-certified"><i class="fa-solid fa-wire-coiled"></i> Conformité Norme NF C 15-100</span>
+        <h1 class="outil-title text-glow-teal">Section de Câble</h1>
+        <p class="outil-desc">
+          Évitez les risques de surchauffe et de chute de tension. Entrez votre longueur et intensité pour connaître la section de cuivre requise.
+        </p>
+      </div>
+
+      <div class="outils-grid">
+        
+        <div class="outils-inputs glass-panel">
+          <h3><i class="fa-solid fa-sliders text-gradient-electric"></i> Spécifications d'installation</h3>
+          
+          <div class="input-group">
+            <label>Puissance de charge et Intensité :</label>
+            <select id="cable-power-select" class="form-input">
+              <option value="7.4-32">7.4 kW Monophasé (32A)</option>
+              <option value="11-16">11 kW Triphasé (16A)</option>
+              <option value="22-32">22 kW Triphasé (32A)</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="cable-length">Longueur du câble (distance tableau - borne) :</label>
+            <div class="slider-display">
+              <input type="range" id="cable-length" min="5" max="100" step="5" value="20" class="range-slider" />
+              <strong id="cable-length-val" class="text-gradient-electric">20 mètres</strong>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="cable-material">Matériau du conducteur :</label>
+            <select id="cable-material" class="form-input">
+              <option value="copper">Cuivre (Recommandé)</option>
+              <option value="aluminum">Aluminium</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="outils-results glass-panel glow-panel-teal">
+          <div class="hud-scanner-overlay"></div>
+          <h3><i class="fa-solid fa-circle-nodes text-gradient-electric"></i> Recommandation de Câble</h3>
+          
+          <div class="big-result-cable">
+            <i class="fa-solid fa-wire-coiled text-gradient-electric"></i>
+            <strong id="res-cable-section">-- mm²</strong>
+          </div>
+
+          <div class="results-details-list">
+            <div class="res-detail-row">
+              <span>Chute de tension estimée</span>
+              <strong id="res-voltage-drop">-- %</strong>
+            </div>
+            <div class="res-detail-row">
+              <span>Conformité NF C 15-100</span>
+              <strong id="res-nf-compliance" class="status-ok"><i class="fa-solid fa-circle-check"></i> Conforme (<3% max)</strong>
+            </div>
+          </div>
+
+          <div class="result-action-box">
+            <p class="small">Chaque borne de recharge doit disposer d'une ligne dédiée protégée.</p>
+            <a href="/cgv" class="btn-primary-sm btn-primary">Voir les CGV de livraison</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const cablePowerSelect = document.getElementById('cable-power-select') as HTMLSelectElement;
+  const cableLengthInput = document.getElementById('cable-length') as HTMLInputElement;
+  const cableLengthVal = document.getElementById('cable-length-val') as HTMLElement;
+  const cableMaterial = document.getElementById('cable-material') as HTMLSelectElement;
+
+  const resCableSection = document.getElementById('res-cable-section') as HTMLElement;
+  const resVoltageDrop = document.getElementById('res-voltage-drop') as HTMLElement;
+  const resNfCompliance = document.getElementById('res-nf-compliance') as HTMLElement;
+
+  function updateCableSimulation() {
+    const powerSelectVal = cablePowerSelect.value;
+    const length = parseInt(cableLengthInput.value);
+    cableLengthVal.textContent = `${length} mètres`;
+
+    const material = cableMaterial.value; 
+    const rho = material === 'copper' ? 0.0179 : 0.0286; 
+
+    const [powerKW, currentA] = powerSelectVal.split('-').map(Number);
+    const isTri = powerKW > 10; 
+
+    const standardSections = [2.5, 4, 6, 10, 16, 25];
+    let recommendedSection = 10;
+    let finalVdropPct = 0;
+
+    for (let s of standardSections) {
+      let dV = 0;
+      if (!isTri) {
+        dV = (2 * currentA * length * rho) / s;
+      } else {
+        dV = (Math.sqrt(3) * currentA * length * rho) / s;
+      }
+
+      const vNominal = isTri ? 400 : 230;
+      const vDropPct = (dV / vNominal) * 100;
+
+      const minAllowedSection = !isTri ? 6 : currentA === 16 ? 2.5 : 6;
+
+      if (vDropPct < 2.5 && s >= minAllowedSection) {
+        recommendedSection = s;
+        finalVdropPct = vDropPct;
+        break;
+      }
+    }
+
+    resCableSection.textContent = `${recommendedSection} mm²`;
+    resVoltageDrop.textContent = `${finalVdropPct.toFixed(2)} %`;
+
+    if (finalVdropPct < 3.0) {
+      resNfCompliance.className = 'status-ok';
+      resNfCompliance.innerHTML = `<i class="fa-solid fa-circle-check"></i> Conforme (<3% max)`;
+    } else {
+      resNfCompliance.className = 'status-fail';
+      resNfCompliance.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Chute de tension élevée`;
+    }
+  }
+
+  cablePowerSelect.addEventListener('change', updateCableSimulation);
+  cableLengthInput.addEventListener('input', updateCableSimulation);
+  cableMaterial.addEventListener('change', updateCableSimulation);
+
+  updateCableSimulation();
+</script>
+
+<style is:global>
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .outil-detail-section {
+    padding-top: 150px;
+    padding-bottom: 100px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .outil-breadcrumb {
+    margin-bottom: 30px;
+  }
+
+  .outil-breadcrumb a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: var(--transition-fast);
+  }
+
+  .outil-breadcrumb a:hover {
+    color: var(--accent-teal);
+  }
+
+  .outil-header {
+    margin-bottom: 50px;
+  }
+
+  .outil-title {
+    font-size: 2.8rem;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+  }
+
+  .outil-desc {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .outils-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+  }
+
+  @media (max-width: 992px) {
+    .outils-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
+  .outils-inputs {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border: 1px solid var(--border-color);
+  }
+
+  .outils-inputs h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .input-group label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .form-input {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: var(--transition-fast);
+  }
+
+  .outils-results {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 40px 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .outils-results h3 {
+    font-size: 1.3rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+  }
+
+  .big-result-cable {
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .big-result-cable i {
+    font-size: 2.2rem;
+  }
+
+  .big-result-cable strong {
+    font-size: 3rem;
+    font-weight: 800;
+  }
+
+  .results-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .res-detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .res-detail-row strong {
+    color: var(--text-primary);
+  }
+
+  .status-ok {
+    color: #10b981;
+  }
+
+  .status-fail {
+    color: #ef4444;
+  }
+
+  .result-action-box {
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .result-action-box .btn-primary-sm {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+
+  .outils-results .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.05) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 5s linear infinite;
+    pointer-events: none;
+  }
+</style>
