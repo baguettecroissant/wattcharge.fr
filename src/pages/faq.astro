@@ -1,0 +1,819 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = false;
+
+const FAQ_DATA = [
+  // Catégorie : Général
+  {
+    category: 'general',
+    question: 'Quels sont les délais et frais de livraison pour ma borne ?',
+    answer: 'Toutes nos bornes de recharge sont expédiées sous 24/48h depuis notre centre logistique européen. Le délai de livraison standard est de 3 à 5 jours ouvrés via DHL ou GLS. Les frais d\'expédition sont fixés à un tarif forfaitaire de 30,00 € par commande.'
+  },
+  {
+    category: 'general',
+    question: 'Puis-je bénéficier du droit de rétractation et comment retourner un produit ?',
+    answer: 'Oui, vous disposez de 14 jours calendaires à compter de la réception de votre borne pour changer d\'avis. Le retour est entièrement gratuit. Le produit doit être retourné inutilisé, dans son emballage d\'origine complet. Pour initier un retour, contactez notre équipe à support@wattcharge.fr.'
+  },
+  {
+    category: 'general',
+    question: 'Quelle est la durée de la garantie de vos bornes de recharge ?',
+    answer: 'Toutes les bornes connectées WattCharge bénéficient d\'une garantie légale de conformité de 2 ans. En cas de dysfonctionnement technique, nous procédons à un échange standard à neuf ou à la réparation gratuite du boîtier après diagnostic à distance.'
+  },
+  
+  // Catégorie : Installation
+  {
+    category: 'installation',
+    question: 'La borne WattCharge est-elle conforme à la norme NF C 15-100 ?',
+    answer: 'Oui. Pour être conforme à la norme française NF C 15-100, une borne de recharge à domicile doit être alimentée par une ligne dédiée et disposer d\'une protection contre les fuites de courant continu (RCD DC 6mA). Nos bornes intègrent nativement cette protection DC 6mA, ce qui vous évite d\'acheter un interrupteur différentiel de Type B extrêmement coûteux (environ 300 € d\'économie sur votre tableau électrique).'
+  },
+  {
+    category: 'installation',
+    question: 'Quelle section de câble dois-je installer pour raccorder ma borne ?',
+    answer: 'Pour une borne de 7.4 kW (32A monophasé), la norme NF C 15-100 impose une section de cuivre minimale de 6 mm² pour une longueur de câble allant jusqu\'à 25 mètres. Au-delà, ou pour une puissance de 22 kW triphasé, nous vous recommandons d\'utiliser une section de 10 mm² afin de limiter la chute de tension sous la barre réglementaire des 3%. Vous pouvez utiliser notre simulateur de section de câble pour un calcul précis.'
+  },
+  {
+    category: 'installation',
+    question: 'Faut-il obligatoirement faire appel à un électricien qualifié IRVE ?',
+    answer: 'En France, le décret du 12 janvier 2017 impose que toute installation de recharge supérieure à 3.7 kW soit réalisée par un professionnel possédant la qualification IRVE (Infrastructure de Recharge de Véhicule Électrique) pour valider l\'assurance habitation et la conformité.'
+  },
+
+  // Catégorie : Connectivité
+  {
+    category: 'connectivity',
+    question: 'Comment connecter ma borne WattCharge en WiFi à l\'application Tuya ?',
+    answer: 'C\'est très simple. 1) Téléchargez l\'application gratuite Tuya Smart ou Smart Life sur iOS/Android. 2) Activez le WiFi et le Bluetooth de votre smartphone. 3) Mettez votre borne sous tension, elle entrera automatiquement en mode appairage (la LED clignote). 4) Ouvrez l\'application, cliquez sur "Ajouter un appareil" : la borne est détectée instantanément par Bluetooth. Suivez les étapes pour la connecter à votre réseau WiFi local.'
+  },
+  {
+    category: 'connectivity',
+    question: 'Quelles fonctionnalités offre l\'application mobile ?',
+    answer: 'L\'application vous donne un contrôle complet : programmation des heures de charge (pour profiter du tarif Heures Creuses), suivi en temps réel de la puissance consommée (statistiques par jour/mois), réglage à distance de l\'ampérage de charge (de 8A à 32A pour s\'adapter à votre abonnement) et gestion des cartes RFID pour sécuriser l\'accès.'
+  },
+  {
+    category: 'connectivity',
+    question: 'Puis-je verrouiller l\'accès à ma borne pour éviter le vol d\'électricité ?',
+    answer: 'Absolument. Vous pouvez configurer votre borne en mode "Verrouillé par défaut" dans l\'application Tuya. La charge ne démarrera qu\'après le passage d\'un badge RFID autorisé devant le lecteur intégré, ou via le bouton d\'activation sur votre smartphone.'
+  }
+];
+---
+
+<Layout 
+  title="FAQ & Notices de Montage | WattCharge.fr"
+  description="Trouvez des réponses à toutes vos questions sur l'installation, les normes NF C 15-100 et l'appairage WiFi Tuya de nos bornes de recharge connectées."
+>
+  <div class="cyber-grid-bg"></div>
+
+  <section class="faq-hero">
+    <div class="faq-glow"></div>
+    <div class="container text-center">
+      <span class="badge-certified"><i class="fa-solid fa-circle-question"></i> Centre d'Aide & Support</span>
+      <h1 class="faq-main-title text-glow-teal">FAQ & Notices Techniques</h1>
+      <p class="faq-subtitle">
+        Des réponses claires à vos questions techniques, guides d'installation de nos bornes et notices de configuration WiFi.
+      </p>
+
+      <!-- Barre de recherche temps réel -->
+      <div class="faq-search-wrapper glass-panel">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="faq-search-input" placeholder="Rechercher une question, une norme, WiFi, câble..." />
+        <button class="clear-search-btn hidden" id="clear-search-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-content-section">
+    <div class="container">
+      
+      <div class="faq-layout-grid">
+        
+        <!-- Colonne Gauche : Filtres par catégories -->
+        <aside class="faq-categories-sidebar">
+          <div class="categories-list-box glass-panel">
+            <h4>Catégories</h4>
+            <button class="cat-filter-btn active" data-filter="all">
+              <i class="fa-solid fa-layer-group"></i> Tout afficher
+            </button>
+            <button class="cat-filter-btn" data-filter="general">
+              <i class="fa-solid fa-circle-info"></i> Informations Générales
+            </button>
+            <button class="cat-filter-btn" data-filter="installation">
+              <i class="fa-solid fa-screwdriver-wrench"></i> Installation & Normes
+            </button>
+            <button class="cat-filter-btn" data-filter="connectivity">
+              <i class="fa-solid fa-wifi"></i> WiFi & App Tuya
+            </button>
+          </div>
+
+          <!-- Quick Contacts Widget -->
+          <div class="faq-contact-widget glass-panel glow-panel-teal">
+            <i class="fa-solid fa-headset widget-icon"></i>
+            <h5>Besoin d'aide supplémentaire ?</h5>
+            <p>Notre équipe technique est à votre écoute pour vous guider pas à pas.</p>
+            <a href="mailto:support@wattcharge.fr" class="btn-primary-sm btn-primary">Nous contacter</a>
+          </div>
+        </aside>
+
+        <!-- Colonne Droite : Accordéons et Notices -->
+        <div class="faq-main-area">
+          
+          <!-- Accordéon FAQ -->
+          <div class="faq-accordion-wrapper" id="faq-accordion">
+            {FAQ_DATA.map(item => (
+              <div class="faq-item glass-panel" data-category={item.category}>
+                <button class="faq-trigger">
+                  <span class="faq-question-text">{item.question}</span>
+                  <span class="faq-icon-holder"><i class="fa-solid fa-chevron-down"></i></span>
+                </button>
+                <div class="faq-answer-panel">
+                  <div class="answer-inner">
+                    <p>{item.answer}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- Empty State si aucun résultat de recherche -->
+          <div class="no-results-state hidden" id="no-results">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <h4>Aucun résultat correspondant</h4>
+            <p>Essayez de chercher des mots-clés plus larges (ex: WiFi, câble, 7.4, retour...).</p>
+          </div>
+
+          <!-- SECTION NOTICES ET CODES COULEURS LED -->
+          <div class="notices-hud-wrapper glass-panel scroll-reveal">
+            <div class="hud-scanner-overlay"></div>
+            <div class="notices-header">
+              <h3><i class="fa-solid fa-file-pdf text-gradient-electric"></i> Notices & Documents PDF</h3>
+              <p>Téléchargez les documentations techniques officielles et guides de montage de nos bornes.</p>
+            </div>
+
+            <div class="download-links-grid">
+              <a href="#" class="download-card hover-scale">
+                <div class="dl-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                <div class="dl-details">
+                  <strong>Notice de Montage WattCharge Home</strong>
+                  <span>Format PDF • 4.2 Mo • Français</span>
+                </div>
+                <i class="fa-solid fa-download dl-arrow"></i>
+              </a>
+
+              <a href="#" class="download-card hover-scale">
+                <div class="dl-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                <div class="dl-details">
+                  <strong>Guide de Connexion WiFi & App Tuya</strong>
+                  <span>Format PDF • 2.8 Mo • Français</span>
+                </div>
+                <i class="fa-solid fa-download dl-arrow"></i>
+              </a>
+            </div>
+
+            <div class="led-indicator-section">
+              <h4><i class="fa-solid fa-circle-nodes text-gradient-electric"></i> Signification des indicateurs LED</h4>
+              <p class="small">L'anneau lumineux circulaire de la borne indique l'état de fonctionnement actuel :</p>
+              
+              <div class="led-states-grid">
+                <div class="led-state-item">
+                  <span class="led-circle led-green-solid"></span>
+                  <div>
+                    <strong>Vert Fixe</strong>
+                    <span>Borne sous tension, en attente de connexion du véhicule (Standby).</span>
+                  </div>
+                </div>
+                <div class="led-state-item">
+                  <span class="led-circle led-green-pulse"></span>
+                  <div>
+                    <strong>Vert Pulsé</strong>
+                    <span>Recharge du véhicule électrique en cours (Charging).</span>
+                  </div>
+                </div>
+                <div class="led-state-item">
+                  <span class="led-circle led-blue-solid"></span>
+                  <div>
+                    <strong>Bleu Fixe</strong>
+                    <span>Cycle de recharge terminé à 100% (Complete).</span>
+                  </div>
+                </div>
+                <div class="led-state-item">
+                  <span class="led-circle led-red-flash"></span>
+                  <div>
+                    <strong>Rouge Clignotant</strong>
+                    <span>Défaut de sécurité détecté (consultez le code d'erreur sur l'écran LCD).</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // 1. Accordion Toggle logic with smooth height animation
+  const triggers = document.querySelectorAll('.faq-trigger');
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const faqItem = trigger.closest('.faq-item');
+      const isExpanded = faqItem?.classList.contains('active');
+
+      // Close all other items
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+        const panel = item.querySelector('.faq-answer-panel') as HTMLElement;
+        if (panel) panel.style.maxHeight = '0px';
+      });
+
+      if (!isExpanded && faqItem) {
+        faqItem.classList.add('active');
+        const panel = faqItem.querySelector('.faq-answer-panel') as HTMLElement;
+        const inner = faqItem.querySelector('.answer-inner') as HTMLElement;
+        if (panel && inner) {
+          panel.style.maxHeight = `${inner.scrollHeight}px`;
+        }
+      }
+    });
+  });
+
+  // 2. Real-time Search Filter Logic
+  const searchInput = document.getElementById('faq-search-input') as HTMLInputElement;
+  const clearSearchBtn = document.getElementById('clear-search-btn');
+  const faqItems = document.querySelectorAll('.faq-item');
+  const noResults = document.getElementById('no-results');
+
+  function filterFAQ() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    if (query === '') {
+      clearSearchBtn?.classList.add('hidden');
+    } else {
+      clearSearchBtn?.classList.remove('hidden');
+    }
+
+    let matchCount = 0;
+
+    faqItems.forEach(item => {
+      const qText = item.querySelector('.faq-question-text')?.textContent?.toLowerCase() || '';
+      const aText = item.querySelector('.answer-inner')?.textContent?.toLowerCase() || '';
+
+      const isMatch = qText.includes(query) || aText.includes(query);
+
+      if (isMatch) {
+        (item as HTMLElement).style.display = 'block';
+        matchCount++;
+      } else {
+        (item as HTMLElement).style.display = 'none';
+      }
+    });
+
+    if (matchCount === 0) {
+      noResults?.classList.remove('hidden');
+    } else {
+      noResults?.classList.add('hidden');
+    }
+  }
+
+  searchInput.addEventListener('input', filterFAQ);
+  
+  clearSearchBtn?.addEventListener('click', () => {
+    searchInput.value = '';
+    filterFAQ();
+    // Close active accordion panel
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.classList.remove('active');
+      const panel = item.querySelector('.faq-answer-panel') as HTMLElement;
+      if (panel) panel.style.maxHeight = '0px';
+    });
+  });
+
+  // 3. Category Tab filtering
+  const catBtns = document.querySelectorAll('.cat-filter-btn');
+
+  catBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      catBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.getAttribute('data-filter');
+
+      // Clear search on filter change to avoid confusion
+      searchInput.value = '';
+      clearSearchBtn?.classList.add('hidden');
+      noResults?.classList.add('hidden');
+
+      faqItems.forEach(item => {
+        const itemCat = item.getAttribute('data-category');
+        if (filter === 'all' || itemCat === filter) {
+          (item as HTMLElement).style.display = 'block';
+        } else {
+          (item as HTMLElement).style.display = 'none';
+        }
+
+        // Close accordion
+        item.classList.remove('active');
+        const panel = item.querySelector('.faq-answer-panel') as HTMLElement;
+        if (panel) panel.style.maxHeight = '0px';
+      });
+    });
+  });
+</script>
+
+<style is:global>
+  .cyber-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(to right, rgba(83, 183, 168, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(83, 183, 168, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .faq-hero {
+    padding-top: 170px;
+    padding-bottom: 50px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .faq-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(83, 183, 168, 0.06) 0%, rgba(111, 148, 166, 0.02) 50%, transparent 100%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .faq-main-title {
+    font-size: 3rem;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-top: 10px;
+  }
+
+  .faq-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    max-width: 700px;
+    margin: 0 auto 30px auto;
+    line-height: 1.6;
+  }
+
+  /* Search bar */
+  .faq-search-wrapper {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .search-icon {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+  }
+
+  .faq-search-wrapper input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    background: transparent;
+    padding: 10px 0;
+  }
+
+  .clear-search-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+
+  .clear-search-btn:hover {
+    color: var(--text-primary);
+  }
+
+  .faq-content-section {
+    padding: 50px 0 100px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .faq-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 2.5fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (max-width: 992px) {
+    .faq-layout-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
+  /* Sidebar categories */
+  .faq-categories-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .categories-list-box {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 30px 25px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .categories-list-box h4 {
+    font-size: 1.05rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+  }
+
+  .cat-filter-btn {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .cat-filter-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--accent-teal);
+  }
+
+  .cat-filter-btn.active {
+    background: rgba(83, 183, 168, 0.08);
+    color: var(--accent-teal);
+  }
+
+  /* Contact Widget Sidebar */
+  .faq-contact-widget {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 30px 25px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .widget-icon {
+    font-size: 2.2rem;
+    color: var(--accent-teal);
+  }
+
+  .faq-contact-widget h5 {
+    font-size: 1.05rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .faq-contact-widget p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .faq-contact-widget .btn-primary-sm {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Accordion styles */
+  .faq-accordion-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 50px;
+  }
+
+  .faq-item {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .faq-item.active {
+    border-color: var(--accent-teal);
+    box-shadow: 0 5px 20px rgba(83, 183, 168, 0.04);
+  }
+
+  .faq-trigger {
+    background: none;
+    border: none;
+    width: 100%;
+    padding: 24px;
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .faq-question-text {
+    line-height: 1.35;
+  }
+
+  .faq-icon-holder {
+    font-size: 1rem;
+    color: var(--text-muted);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+  }
+
+  .faq-item.active .faq-icon-holder {
+    transform: rotate(180deg);
+    color: var(--accent-teal);
+  }
+
+  .faq-answer-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .answer-inner {
+    padding: 0 24px 24px 24px;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 16px;
+  }
+
+  .answer-inner p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* No results search display */
+  .no-results-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text-secondary);
+  }
+
+  .no-results-state i {
+    font-size: 3rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .no-results-state h4 {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  /* Notices Panel HUD styling */
+  .notices-hud-wrapper {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .notices-header h3 {
+    font-size: 1.4rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .notices-header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .download-links-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .download-links-grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+  }
+
+  .download-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .download-card:hover {
+    border-color: var(--accent-teal);
+    box-shadow: var(--shadow-card);
+  }
+
+  .dl-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef4444;
+    font-size: 1.4rem;
+  }
+
+  .dl-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .dl-details strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .dl-details span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .dl-arrow {
+    color: var(--text-muted);
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+  }
+
+  .download-card:hover .dl-arrow {
+    transform: translateY(2px);
+    color: var(--accent-teal);
+  }
+
+  /* LED Color State Table Legend */
+  .led-indicator-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: 30px;
+  }
+
+  .led-indicator-section h4 {
+    font-size: 1.15rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .led-states-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .led-states-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
+  .led-state-item {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .led-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .led-green-solid {
+    background: #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  }
+
+  .led-green-pulse {
+    background: #10b981;
+    animation: ledPulseGreen 2s infinite alternate;
+  }
+
+  @keyframes ledPulseGreen {
+    from { opacity: 0.3; box-shadow: 0 0 2px rgba(16, 185, 129, 0.1); }
+    to { opacity: 1; box-shadow: 0 0 12px rgba(16, 185, 129, 0.6); }
+  }
+
+  .led-blue-solid {
+    background: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+  }
+
+  .led-red-flash {
+    background: #ef4444;
+    animation: ledFlashRed 1s infinite alternate;
+  }
+
+  @keyframes ledFlashRed {
+    from { opacity: 0.1; }
+    to { opacity: 1; box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); }
+  }
+
+  .led-state-item strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .led-state-item span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+    display: block;
+  }
+
+  .text-glow-teal {
+    text-shadow: 0 0 15px rgba(83, 183, 168, 0.15);
+  }
+
+  .notices-hud-wrapper .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.05) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 5s linear infinite;
+    pointer-events: none;
+  }
+</style>
