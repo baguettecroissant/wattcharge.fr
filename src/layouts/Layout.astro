@@ -195,15 +195,19 @@ const { title, description } = Astro.props;
 </html>
 
 <style>
-  /* Header styling - Clean Light */
+  /* Header styling - Glassmorphic Fixed Navbar */
   .navbar-wrapper {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 100;
-    background: transparent;
-    border-bottom: none;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
   }
 
   .navbar-container {
@@ -236,8 +240,8 @@ const { title, description } = Astro.props;
 
   .nav-link {
     font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-secondary);
+    font-weight: 700;
+    color: #0f172a;
     transition: var(--transition-fast);
   }
 
