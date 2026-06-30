@@ -56,46 +56,67 @@ const { title, description } = Astro.props;
     </main>
 
     <!-- Footer -->
-    <footer class="footer-wrapper">
-      <div class="container footer-content">
-        <div class="footer-brand-sec">
-          <a href="/" class="brand-logo">
-            <i class="fa-solid fa-bolt-lightning text-gradient-electric logo-icon"></i>
-            <span>Watt<span class="text-gradient-electric">Charge</span></span>
+    <footer class="footer-wrapper-premium">
+      <div class="container footer-content-premium">
+        <!-- Col 1 : Brand & Service client -->
+        <div class="footer-col-brand">
+          <a href="/" class="brand-logo-footer">
+            <span>WATT<span class="text-teal">CHARGE</span></span>
           </a>
-          <p class="footer-brand-desc">
-            Le pionnier de la recharge intelligente connectée directe fabricant. Conforme NF C 15-100.
-          </p>
-          <div class="certified-logos">
-            <span class="badge-certified"><i class="fa-solid fa-shield-halved"></i> Norme CE</span>
+          <div class="footer-cs-box">
+            <div class="cs-icon-bubble">
+              <i class="fa-solid fa-comments"></i>
+            </div>
+            <p>Notre service client <strong>WattCharge</strong> est à votre service.</p>
           </div>
         </div>
         
-        <div class="footer-links-sec">
-          <h4 class="footer-title">Navigation</h4>
-          <a href="/boutique">Nos Bornes</a>
-          <a href="/a-propos">À Propos</a>
-          <a href="/outils">Simulateurs</a>
-          <a href="/blog">Blog</a>
+        <!-- Col 2 : Liens utiles -->
+        <div class="footer-col-links">
+          <h4>LIENS UTILES</h4>
+          <a href="/mentions-legales">Mentions légales & Confidentialité</a>
+          <a href="/cgv">Conditions Générales de Vente (CGV)</a>
+          <a href="/outils">FAQ & Simulateurs de recharge</a>
+          <a href="/a-propos">À Propos de nous</a>
         </div>
 
-        <div class="footer-links-sec">
-          <h4 class="footer-title">Légal & Support</h4>
-          <a href="/mentions-legales">Mentions Légales</a>
-          <a href="/cgv">CGV</a>
-          <a href="mailto:support@wattcharge.fr"><i class="fa-solid fa-envelope"></i> support@wattcharge.fr</a>
+        <!-- Col 3 : Nos produits -->
+        <div class="footer-col-links">
+          <h4>NOS PRODUITS</h4>
+          <a href="/produits/wattcharge-home-7">Borne de recharge 7,4 kW</a>
+          <a href="/produits/wattcharge-home-11">Borne de recharge 11 kW</a>
+          <a href="/produits/wattcharge-pro-22">Borne de recharge 22 kW</a>
+          <a href="/boutique">Boutique Catalogue Complet</a>
+        </div>
+
+        <!-- Col 4 : Contact -->
+        <div class="footer-col-contact">
+          <h4>CONTACT</h4>
+          <div class="contact-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>115 rue de la Performance,<br />83390 Cuers</span>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-phone"></i>
+            <a href="tel:0695012614">06 95 01 26 14</a>
+          </div>
+          <div class="contact-item">
+            <i class="fa-solid fa-envelope"></i>
+            <a href="mailto:support@wattcharge.fr">support@wattcharge.fr</a>
+          </div>
         </div>
       </div>
 
-      <div class="glow-line"></div>
-
-      <div class="container footer-bottom">
-        <p class="copy-text">&copy; {new Date().getFullYear()} WattCharge.fr. Tous droits réservés.</p>
-        <div class="payment-badges">
-          <i class="fa-brands fa-cc-visa" title="Visa"></i>
-          <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
-          <i class="fa-brands fa-cc-apple-pay" title="Apple Pay"></i>
-          <i class="fa-brands fa-cc-paypal" title="PayPal"></i>
+      <!-- Copyright Bottom -->
+      <div class="footer-bottom-premium">
+        <div class="container footer-bottom-inner">
+          <p class="credit-text">Réalisé avec ⚡ par Getup Agency</p>
+          <div class="payment-badges-footer">
+            <i class="fa-brands fa-cc-visa" title="Visa"></i>
+            <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+            <i class="fa-brands fa-cc-apple-pay" title="Apple Pay"></i>
+            <i class="fa-brands fa-cc-paypal" title="PayPal"></i>
+          </div>
         </div>
       </div>
     </footer>
@@ -177,114 +198,195 @@ const { title, description } = Astro.props;
     border-radius: 8px;
   }
 
-  /* Footer styling - Premium Slate */
-  .footer-wrapper {
-    background: #0f172a;
-    border-top: 1px solid var(--border-color);
-    padding-top: 60px;
-    padding-bottom: 30px;
+  /* Premium Rounded Footer - Inspired by Competitor BornePlus */
+  .footer-wrapper-premium {
+    background: #e6f4f2; /* Light premium mint background */
+    border-top-left-radius: 45px;
+    border-top-right-radius: 45px;
+    padding-top: 80px;
     margin-top: 100px;
-    color: #e2e8f0;
-  }
-
-  .footer-wrapper h4, .footer-wrapper span {
-    color: #ffffff !important;
-  }
-
-  .footer-content {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 60px;
-    margin-bottom: 40px;
-  }
-
-  @media (max-width: 768px) {
-    .nav-links, .nav-actions {
-      display: none;
-    }
-    
-    .footer-content {
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
-  }
-
-  .footer-desc {
-    color: #94a3b8;
-    margin-top: 16px;
-    margin-bottom: 24px;
-    max-width: 400px;
-    line-height: 1.6;
-  }
-
-  .certified-logos {
-    display: flex;
-    gap: 12px;
-  }
-
-  .footer-title {
-    margin-bottom: 20px;
-    font-size: 1.1rem;
     position: relative;
-    padding-bottom: 8px;
+    z-index: 10;
+    box-shadow: 0 -10px 40px rgba(83, 183, 168, 0.05);
+    border-top: 1px solid rgba(83, 183, 168, 0.15);
   }
 
-  .footer-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 30px;
-    height: 2px;
-    background: var(--gradient-electric);
+  .footer-content-premium {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 50px;
   }
 
-  .footer-links-sec {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .footer-links-sec a {
-    color: #94a3b8;
-    transition: var(--transition-fast);
-    font-size: 0.95rem;
-  }
-
-  .footer-links-sec a:hover {
-    color: var(--accent-teal);
-    padding-left: 4px;
-  }
-
-  .footer-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 24px;
+  @media (max-width: 992px) {
+    .footer-content-premium {
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
   }
 
   @media (max-width: 576px) {
-    .footer-bottom {
+    .footer-content-premium {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  }
+
+  /* Col 1 Brand & Customer Service */
+  .footer-col-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .brand-logo-footer {
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    color: #0f172a;
+    font-family: var(--font-heading);
+  }
+
+  .brand-logo-footer .text-teal {
+    color: var(--accent-teal);
+  }
+
+  .footer-cs-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(83, 183, 168, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+    max-width: 280px;
+  }
+
+  .cs-icon-bubble {
+    width: 44px;
+    height: 44px;
+    border-radius: 50px;
+    background: var(--accent-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    animation: pulseBubble 3s infinite;
+  }
+
+  @keyframes pulseBubble {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(83, 183, 168, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(83, 183, 168, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(83, 183, 168, 0); }
+  }
+
+  .footer-cs-box p {
+    font-size: 0.85rem;
+    color: #334155;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  /* Col Links & Contact */
+  .footer-col-links, .footer-col-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-col-links h4, .footer-col-contact h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
+
+  .footer-col-links a {
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: var(--transition-fast);
+  }
+
+  .footer-col-links a:hover {
+    color: var(--accent-teal);
+    transform: translateX(3px);
+  }
+
+  .footer-col-contact {
+    color: #475569;
+    font-size: 0.95rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    line-height: 1.5;
+  }
+
+  .contact-item i {
+    color: var(--accent-teal);
+    font-size: 1.1rem;
+    margin-top: 3px;
+    width: 16px;
+    text-align: center;
+  }
+
+  .contact-item a {
+    color: #475569;
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition-fast);
+  }
+
+  .contact-item a:hover {
+    color: var(--accent-teal);
+  }
+
+  /* Bottom Copyright panel */
+  .footer-bottom-premium {
+    border-top: 1px solid rgba(83, 183, 168, 0.12);
+    padding: 25px 0;
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .footer-bottom-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @media (max-width: 576px) {
+    .footer-bottom-inner {
       flex-direction: column;
       gap: 16px;
       text-align: center;
     }
   }
 
-  .copy-text {
+  .credit-text {
+    font-size: 0.85rem;
     color: #64748b;
-    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0;
   }
 
-  .payment-badges {
+  .payment-badges-footer {
     display: flex;
-    gap: 18px;
-    font-size: 1.8rem;
-    color: #94a3b8;
+    gap: 15px;
+    font-size: 1.6rem;
+    color: #64748b;
   }
 
-  .payment-badges i:hover {
-    color: #ffffff;
+  .payment-badges-footer i:hover {
+    color: var(--accent-teal);
   }
 
   .cart-link-nav {
