@@ -140,6 +140,124 @@ const products = DEFAULT_PRODUCTS;
 
 
 
+  <!-- SECTION COMPARATIVE DÉTAILLÉE -->
+  <section class="comparison-section" id="compare">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <span class="badge-certified"><i class="fa-solid fa-scale-balanced"></i> Comparateur de Spécifications</span>
+        <h2>Quelle borne est faite pour vous ?</h2>
+        <p>Comparez en un coup d'œil les caractéristiques techniques de notre gamme connectée pour choisir le modèle idéal.</p>
+      </div>
+
+      <!-- Glassmorphic Comparison Table -->
+      <div class="comparison-table-wrapper glass-panel scroll-reveal">
+        <div class="hud-scanner-overlay"></div>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th class="criteria-header">Caractéristiques</th>
+              <th>
+                <div class="table-prod-header">
+                  <span class="prod-badge monophase">Monophasé</span>
+                  <h4>WattCharge Home 7.4</h4>
+                  <span class="prod-price">389,00 €</span>
+                </div>
+              </th>
+              <th>
+                <div class="table-prod-header">
+                  <span class="prod-badge triphase">Triphasé</span>
+                  <h4>WattCharge Home 11</h4>
+                  <span class="prod-price">449,00 €</span>
+                </div>
+              </th>
+              <th class="highlight-column">
+                <div class="table-prod-header">
+                  <span class="prod-badge power-badge">Le Plus Puissant</span>
+                  <h4 class="text-gradient-electric">WattCharge Pro 22</h4>
+                  <span class="prod-price text-gradient-electric">489,00 €</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="criteria-name">Puissance max de charge</td>
+              <td><strong>7.4 kW</strong></td>
+              <td><strong>11 kW</strong></td>
+              <td class="highlight-column"><strong>22 kW</strong></td>
+            </tr>
+            <tr>
+              <td class="criteria-name">Courant de charge max</td>
+              <td>32A (Monophasé)</td>
+              <td>16A (par phase)</td>
+              <td class="highlight-column">32A (par phase)</td>
+            </tr>
+            <tr>
+              <td class="criteria-name">Tension d'alimentation</td>
+              <td>230V AC (Phase + Neutre)</td>
+              <td>400V AC (3 Phases + Neutre)</td>
+              <td class="highlight-column">400V AC (3 Phases + Neutre)</td>
+            </tr>
+            <tr>
+              <td class="criteria-name">Vitesse de recharge estimée</td>
+              <td>~35 km d'autonomie / h</td>
+              <td>~55 km d'autonomie / h</td>
+              <td class="highlight-column text-gradient-electric"><strong>~110 km d'autonomie / h</strong></td>
+            </tr>
+            <tr>
+              <td class="criteria-name">WiFi & Bluetooth intelligents</td>
+              <td><i class="fa-solid fa-circle-check check-ok"></i> Oui (Tuya Smart)</td>
+              <td><i class="fa-solid fa-circle-check check-ok"></i> Oui (Tuya Smart)</td>
+              <td class="highlight-column"><i class="fa-solid fa-circle-check check-ok"></i> Oui (Tuya Smart)</td>
+            </tr>
+            <tr>
+              <td class="criteria-name">Démarrage sécurisé RFID</td>
+              <td><i class="fa-solid fa-circle-check check-ok"></i> Oui (3 badges inclus)</td>
+              <td><i class="fa-solid fa-circle-check check-ok"></i> Oui (3 badges inclus)</td>
+              <td class="highlight-column"><i class="fa-solid fa-circle-check check-ok"></i> Oui (3 badges inclus)</td>
+            </tr>
+            <tr>
+              <td class="criteria-name">Détection fuites DC 6mA</td>
+              <td><i class="fa-solid fa-circle-check check-ok"></i> Intégrée (RCD DC 6mA)</td>
+              <td><i class="fa-solid fa-circle-check check-ok"></i> Intégrée (RCD DC 6mA)</td>
+              <td class="highlight-column"><i class="fa-solid fa-circle-check check-ok"></i> Intégrée (RCD DC 6mA)</td>
+            </tr>
+            <tr>
+              <td class="criteria-name">Étanchéité IP66 & Boîtier</td>
+              <td>IP66 Polycarbonate renforcé</td>
+              <td>IP66 Polycarbonate renforcé</td>
+              <td class="highlight-column">IP66 Polycarbonate renforcé</td>
+            </tr>
+            <tr>
+              <td class="criteria-name">Écran couleur LCD 2.8"</td>
+              <td><i class="fa-solid fa-circle-check check-ok"></i> Oui</td>
+              <td><i class="fa-solid fa-circle-check check-ok"></i> Oui</td>
+              <td class="highlight-column"><i class="fa-solid fa-circle-check check-ok"></i> Oui</td>
+            </tr>
+            <tr>
+              <td class="criteria-name">Câble Type 2 inclus</td>
+              <td>Oui (5 mètres)</td>
+              <td>Oui (5 mètres)</td>
+              <td class="highlight-column">Oui (5 mètres)</td>
+            </tr>
+            <tr class="action-row">
+              <td></td>
+              <td>
+                <a href="/produits/wattcharge-home-7" class="btn-primary-sm btn-primary">Configurer 7.4 kW</a>
+              </td>
+              <td>
+                <a href="/produits/wattcharge-home-11" class="btn-primary-sm btn-primary">Configurer 11 kW</a>
+              </td>
+              <td class="highlight-column">
+                <a href="/produits/wattcharge-pro-22" class="btn-primary-sm btn-primary cyber-btn">Configurer 22 kW</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
   <!-- Reassurance Grid -->
   <section class="reassurance-bar">
     <div class="container reassurance-container">
@@ -663,5 +781,141 @@ const products = DEFAULT_PRODUCTS;
   .reassurance-item p {
     color: var(--text-secondary);
     font-size: 0.9rem;
+  }
+
+  /* Comparison Section styles */
+  .comparison-section {
+    background: #ffffff;
+    padding: 100px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .comparison-table-wrapper {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: var(--shadow-card);
+    overflow-x: auto;
+    position: relative;
+  }
+
+  @media (max-width: 992px) {
+    .comparison-table-wrapper {
+      padding: 20px;
+    }
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+  }
+
+  .comparison-table th, 
+  .comparison-table td {
+    padding: 20px 15px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .comparison-table th {
+    border-bottom: 2px solid var(--border-color);
+    vertical-align: bottom;
+  }
+
+  .criteria-header {
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .criteria-name {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    width: 25%;
+  }
+
+  .table-prod-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .table-prod-header h4 {
+    font-size: 1.2rem;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin: 4px 0;
+  }
+
+  .prod-badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .prod-badge.monophase {
+    background: rgba(111, 148, 166, 0.08);
+    color: var(--text-muted);
+  }
+
+  .prod-badge.triphase {
+    background: rgba(83, 183, 168, 0.08);
+    color: var(--accent-teal);
+  }
+
+  .prod-badge.power-badge {
+    background: var(--gradient-electric);
+    color: #ffffff;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .prod-price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .highlight-column {
+    background: rgba(83, 183, 168, 0.02);
+  }
+
+  .check-ok {
+    color: #10b981;
+    font-size: 1.1rem;
+  }
+
+  .action-row td {
+    padding-top: 30px;
+    border-bottom: none;
+  }
+
+  .action-row .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    font-size: 0.85rem;
+  }
+
+  /* HUD scanner line on comparison table */
+  .comparison-table-wrapper .hud-scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(83, 183, 168, 0) 93%, rgba(83, 183, 168, 0.05) 96%, rgba(83, 183, 168, 0) 100%);
+    background-size: 100% 30px;
+    animation: scanHUD 6s linear infinite;
+    pointer-events: none;
   }
 </style>
