@@ -477,8 +477,14 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
   }
 
   .cart-product-info img {
-    height: 60px;
+    width: 80px;
+    height: 80px;
     object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    padding: 5px;
+    flex-shrink: 0;
   }
 
   /* Qty Controls Small */
@@ -486,9 +492,9 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     display: flex;
     align-items: center;
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 8px;
     overflow: hidden;
-    width: fit-content;
+    width: 100px;
     background: var(--bg-secondary);
   }
 
@@ -739,5 +745,99 @@ const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || 'placeholder-client-i
     background-size: 100% 30px;
     animation: scanHUD 5s linear infinite;
     pointer-events: none;
+  }
+
+  /* Responsive styles for mobile cart */
+  @media (max-width: 768px) {
+    .cart-table, 
+    .cart-table thead, 
+    .cart-table tbody, 
+    .cart-table th, 
+    .cart-table td, 
+    .cart-table tr {
+      display: block;
+    }
+
+    .cart-table thead {
+      display: none;
+    }
+
+    .cart-table tr {
+      position: relative;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .col-delete {
+      position: absolute;
+      top: 15px;
+      right: 0;
+      padding: 0 !important;
+      width: auto;
+      border-bottom: none !important;
+    }
+
+    .col-product {
+      width: 100% !important;
+      padding: 0 0 15px 0 !important;
+    }
+
+    .cart-product-info {
+      gap: 15px;
+    }
+
+    .cart-product-info img {
+      width: 60px;
+      height: 60px;
+    }
+
+    .col-price, 
+    .col-qty, 
+    .col-subtotal {
+      display: flex !important;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0 !important;
+      width: 100% !important;
+      border-bottom: none !important;
+      text-align: right !important;
+    }
+
+    .col-price::before {
+      content: "Prix :";
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .col-qty::before {
+      content: "Quantité :";
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .col-subtotal::before {
+      content: "Sous-total :";
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    
+    .col-subtotal {
+      border-top: 1px dashed var(--border-color);
+      padding-top: 15px !important;
+      font-size: 1.05rem;
+    }
+
+    .cart-actions-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .promo-code-box {
+      max-width: none;
+    }
+
+    .update-btn {
+      width: 100%;
+    }
   }
 </style>
